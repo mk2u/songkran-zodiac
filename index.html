@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ดวงปีนักษัตร สงกรานต์</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=K2D:wght@400;600;700;800&family=Srisakdi:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      background: #fff;
+      color: #1a1a1a;
+      font-family: 'K2D', sans-serif;
+      min-height: 100vh
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 6px 40px
+    }
+
+    .main-title {
+      font-family: 'Srisakdi', cursive;
+      font-size: clamp(32px, 8vw, 56px);
+      font-weight: 700;
+      text-align: center;
+      margin: 6px 0 4px;
+      color: #111
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 6px 0 10px
+    }
+
+    .controls button {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #333;
+      border-radius: 6px;
+      background: #fff;
+      color: #111;
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer
+    }
+
+    .controls button:active {
+      background: #eee
+    }
+
+    .controls input {
+      width: 100px;
+      height: 40px;
+      border: 2px solid #333;
+      border-radius: 6px;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 800;
+      font-family: inherit;
+      outline: none
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: min(96vw, 620px);
+      aspect-ratio: 1
+    }
+
+    .canvas-wrap canvas {
+      width: 100%;
+      height: 100%
+    }
+
+    .bottom-text {
+      font-family: 'Srisakdi', cursive;
+      font-size: clamp(32px, 9vw, 58px);
+      font-weight: 700;
+      color: #c0392b;
+      text-align: center;
+      margin: 24px 0 16px
+    }
+
+    .birth-section {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin: 6px 0;
+      flex-wrap: wrap;
+      justify-content: center
+    }
+
+    .birth-section label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #555
+    }
+
+    .birth-section select {
+      height: 40px;
+      border: 2px solid #333;
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer
+    }
+
+    .result-card {
+      background: #fffbf0;
+      border: 2px solid #c8951a;
+      border-radius: 10px;
+      padding: 14px 18px;
+      max-width: 460px;
+      width: 100%;
+      text-align: center;
+      margin: 8px 0;
+      display: none
+    }
+
+    .result-card .r-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1a3a6b;
+      margin-bottom: 4px
+    }
+
+    .result-card .r-taksa {
+      font-size: 26px;
+      font-weight: 900
+    }
+
+    .result-card .r-taksa.bad {
+      color: #c0392b
+    }
+
+    .result-card .r-taksa.good {
+      color: #1a7a3a
+    }
+
+    .result-card .r-meaning {
+      font-size: 14px;
+      color: #666;
+      margin-top: 4px
+    }
+
+    .ref-section {
+      margin: 14px 0;
+      max-width: 460px;
+      width: 100%;
+      text-align: center
+    }
+
+    .ref-section h3 {
+      font-size: 18px;
+      margin-bottom: 6px
+    }
+
+    .ref-section img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield
+    }
+  </style>
+</head>
+
+<body>
+  <h1 id="mainTitle" class="main-title">13 เมษา 2569 ปีมะเมีย</h1>
+  <div class="controls">
+    <button id="prevYear" type="button">−</button>
+    <input id="yearInput" type="number" inputmode="numeric" min="2400" max="2800" value="2569">
+    <button id="nextYear" type="button">+</button>
+  </div>
+  <div class="canvas-wrap">
+    <canvas id="wheelCanvas" width="1400" height="1400"></canvas>
+  </div>
+  <div class="bottom-text">นับจากปีสงกรานต์ไปหาปีเกิด</div>
+  </div>
+
+  <script>
+    const Z = [
+      { thai: "ชวด", animal: "หนู", en: "Rat", img: "assets/zodiac_rat.png" },
+      { thai: "ฉลู", animal: "วัว", en: "Ox", img: "assets/zodiac_ox.png" },
+      { thai: "ขาล", animal: "เสือ", en: "Tiger", img: "assets/zodiac_tiger.png" },
+      { thai: "เถาะ", animal: "กระต่าย", en: "Rabbit", img: "assets/zodiac_rabbit.png" },
+      { thai: "มะโรง", animal: "มังกร", en: "Dragon", img: "assets/zodiac_dragon.png" },
+      { thai: "มะเส็ง", animal: "งู", en: "Snake", img: "assets/zodiac_snake.png" },
+      { thai: "มะเมีย", animal: "ม้า", en: "Horse", img: "assets/zodiac_horse.png" },
+      { thai: "มะแม", animal: "แพะ", en: "Sheep", img: "assets/zodiac_goat.png" },
+      { thai: "วอก", animal: "ลิง", en: "Monkey", img: "assets/zodiac_monkey.png" },
+      { thai: "ระกา", animal: "ไก่", en: "Rooster", img: "assets/zodiac_rooster.png" },
+      { thai: "จอ", animal: "สุนัข", en: "Dog", img: "assets/zodiac_dog.png" },
+      { thai: "กุน", animal: "หมู", en: "Pig", img: "assets/zodiac_pig.png" }
+    ];
+    const loadedImgs = {};
+    let imgsLoaded = 0;
+    Z.forEach(z => {
+      const img = new Image();
+      img.src = z.img;
+      img.onload = () => {
+        imgsLoaded++;
+        if (imgsLoaded === 12) render();
+      };
+      loadedImgs[z.en] = img;
+    });
+    const TK = [
+      { name: "ตนุ", bad: false },
+      { name: "กดุมภะ", bad: false },
+      { name: "สหัชชะ", bad: false },
+      { name: "พันธุ", bad: false },
+      { name: "ปุตตะ", bad: false },
+      { name: "อริ", bad: true },
+      { name: "ปัตนิ", bad: false },
+      { name: "มรณะ", bad: true },
+      { name: "ศุภะ", bad: false },
+      { name: "กัมมะ", bad: false },
+      { name: "ลาภะ", bad: false },
+      { name: "วินาสน์", bad: true }
+    ];
+    const BY = 2569, BI = 6;
+    function mod(v, n) { return ((v % n) + n) % n }
+    function y2i(y) { return mod(Number(y) - BY + BI, 12) }
+    function toR(d) { return d * Math.PI / 180 }
+    function ang(i) { return -90 - i * 30 } // degrees, counter-clockwise zodiac
+
+    const cv = document.getElementById('wheelCanvas');
+    const c = cv.getContext('2d');
+    const W = cv.width, CX = W / 2, CY = W / 2;
+    const FONT = "'K2D', sans-serif";
+
+    function draw(ai) {
+      c.clearRect(0, 0, W, W);
+
+      // Radii
+      const RO = 460;   // outer blue ring outer edge
+      const RI = 448;   // outer blue ring inner edge
+      const RS = 440;   // segment outer
+      const RN = 260;   // segment inner (red ring)
+      const RC = 85;    // center circle
+      const RL = 560;   // label radius for ทักษา
+
+      // === OUTER BLUE RING ===
+      c.beginPath(); c.arc(CX, CY, RO, 0, Math.PI * 2);
+      c.fillStyle = '#1e3d72'; c.fill();
+      c.beginPath(); c.arc(CX, CY, RI, 0, Math.PI * 2);
+      c.fillStyle = '#faf6ec'; c.fill();
+
+      // === SEGMENTS ===
+      for (let i = 0; i < 12; i++) {
+        const a1 = toR(ang(i) + 15), a2 = toR(ang(i) - 15);
+        // divider lines from center to outer
+        c.beginPath();
+        c.moveTo(CX + RC * Math.cos(a1), CY + RC * Math.sin(a1));
+        c.lineTo(CX + RS * Math.cos(a1), CY + RS * Math.sin(a1));
+        c.lineWidth = 2; c.strokeStyle = '#c4a35a'; c.stroke();
+      }
+
+      // === RED INNER RING ===
+      c.beginPath(); c.arc(CX, CY, RN, 0, Math.PI * 2);
+      c.lineWidth = 6; c.strokeStyle = '#8b1a1a'; c.stroke();
+
+      // === ANIMALS + TEXT ===
+      for (let i = 0; i < 12; i++) {
+        const a = toR(ang(i));
+        const z = Z[i];
+
+        // Luxurious image — positioned in outer segment area
+        const er = (RS + RN) / 2 + 25;
+        const img = loadedImgs[z.en];
+        if (img && img.complete) {
+          const iw = 140;
+          c.drawImage(img, CX + er * Math.cos(a) - iw / 2, CY + er * Math.sin(a) - iw / 2, iw, iw);
+        }
+
+
+
+        // Thai zodiac name — running along the red ring
+        c.save();
+        c.translate(CX, CY);
+        let rot = a + Math.PI / 2;
+        rot = (rot % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2); // normalize 0 to 2PI
+
+        c.font = `bold 28px ${FONT}`;
+        c.fillStyle = '#1a1a1a';
+        c.textAlign = 'center';
+
+        if (rot > Math.PI / 2 && rot < Math.PI * 1.5) {
+          // Bottom half: flip text to keep it readable right-side up
+          c.rotate(rot + Math.PI);
+          c.textBaseline = 'bottom';
+          c.fillText(z.thai, 0, RN - 8);
+        } else {
+          // Top half
+          c.rotate(rot);
+          c.textBaseline = 'top';
+          c.fillText(z.thai, 0, -RN + 8);
+        }
+        c.restore();
+      }
+
+      // === CENTER CIRCLE ===
+      c.beginPath(); c.arc(CX, CY, RC, 0, Math.PI * 2);
+      c.fillStyle = '#fff'; c.fill();
+      c.lineWidth = 5; c.strokeStyle = '#1e3d72'; c.stroke();
+
+      // === OUTER ทักษา LABELS ===
+      for (let i = 0; i < 12; i++) {
+        const ti = mod(i - ai, 12);
+        const tk = TK[ti];
+        const a = toR(ang(i));
+        const lx = CX + RL * Math.cos(a);
+        const ly = CY + RL * Math.sin(a);
+
+        if (ti === 0) {
+          // ตนุ
+          c.font = `900 48px ${FONT}`;
+          c.fillStyle = '#1a1a1a';
+          c.textAlign = 'center'; c.textBaseline = 'middle';
+          c.fillText('ตนุ', lx, ly);
+
+          // Big ล (placed further out radially and slightly rotated so it doesn't overlap)
+          const r_lor = RL + 65;
+          const a_lor = a + 0.08; // slightly offset angle
+          const lx_lor = CX + r_lor * Math.cos(a_lor);
+          const ly_lor = CY + r_lor * Math.sin(a_lor);
+
+          c.font = `900 100px ${FONT}`;
+          c.fillStyle = '#c0392b';
+          c.fillText('ล', lx_lor, ly_lor);
+        } else {
+          const isBad = tk.bad;
+          c.font = isBad ? `900 54px ${FONT}` : `900 48px ${FONT}`;
+          c.fillStyle = isBad ? '#c0392b' : '#1a1a1a';
+          c.textAlign = 'center'; c.textBaseline = 'middle';
+          c.fillText(tk.name, lx, ly);
+        }
+      }
+    }
+
+    function render() {
+      const y = Number(document.getElementById('yearInput').value) || BY;
+      const ai = y2i(y);
+      document.getElementById('mainTitle').textContent = `13 เมษา ${y} ปี${Z[ai].thai}`;
+      draw(ai);
+    }
+
+    document.getElementById('prevYear').onclick = () => {
+      const i = document.getElementById('yearInput');
+      i.value = (Number(i.value) || BY) - 1; render();
+    };
+    document.getElementById('nextYear').onclick = () => {
+      const i = document.getElementById('yearInput');
+      i.value = (Number(i.value) || BY) + 1; render();
+    };
+    document.getElementById('yearInput').addEventListener('input', render);
+  </script>
+</body>
+
+</html>
