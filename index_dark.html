@@ -4,38 +4,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ดวงปีนักษัตร สงกรานต์</title>
+  <title>ดวงปีนักษัตร สงกรานต์ (Dark Edition)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=K2D:wght@400;600;700;800&family=Srisakdi:wght@400;700&display=swap"
     rel="stylesheet">
   <style>
-    :root {
-      --bg: #fff;
-      --text: #1a1a1a;
-      --title: #111;
-      --ctrl-bg: #fff;
-      --ctrl-text: #111;
-      --ctrl-border: #333;
-      --bottom-text: #c0392b;
-      --card-bg: #fffbf0;
-      --card-border: #c8951a;
-      --title-shadow: transparent;
-    }
-
-    body.dark-mode {
-      --bg: #0a0a0a;
-      --text: #e0e0e0;
-      --title: #ffd700;
-      --ctrl-bg: #1a1a1a;
-      --ctrl-text: #d4af37;
-      --ctrl-border: #d4af37;
-      --bottom-text: #ffd700;
-      --card-bg: #1a1a1a;
-      --card-border: #d4af37;
-      --title-shadow: rgba(255, 215, 0, 0.5);
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -44,11 +18,10 @@
 
     html,
     body {
-      background: var(--bg);
-      color: var(--text);
+      background: #0a0a0a;
+      color: #e0e0e0;
       font-family: 'K2D', sans-serif;
-      min-height: 100vh;
-      transition: background 0.3s, color 0.3s;
+      min-height: 100vh
     }
 
     body {
@@ -58,39 +31,17 @@
       padding: 10px 6px 40px
     }
 
-    .theme-toggle {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 2px solid var(--ctrl-border);
-      background: var(--ctrl-bg);
-      color: var(--ctrl-text);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      z-index: 100;
-    }
-
     .main-title {
       font-family: 'Srisakdi', cursive;
       font-size: clamp(32px, 8vw, 56px);
       font-weight: 700;
       text-align: center;
-      margin: 20px 0 4px;
-      color: var(--title);
-      text-shadow: 0 0 10px var(--title-shadow);
-    }
-
-    body.dark-mode .main-title, 
-    body.dark-mode .bottom-text {
+      margin: 6px 0 4px;
+      /* Vibrant Gold Gradient */
       background: linear-gradient(to bottom, #fff7ad 0%, #ffd700 50%, #ffa500 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5));
     }
 
     .controls {
@@ -101,30 +52,32 @@
     }
 
     .controls button {
-      width: 40px;
-      height: 40px;
-      border: 2px solid var(--ctrl-border);
-      border-radius: 6px;
-      background: var(--ctrl-bg);
-      color: var(--ctrl-text);
-      font-size: 20px;
+      width: 44px;
+      height: 44px;
+      border: 2px solid #d4af37;
+      border-radius: 50%;
+      background: rgba(212, 175, 55, 0.1);
+      color: #d4af37;
+      font-size: 24px;
       font-weight: 900;
-      cursor: pointer
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
     .controls button:active {
-      background: #eee
+      background: #d4af37;
+      color: #000;
     }
 
     .controls input {
-      width: 100px;
-      height: 40px;
-      border: 2px solid var(--ctrl-border);
-      border-radius: 6px;
-      background: var(--ctrl-bg);
-      color: var(--text);
+      width: 120px;
+      height: 44px;
+      border: 2px solid #333;
+      border-radius: 8px;
+      background: #1a1a1a;
+      color: #fff;
       text-align: center;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 800;
       font-family: inherit;
       outline: none
@@ -145,93 +98,25 @@
       font-family: 'Srisakdi', cursive;
       font-size: clamp(32px, 9vw, 58px);
       font-weight: 700;
-      color: var(--bottom-text);
       text-align: center;
       margin: 24px 0 16px;
-      text-shadow: 0 0 10px var(--title-shadow);
-    }
-
-    .birth-section {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      margin: 6px 0;
-      flex-wrap: wrap;
-      justify-content: center
-    }
-
-    .birth-section label {
-      font-size: 15px;
-      font-weight: 700;
-      color: #555
-    }
-
-    .birth-section select {
-      height: 40px;
-      border: 2px solid #333;
-      border-radius: 6px;
-      padding: 0 10px;
-      font-size: 16px;
-      font-weight: 700;
-      font-family: inherit;
-      outline: none;
-      cursor: pointer
+      /* Vibrant Gold Gradient */
+      background: linear-gradient(to bottom, #fff7ad 0%, #ffd700 50%, #ffa500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
     }
 
     .result-card {
-      background: var(--card-bg);
-      border: 2px solid var(--card-border);
-      border-radius: 10px;
-      padding: 14px 18px;
+      background: #1a1a1a;
+      border: 2px solid #d4af37;
+      border-radius: 12px;
+      padding: 18px;
       max-width: 460px;
       width: 100%;
       text-align: center;
       margin: 8px 0;
       display: none
-    }
-
-    .result-card .r-title {
-      font-size: 20px;
-      font-weight: 800;
-      color: #1a3a6b;
-      margin-bottom: 4px
-    }
-
-    .result-card .r-taksa {
-      font-size: 26px;
-      font-weight: 900
-    }
-
-    .result-card .r-taksa.bad {
-      color: #c0392b
-    }
-
-    .result-card .r-taksa.good {
-      color: #1a7a3a
-    }
-
-    .result-card .r-meaning {
-      font-size: 14px;
-      color: #666;
-      margin-top: 4px
-    }
-
-    .ref-section {
-      margin: 14px 0;
-      max-width: 460px;
-      width: 100%;
-      text-align: center
-    }
-
-    .ref-section h3 {
-      font-size: 18px;
-      margin-bottom: 6px
-    }
-
-    .ref-section img {
-      width: 100%;
-      border-radius: 8px;
-      border: 1px solid #ccc
     }
 
     input[type=number]::-webkit-inner-spin-button,
@@ -246,7 +131,6 @@
 </head>
 
 <body>
-  <button id="themeToggle" class="theme-toggle" title="เปลี่ยนโหมด">🌓</button>
   <h1 id="mainTitle" class="main-title">13 เมษา 2569 ปีมะเมีย</h1>
   <div class="controls">
     <button id="prevYear" type="button">−</button>
@@ -302,7 +186,7 @@
     function mod(v, n) { return ((v % n) + n) % n }
     function y2i(y) { return mod(Number(y) - BY + BI, 12) }
     function toR(d) { return d * Math.PI / 180 }
-    function ang(i) { return -90 - i * 30 }
+    function ang(i) { return -90 - i * 30 } // degrees, counter-clockwise zodiac
 
     const cv = document.getElementById('wheelCanvas');
     const c = cv.getContext('2d');
@@ -310,62 +194,64 @@
     const FONT = "'K2D', sans-serif";
 
     function draw(ai) {
-      const isDark = document.body.classList.contains('dark-mode');
       c.clearRect(0, 0, W, W);
 
-      const RO = 460;
-      const RI = 448;
-      const RS = 440;
-      const RN = 260;
-      const RC = 85;
-      const RL = 560;
+      // Radii
+      const RO = 460;   // outer ring outer edge
+      const RI = 448;   // outer ring inner edge
+      const RS = 440;   // segment outer
+      const RN = 260;   // segment inner (red ring)
+      const RC = 85;    // center circle
+      const RL = 560;   // label radius for ทักษา
 
+      // === OUTER SILVER RING ===
       c.beginPath(); c.arc(CX, CY, RO, 0, Math.PI * 2);
-      c.fillStyle = isDark ? '#e0e0e0' : '#1e3d72'; c.fill(); 
+      c.fillStyle = '#e0e0e0'; c.fill(); // Silver Metallic
       c.beginPath(); c.arc(CX, CY, RI, 0, Math.PI * 2);
-      c.fillStyle = isDark ? '#121212' : '#faf6ec'; c.fill();
+      c.fillStyle = '#121212'; c.fill(); // Dark Background
 
+      // === SEGMENTS ===
       for (let i = 0; i < 12; i++) {
-        const a1 = toR(ang(i) + 15);
+        const a1 = toR(ang(i) + 15), a2 = toR(ang(i) - 15);
         c.beginPath();
         c.moveTo(CX + RC * Math.cos(a1), CY + RC * Math.sin(a1));
         c.lineTo(CX + RS * Math.cos(a1), CY + RS * Math.sin(a1));
         c.lineWidth = 2; c.strokeStyle = '#c4a35a'; c.stroke();
       }
 
+      // === RED INNER RING (VIVID) ===
       c.beginPath(); c.arc(CX, CY, RN, 0, Math.PI * 2);
-      c.lineWidth = 6; c.strokeStyle = isDark ? '#ff3131' : '#8b1a1a'; c.stroke();
+      c.lineWidth = 6; c.strokeStyle = '#ff3131'; c.stroke();
 
+      // === ANIMALS + TEXT ===
       for (let i = 0; i < 12; i++) {
         const a = toR(ang(i));
         const z = Z[i];
 
+        // Luxurious image
         const er = (RS + RN) / 2 + 18;
         const img = loadedImgs[z.en];
         if (img && img.complete) {
           const iw = 155;
           c.save();
-          if (isDark) {
-            c.filter = 'saturate(1.4) contrast(1.05) brightness(1.05)';
-            c.shadowColor = 'rgba(255,255,255,0.15)';
-          } else {
-            c.filter = 'saturate(1.5) contrast(1.1)';
-            c.shadowColor = 'rgba(0,0,0,0.4)';
-          }
-          c.shadowBlur = 12;
-          c.shadowOffsetX = 4;
-          c.shadowOffsetY = 4;
+          // Natural boost for dark background
+          c.filter = 'saturate(1.4) contrast(1.05) brightness(1.05)';
+          // Lighter shadow for dark background
+          c.shadowColor = 'rgba(255,255,255,0.15)';
+          c.shadowBlur = 15;
+          
           c.drawImage(img, CX + er * Math.cos(a) - iw / 2, CY + er * Math.sin(a) - iw / 2, iw, iw);
           c.restore();
         }
 
+        // Thai zodiac name
         c.save();
         c.translate(CX, CY);
         let rot = a + Math.PI / 2;
         rot = (rot % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
 
         c.font = `bold 28px ${FONT}`;
-        c.fillStyle = isDark ? '#d4af37' : '#1a1a1a';
+        c.fillStyle = '#d4af37'; // Gold text
         c.textAlign = 'center';
 
         if (rot > Math.PI / 2 && rot < Math.PI * 1.5) {
@@ -380,10 +266,12 @@
         c.restore();
       }
 
+      // === CENTER CIRCLE ===
       c.beginPath(); c.arc(CX, CY, RC, 0, Math.PI * 2);
-      c.fillStyle = isDark ? '#1a1a1a' : '#fff'; c.fill();
-      c.lineWidth = 5; c.strokeStyle = isDark ? '#d4af37' : '#1e3d72'; c.stroke();
+      c.fillStyle = '#1a1a1a'; c.fill();
+      c.lineWidth = 5; c.strokeStyle = '#d4af37'; c.stroke();
 
+      // === OUTER ทักษา LABELS ===
       for (let i = 0; i < 12; i++) {
         const ti = mod(i - ai, 12);
         const tk = TK[ti];
@@ -393,7 +281,7 @@
 
         if (ti === 0) {
           c.font = `900 48px ${FONT}`;
-          c.fillStyle = isDark ? '#d4af37' : '#1a1a1a';
+          c.fillStyle = '#d4af37';
           c.textAlign = 'center'; c.textBaseline = 'middle';
           c.fillText('ตนุ', lx, ly);
 
@@ -403,12 +291,12 @@
           const ly_lor = CY + r_lor * Math.sin(a_lor);
 
           c.font = `900 100px ${FONT}`;
-          c.fillStyle = isDark ? '#ff4d4d' : '#c0392b';
+          c.fillStyle = '#ff4d4d'; // Brighter red for dark mode
           c.fillText('ล', lx_lor, ly_lor);
         } else {
           const isBad = tk.bad;
           c.font = isBad ? `900 54px ${FONT}` : `900 48px ${FONT}`;
-          c.fillStyle = isBad ? (isDark ? '#ff4d4d' : '#c0392b') : (isDark ? '#fff' : '#1a1a1a');
+          c.fillStyle = isBad ? '#ff4d4d' : '#fff';
           c.textAlign = 'center'; c.textBaseline = 'middle';
           c.fillText(tk.name, lx, ly);
         }
@@ -421,13 +309,6 @@
       document.getElementById('mainTitle').textContent = `13 เมษา ${y} ปี${Z[ai].thai}`;
       draw(ai);
     }
-
-    const btn = document.getElementById('themeToggle');
-    btn.onclick = () => {
-      document.body.classList.toggle('dark-mode');
-      btn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌓';
-      render();
-    };
 
     document.getElementById('prevYear').onclick = () => {
       const i = document.getElementById('yearInput');
