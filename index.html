@@ -109,7 +109,7 @@
 
 
 
-    .custom-link:active { transform: scale(0.95); }
+
 
 
     .main-title {
@@ -529,7 +529,12 @@
       i.value = (Number(i.value) || BY) + 1; render();
     };
     document.getElementById('yearInput').addEventListener('input', render);
+    // Load saved theme or default to solar
+    const savedTheme = localStorage.getItem('songkran_theme') || 'solar';
+    setTheme(savedTheme);
+
   </script>
+
 </body>
 
 </html>
