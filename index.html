@@ -109,7 +109,7 @@
 
 
 
-
+    .custom-link:active { transform: scale(0.95); }
 
 
     .main-title {
@@ -388,9 +388,11 @@
     });
 
     function draw(ai) {
+      c.clearRect(0, 0, W, W);
       const isSolar = currentTheme === 'solar';
       const isRoyal = currentTheme === 'royal';
       const isSacred = currentTheme === 'sacred';
+
 
       const RO = 460;
       const RI = 448;
@@ -529,12 +531,7 @@
       i.value = (Number(i.value) || BY) + 1; render();
     };
     document.getElementById('yearInput').addEventListener('input', render);
-    // Load saved theme or default to solar
-    const savedTheme = localStorage.getItem('songkran_theme') || 'solar';
-    setTheme(savedTheme);
-
   </script>
-
 </body>
 
 </html>
