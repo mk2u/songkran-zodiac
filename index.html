@@ -518,12 +518,7 @@
       draw(ai);
     }
 
-    const btn = document.getElementById('themeToggle');
-    btn.onclick = () => {
-      document.body.classList.toggle('dark-mode');
-      btn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌓';
-      render();
-    };
+
 
     document.getElementById('prevYear').onclick = () => {
       const i = document.getElementById('yearInput');
