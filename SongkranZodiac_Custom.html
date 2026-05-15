@@ -706,7 +706,37 @@
       font-weight: 700;
       cursor: pointer;
     }
+
+    /* ── Music Controls ── */
+    .music-btn {
+      position: fixed; bottom: 30px; left: 30px; z-index: 9999;
+      width: 60px; height: 60px; border-radius: 50%;
+      background: #ffd700; color: #000; border: 3px solid #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      transition: transform 0.2s;
+    }
+    .music-btn:active { transform: scale(0.9); }
+    .vol-container {
+      position: fixed; bottom: 30px; left: 100px; z-index: 9999;
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(0,0,0,0.6); padding: 8px 15px;
+      border-radius: 30px; border: 1px solid #ffd700;
+      backdrop-filter: blur(8px);
+      transition: opacity 0.3s;
+    }
+    .vol-container input[type=range] {
+      width: 100px; height: 6px; border-radius: 3px;
+      appearance: none; background: rgba(255,215,0,0.3);
+      outline: none; cursor: pointer;
+    }
+    .vol-container input[type=range]::-webkit-slider-thumb {
+      appearance: none; width: 16px; height: 16px;
+      border-radius: 50%; background: #ffd700;
+      box-shadow: 0 0 10px rgba(255,215,0,0.8);
+    }
   </style>
+
 </head>
 
 <body>
@@ -1304,10 +1334,100 @@
       requestAnimationFrame(animate);
     }
     requestAnimationFrame(animate);
+
+    // ── Seamless Music Logic ──
+    let musicPlaying = false;
+    let volTimer = null;
+
+    function showVolume() {
+      const v = document.getElementById('volContainer');
+      if(!v) return;
+      v.style.opacity = '1';
+      v.style.pointerEvents = 'auto';
+      clearTimeout(volTimer);
+      volTimer = setTimeout(() => {
+        if (musicPlaying) {
+          v.style.opacity = '0';
+          v.style.pointerEvents = 'none';
+        }
+      }, 1500);
+    }
+
+    function toggleMusic() {
+      const m = document.getElementById('bgMusic');
+      const b = document.getElementById('toggleMusic');
+      if (m.paused) {
+        musicPlaying = true;
+        m.play().catch(e => console.error("Audio error:", e));
+        b.textContent = '🔊';
+        b.style.background = '#00ff00';
+        showVolume();
+        localStorage.setItem('zodiacMusicPlaying', 'true');
+      } else {
+        musicPlaying = false;
+        m.pause();
+        b.textContent = '🎵';
+        b.style.background = '#ffd700';
+        const v = document.getElementById('volContainer');
+        v.style.opacity = '0';
+        v.style.pointerEvents = 'none';
+        localStorage.setItem('zodiacMusicPlaying', 'false');
+      }
+    }
+
+    function setVolume(val) {
+      const m = document.getElementById('bgMusic');
+      m.volume = val;
+      localStorage.setItem('zodiacMusicVolume', val);
+      showVolume();
+    }
+
+    window.addEventListener('load', () => {
+      const m = document.getElementById('bgMusic');
+      const savedTime = localStorage.getItem('zodiacMusicTime');
+      const savedVol = localStorage.getItem('zodiacMusicVolume');
+      const isPlaying = localStorage.getItem('zodiacMusicPlaying');
+
+      if (savedVol) {
+        m.volume = savedVol;
+        const vIn = document.querySelector('#volContainer input');
+        if(vIn) vIn.value = savedVol;
+      }
+      if (savedTime) m.currentTime = parseFloat(savedTime);
+      
+      if (isPlaying === 'true') {
+        m.play().then(() => {
+          musicPlaying = true;
+          const b = document.getElementById('toggleMusic');
+          if(b) {
+            b.textContent = '🔊';
+            b.style.background = '#00ff00';
+          }
+        }).catch(() => console.log("Music interaction required"));
+      }
+    });
+
+    setInterval(() => {
+      const m = document.getElementById('bgMusic');
+      if (m && !m.paused) {
+        localStorage.setItem('zodiacMusicTime', m.currentTime);
+      }
+    }, 1000);
   </script>
 
 
 
+
+  <!-- Music System -->
+  <audio id="bgMusic" src="https://cdn1.suno.ai/ab120d2f-136a-466f-8115-6ee311d7327c.mp3" loop></audio>
+  <button id="toggleMusic" class="music-btn" onclick="toggleMusic()" onmouseenter="showVolume()">🎵</button>
+  <div class="vol-container" id="volContainer" style="opacity: 0; pointer-events: none;">
+    <span style="color: #ffd700; font-size: 18px;">🔈</span>
+    <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)">
+    <span style="color: #ffd700; font-size: 18px;">🔊</span>
+  </div>
+
 </body>
+
 
 </html>
