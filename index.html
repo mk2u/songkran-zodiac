@@ -151,7 +151,7 @@
 
     .floating-actions {
       position: fixed; bottom: 25px; right: 20px;
-      display: flex; flex-direction: column; gap: 12px; z-index: 1000;
+      display: flex; flex-direction: column-reverse; gap: 12px; z-index: 1000;
     }
     .fab {
       width: 54px; height: 54px; border-radius: 50%; border: none;
@@ -162,6 +162,8 @@
     }
     .fab:active { transform: scale(0.9); }
     .fab-share { background: linear-gradient(135deg, #fff, #ddd); }
+    .fab-audio { background: linear-gradient(135deg, #ff9f43, #ee5253); color: #fff; }
+
 
 
     .controls button:active {
@@ -326,9 +328,15 @@
   </div>
 
   <div class="floating-actions">
+    <button class="fab fab-audio" id="audioBtn" title="เปิด/ปิดเพลง">🔇</button>
     <button class="fab" id="saveBtn" title="เซฟรูป">📸</button>
     <button class="fab fab-share" id="shareBtn2" title="แชร์">📤</button>
   </div>
+
+  <audio id="bgMusic" loop>
+    <source src="https://ia802901.us.archive.org/24/items/ThaiTraditionalMusic/01%20Ranat%20Ek.mp3" type="audio/mpeg">
+  </audio>
+
 
   <div class="canvas-wrap">
     <canvas id="wheelCanvas" width="1400" height="1400"></canvas>
@@ -589,7 +597,28 @@
 
     document.getElementById('saveBtn').onclick = () => captureAndAction('save');
     document.getElementById('shareBtn2').onclick = () => captureAndAction('share');
+
+    // Audio Logic
+    const audioBtn = document.getElementById('audioBtn');
+    const bgMusic = document.getElementById('bgMusic');
+    let isPlaying = false;
+
+    audioBtn.onclick = () => {
+      if (!isPlaying) {
+        bgMusic.play().then(() => {
+          isPlaying = true;
+          audioBtn.textContent = '🔊';
+          audioBtn.classList.remove('fab-audio'); // Change style when playing if desired
+        }).catch(err => alert("กรุณาแตะหน้าจอก่อนเพื่อเริ่มเพลง"));
+      } else {
+        bgMusic.pause();
+        isPlaying = false;
+        audioBtn.textContent = '🔇';
+        audioBtn.classList.add('fab-audio');
+      }
+    };
   </script>
+
 
 </body>
 
