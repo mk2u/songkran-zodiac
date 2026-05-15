@@ -574,6 +574,11 @@ function drawWheel(ai){
     gold: document.getElementById('cp-gold').value
   };
 
+  // Fill Background for Export
+  ctx.fillStyle = currentTheme === 'custom' ? custom.bg : getComputedStyle(document.body).backgroundColor;
+  ctx.fillRect(0,0,W,W);
+
+
   // Theme-based colors for Canvas
   const colors = {
     custom: {
