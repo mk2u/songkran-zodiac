@@ -419,18 +419,16 @@
     function draw(ai) {
       c.clearRect(0, 0, W, W);
       
+      const isSolar = currentTheme === 'solar';
+      const isRoyal = currentTheme === 'royal';
+      const isSacred = currentTheme === 'sacred';
+
       // Force background fill for Share/Save
       let bgCol = '#ffffff';
       if(isSacred) bgCol = '#03010a';
       if(isRoyal) bgCol = '#061a10';
       c.fillStyle = bgCol;
       c.fillRect(0, 0, W, W);
-
-
-      const isSolar = currentTheme === 'solar';
-
-      const isRoyal = currentTheme === 'royal';
-      const isSacred = currentTheme === 'sacred';
 
 
       const RO = 475;
