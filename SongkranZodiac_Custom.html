@@ -583,8 +583,14 @@ function drawWheel(ai){
   };
 
   // Fill Background for Export
-  ctx.fillStyle = currentTheme === 'custom' ? custom.bg : getComputedStyle(document.body).backgroundColor;
+  let bgCol = custom.bg; // Default for custom
+  if (currentTheme === 'solar') bgCol = '#ffffff';
+  if (currentTheme === 'sacred') bgCol = '#03010a';
+  if (currentTheme === 'royal') bgCol = '#061a10';
+  
+  ctx.fillStyle = bgCol;
   ctx.fillRect(0,0,W,W);
+
 
 
   // Theme-based colors for Canvas
