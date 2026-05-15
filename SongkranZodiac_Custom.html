@@ -325,12 +325,12 @@
       width: 32px; height: 32px;
       border-radius: 50%; border: 2px solid #fff;
       cursor: pointer; transition: transform 0.2s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; text-decoration: none;
     }
     .theme-btn:hover { transform: scale(1.15); }
     .theme-btn.active { border-color: #00ff00; outline: 2px solid rgba(0,255,0,0.3); }
     .btn-sacred { background: linear-gradient(135deg, #03010a, #1e1044); }
-    .btn-solar  { background: linear-gradient(135deg, #fff9f0, #ffe44d); }
+    .btn-solar  { background: linear-gradient(135deg, #fff, #eee); }
     .btn-royal  { background: linear-gradient(135deg, #061a10, #ffd700); }
 
     .back-link {
@@ -392,12 +392,16 @@
 
 
 
-<div class="theme-selector">
-  <div class="theme-btn btn-sacred active" onclick="setTheme('sacred')" title="Sacred Dark"></div>
-  <div class="theme-btn btn-solar" onclick="setTheme('solar')" title="Solar Light"></div>
-  <div class="theme-btn btn-royal" onclick="setTheme('royal')" title="Royal Emerald"></div>
-  <div class="theme-btn" style="background: linear-gradient(135deg, #f00, #0f0, #00f);" onclick="document.getElementById('customizer').classList.toggle('open')" title="ออกแบบเอง"></div>
+<div class="theme-selector" id="themeSelector">
+  <button class="theme-main-btn" onclick="document.getElementById('themeSelector').classList.toggle('open')" title="เลือกธีม">🌗</button>
+  <div class="theme-options">
+    <div class="theme-btn btn-sacred" onclick="setTheme('sacred')" title="มืด"></div>
+    <div class="theme-btn btn-solar active" onclick="setTheme('solar')" title="สว่าง"></div>
+    <div class="theme-btn btn-royal" onclick="setTheme('royal')" title="มรกต"></div>
+    <div class="theme-btn" style="background: linear-gradient(135deg, #f00, #0f0, #00f);" onclick="document.getElementById('customizer').classList.toggle('open'); document.getElementById('themeSelector').classList.remove('open');" title="ออกแบบเอง">🎨</div>
+  </div>
 </div>
+
 
 
 
@@ -484,7 +488,8 @@ const TK = [
 ];
 const BY = 2569, BI = 6;
 const FONT = "'Noto Serif Thai', serif";
-let currentTheme = 'sacred';
+let currentTheme = 'solar';
+
 
 function getCssVar(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -655,7 +660,8 @@ function drawWheel(ai){
     ctx.save();
     ctx.translate(CX,CY);
     let rot=(a+Math.PI/2+Math.PI*2)%(Math.PI*2);
-    ctx.font=`700 32px ${FONT}`;
+    ctx.font=`900 44px ${FONT}`;
+
     ctx.fillStyle=theme.text;
     ctx.textAlign='center';
 
@@ -700,24 +706,28 @@ function drawWheel(ai){
     const a=toR(ang(i));
     const lx=CX+RL*Math.cos(a), ly=CY+RL*Math.sin(a);
     if(ti===0){
-    ctx.font=`900 56px ${FONT}`;
+    ctx.font=`900 72px ${FONT}`;
+
     ctx.fillStyle=theme.text;
     ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText('ตนุ',lx,ly);
     ctx.shadowBlur=0;
     const rl2=RL+70, al2=a+0.075;
-    ctx.font=`900 108px ${FONT}`;
+    ctx.font=`900 125px ${FONT}`;
+
     ctx.fillStyle=currentTheme==='solar'?'#c0392b':'#ff4030';
     ctx.fillText('ล',CX+rl2*Math.cos(al2),CY+rl2*Math.sin(al2));
     ctx.shadowBlur=0;
     } else if(tk.bad){
       danger=true;
-      ctx.font=`900 58px ${FONT}`;
+      ctx.font=`900 76px ${FONT}`;
+
       ctx.fillStyle=currentTheme==='solar'?'#c0392b':'#ff3020';
       ctx.textAlign='center'; ctx.textBaseline='middle';
       ctx.fillText(tk.name,lx,ly);
     } else {
-      ctx.font=`700 50px ${FONT}`;
+      ctx.font=`900 66px ${FONT}`;
+
       ctx.fillStyle=theme.text;
       ctx.textAlign='center'; ctx.textBaseline='middle';
       ctx.fillText(tk.name,lx,ly);
@@ -841,6 +851,10 @@ document.getElementById('yearInput').addEventListener('input',()=>render(false))
 function setTheme(t) {
   currentTheme = t;
   document.body.className = t === 'sacred' ? '' : 'theme-' + t;
+  
+  // Close selector after pick
+  document.getElementById('themeSelector').classList.remove('open');
+
   
   if (t === 'custom') {
     applyCustomStyles();

@@ -58,42 +58,34 @@
       padding: 10px 6px 40px
     }
 
-    .theme-toggle {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 2px solid var(--ctrl-border);
-      background: var(--ctrl-bg);
-      color: var(--ctrl-text);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      z-index: 100;
+    /* ── Theme Selector (Collapsible) ── */
+    .theme-selector {
+      position: fixed; top: 12px; right: 12px; z-index: 100;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
     }
+    .theme-main-btn {
+      width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--ctrl-border);
+      background: var(--ctrl-bg); color: var(--ctrl-text);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .theme-options {
+      display: none; flex-direction: column; gap: 8px;
+      background: rgba(0,0,0,0.15); padding: 6px; border-radius: 25px; backdrop-filter: blur(8px);
+    }
+    .theme-selector.open .theme-options { display: flex; }
+    .theme-btn {
+      width: 36px; height: 36px; border-radius: 50%; border: 2px solid #fff;
+      cursor: pointer; transition: transform 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; text-decoration: none;
+    }
+    .theme-btn:hover { transform: scale(1.1); }
+    .theme-btn.active { border-color: #00ff00; outline: 2px solid rgba(0,255,0,0.3); }
+    .btn-sacred { background: linear-gradient(135deg, #03010a, #1e1044); }
+    .btn-solar  { background: linear-gradient(135deg, #fff, #eee); }
+    .btn-royal  { background: linear-gradient(135deg, #061a10, #ffd700); }
+    .btn-custom { background: linear-gradient(135deg, #f00, #0f0, #00f); font-size: 16px; }
 
-    .custom-link {
-      position: absolute;
-      top: 15px;
-      left: 15px; /* Moved to top-left */
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 2px solid var(--ctrl-border);
-      background: var(--ctrl-bg);
-      color: var(--ctrl-text);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      z-index: 100;
-      transition: transform 0.2s;
-    }
 
     .custom-link:active { transform: scale(0.95); }
 
@@ -278,9 +270,16 @@
 </head>
 
 <body>
-  <a href="SongkranZodiac_Custom.html" class="custom-link" title="ออกแบบเอง">🎨</a>
+  <div class="theme-selector" id="themeSelector">
+    <button class="theme-main-btn" onclick="document.getElementById('themeSelector').classList.toggle('open')" title="เลือกธีม">🌗</button>
+    <div class="theme-options">
+      <div class="theme-btn btn-sacred" onclick="setTheme('sacred')" title="มืด"></div>
+      <div class="theme-btn btn-solar active" onclick="setTheme('solar')" title="สว่าง"></div>
+      <div class="theme-btn btn-royal" onclick="setTheme('royal')" title="มรกต"></div>
+      <a href="SongkranZodiac_Custom.html" class="theme-btn btn-custom" title="ออกแบบเอง">🎨</a>
+    </div>
+  </div>
 
-  <button id="themeToggle" class="theme-toggle" title="เปลี่ยนโหมด">🌓</button>
   <h1 id="mainTitle" class="main-title">13 เมษา 2569 ปีมะเมีย</h1>
   <div class="controls">
     <button id="prevYear" type="button">−</button>
@@ -294,6 +293,7 @@
   <div class="credit">Developed with ❤️ by คนโบราณ</div>
 
   <script>
+    let currentTheme = 'solar';
     const Z = [
       { thai: "ชวด", animal: "หนู", en: "Rat", img: "assets/zodiac_rat.png" },
       { thai: "ฉลู", animal: "วัว", en: "Ox", img: "assets/zodiac_ox.png" },
@@ -343,6 +343,13 @@
     const c = cv.getContext('2d');
     const W = cv.width, CX = W / 2, CY = W / 2;
     const FONT = "'K2D', sans-serif";
+
+    function setTheme(t) {
+      currentTheme = t;
+      document.body.className = t === 'sacred' ? '' : 'theme-' + t;
+      document.getElementById('themeSelector').classList.remove('open');
+      render();
+    }
 
     function draw(ai) {
       const isDark = document.body.classList.contains('dark-mode');
@@ -427,7 +434,7 @@
         const ly = CY + RL * Math.sin(a);
 
         if (ti === 0) {
-          c.font = `900 48px ${FONT}`;
+          c.font = `900 42px ${FONT}`;
           c.fillStyle = isDark ? '#d4af37' : '#1a1a1a';
           c.textAlign = 'center'; c.textBaseline = 'middle';
           c.fillText('ตนุ', lx, ly);
@@ -437,7 +444,7 @@
           const lx_lor = CX + r_lor * Math.cos(a_lor);
           const ly_lor = CY + r_lor * Math.sin(a_lor);
 
-          c.font = `900 100px ${FONT}`;
+          c.font = `900 120px ${FONT}`;
           c.fillStyle = isDark ? '#ff4d4d' : '#c0392b';
           c.fillText('ล', lx_lor, ly_lor);
         } else {
