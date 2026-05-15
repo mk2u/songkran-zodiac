@@ -312,23 +312,6 @@
       letter-spacing: 0.05em;
     }
 
-    .floating-actions {
-      position: fixed; bottom: 25px; right: 20px;
-      display: flex; flex-direction: column-reverse; gap: 12px; z-index: 1000;
-    }
-    .fab {
-      width: 54px; height: 54px; border-radius: 50%; border: none;
-      background: linear-gradient(135deg, #e8c84a, #b8941a); color: #000;
-      font-size: 24px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .fab:active { transform: scale(0.9); }
-    .fab-share { background: linear-gradient(135deg, #fff, #ddd); }
-    .fab-audio { background: linear-gradient(135deg, #ff9f43, #ee5253); color: #fff; }
-
-
-
     /* ── Theme Selector ── */
     .theme-selector {
       position: fixed; top: 12px; right: 12px;
@@ -434,18 +417,6 @@
     <div class="theme-btn btn-custom" onclick="event.stopPropagation(); document.getElementById('customizer').classList.toggle('open'); document.getElementById('themeSelector').classList.remove('open');" title="ออกแบบเอง">🎨</div>
   </div>
 </div>
-
-<div class="floating-actions">
-  <button class="fab fab-audio" id="audioBtn" title="เปิด/ปิดเพลง">🔇</button>
-  <button class="fab" id="saveBtn" title="เซฟรูป">📸</button>
-  <button class="fab fab-share" id="shareBtn2" title="แชร์">📤</button>
-</div>
-
-<audio id="bgMusic" loop>
-  <source src="https://ia802901.us.archive.org/24/items/ThaiTraditionalMusic/01%20Ranat%20Ek.mp3" type="audio/mpeg">
-</audio>
-
-
 
 
 
@@ -581,17 +552,6 @@ function drawWheel(ai){
     lines: document.getElementById('cp-lines').value,
     gold: document.getElementById('cp-gold').value
   };
-
-  // Fill Background for Export
-  let bgCol = custom.bg; // Default for custom
-  if (currentTheme === 'solar') bgCol = '#ffffff';
-  if (currentTheme === 'sacred') bgCol = '#03010a';
-  if (currentTheme === 'royal') bgCol = '#061a10';
-  
-  ctx.fillStyle = bgCol;
-  ctx.fillRect(0,0,W,W);
-
-
 
   // Theme-based colors for Canvas
   const colors = {
@@ -933,55 +893,6 @@ function setTheme(t) {
   localStorage.setItem('songkran_theme', t);
 }
 
-async function captureAndAction(mode) {
-  const canvas = document.getElementById('wheelCanvas');
-  // Use JPEG to ensure NO transparency (fixes black background in apps like Telegram)
-  const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-  try {
-    if (mode === 'save') {
-      const link = document.createElement('a');
-      link.download = `zodiac_custom.jpg`;
-      link.href = dataUrl;
-      link.click();
-    } else {
-      const response = await fetch(dataUrl);
-      const blob = await response.blob();
-      const file = new File([blob], 'custom_zodiac.jpg', { type: 'image/jpeg' });
-      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: 'ดวงสงกรานต์ของฉัน (ออกแบบเอง)',
-          text: 'ดูวงล้อสงกรานต์ที่ฉันออกแบบเองสิ!'
-        });
-      } else {
-        alert('เบราว์เซอร์ของคุณไม่รองรับการแชร์ไฟล์โดยตรง กรุณากดปุ่ม 📸 เพื่อเซฟรูปแทนครับ');
-      }
-    }
-  } catch (err) { console.error('Error:', err); }
-}
-
-document.getElementById('saveBtn').onclick = () => captureAndAction('save');
-document.getElementById('shareBtn2').onclick = () => captureAndAction('share');
-
-// Audio Logic
-const audioBtn = document.getElementById('audioBtn');
-const bgMusic = document.getElementById('bgMusic');
-let isPlaying = false;
-
-audioBtn.onclick = () => {
-  if (!isPlaying) {
-    bgMusic.play().then(() => {
-      isPlaying = true;
-      audioBtn.textContent = '🔊';
-      audioBtn.classList.remove('fab-audio');
-    }).catch(err => alert("กรุณาแตะหน้าจอก่อนเพื่อเริ่มเพลง"));
-  } else {
-    bgMusic.pause();
-    isPlaying = false;
-    audioBtn.textContent = '🔇';
-    audioBtn.classList.add('fab-audio');
-  }
-};
 
 function applyCustomStyles() {
   if (currentTheme !== 'custom') return;

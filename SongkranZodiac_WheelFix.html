@@ -77,39 +77,106 @@
 
     /* ── Theme Selector (Clean Collapsible) ── */
     .theme-selector {
-      position: fixed; top: 12px; right: 12px; z-index: 1000;
-      display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
     }
+
     .theme-main-btn {
-      width: 48px; height: 48px; border-radius: 50%; 
-      border: 2px solid var(--ctrl-border); background: var(--ctrl-bg); color: var(--ctrl-text);
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      font-size: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--ctrl-border);
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       transition: transform 0.2s;
     }
-    .theme-main-btn:active { transform: scale(0.9); }
+
+    .theme-main-btn:active {
+      transform: scale(0.9);
+    }
+
     .theme-options {
-      display: none; flex-direction: column; gap: 10px;
-      background: rgba(0,0,0,0.8); padding: 10px; border-radius: 30px;
-      backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 10px;
+      border-radius: 30px;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
-    .theme-selector.open .theme-options { display: flex; animation: slideIn 0.25s ease-out; }
-    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .theme-selector.open .theme-options {
+      display: flex;
+      animation: slideIn 0.25s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .theme-btn {
-      width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff;
-      cursor: pointer; transition: transform 0.2s; display: flex; align-items: center; justify-content: center;
-      text-decoration: none; box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      cursor: pointer;
+      transition: transform 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
-    .theme-btn.active { border-color: #00ff00; outline: 3px solid rgba(0,255,0,0.4); }
-    .btn-sacred { background: linear-gradient(135deg, #03010a, #1e1044); }
-    .btn-solar  { background: #ffffff; }
-    .btn-royal  { background: linear-gradient(135deg, #061a10, #ffd700); }
-    .btn-custom { background: linear-gradient(135deg, #f00, #0f0, #00f); font-size: 18px; }
+
+    .theme-btn.active {
+      border-color: #00ff00;
+      outline: 3px solid rgba(0, 255, 0, 0.4);
+    }
+
+    .btn-sacred {
+      background: linear-gradient(135deg, #03010a, #1e1044);
+    }
+
+    .btn-solar {
+      background: #ffffff;
+    }
+
+    .btn-royal {
+      background: linear-gradient(135deg, #061a10, #ffd700);
+    }
+
+    .btn-custom {
+      background: linear-gradient(135deg, #f00, #0f0, #00f);
+      font-size: 18px;
+    }
 
 
 
-    .custom-link:active { transform: scale(0.95); }
+    .custom-link:active {
+      transform: scale(0.95);
+    }
 
 
     .main-title {
@@ -117,13 +184,14 @@
       font-size: clamp(32px, 8vw, 56px);
       font-weight: 700;
       text-align: center;
-      margin: 50px 0 4px; /* Increased top margin to avoid button overlap */
+      margin: 50px 0 4px;
+      /* Increased top margin to avoid button overlap */
       color: var(--title);
       text-shadow: 0 0 10px var(--title-shadow);
     }
 
 
-    body.dark-mode .main-title, 
+    body.dark-mode .main-title,
     body.dark-mode .bottom-text {
       background: linear-gradient(to bottom, #fff7ad 0%, #ffd700 50%, #ffa500 100%);
       -webkit-background-clip: text;
@@ -293,7 +361,9 @@
 
 <body>
   <div class="theme-selector" id="themeSelector">
-    <button class="theme-main-btn" onclick="event.stopPropagation(); document.getElementById('themeSelector').classList.toggle('open')" title="เลือกธีม">🌗</button>
+    <button class="theme-main-btn"
+      onclick="event.stopPropagation(); document.getElementById('themeSelector').classList.toggle('open')"
+      title="เลือกธีม">🌗</button>
     <div class="theme-options">
       <div class="theme-btn btn-sacred" onclick="setTheme('sacred')" title="มืด"></div>
       <div class="theme-btn btn-solar" onclick="setTheme('solar')" title="สว่าง"></div>
@@ -370,7 +440,7 @@
     function setTheme(t) {
       currentTheme = t;
       document.body.className = 'theme-' + t;
-      
+
       // Mark active button
       document.querySelectorAll('.theme-btn').forEach(btn => {
         btn.classList.toggle('active', btn.classList.contains('btn-' + t));
@@ -405,14 +475,14 @@
 
       c.beginPath(); c.arc(CX, CY, RO, 0, Math.PI * 2);
       let outerCol = '#1e3d72';
-      if(isSacred) outerCol = '#e8c84a';
-      if(isRoyal) outerCol = '#ffd700';
-      c.fillStyle = outerCol; c.fill(); 
+      if (isSacred) outerCol = '#e8c84a';
+      if (isRoyal) outerCol = '#ffd700';
+      c.fillStyle = outerCol; c.fill();
 
       c.beginPath(); c.arc(CX, CY, RI, 0, Math.PI * 2);
       let innerCol = '#faf6ec';
-      if(isSacred) innerCol = '#04020e';
-      if(isRoyal) innerCol = '#05140b';
+      if (isSacred) innerCol = '#04020e';
+      if (isRoyal) innerCol = '#05140b';
       c.fillStyle = innerCol; c.fill();
 
       for (let i = 0; i < 12; i++) {
@@ -420,8 +490,8 @@
         c.beginPath();
         c.moveTo(CX + RC * Math.cos(a1), CY + RC * Math.sin(a1));
         c.lineTo(CX + RS * Math.cos(a1), CY + RS * Math.sin(a1));
-        c.lineWidth = 2; 
-        c.strokeStyle = isSolar ? 'rgba(0,0,0,0.15)' : 'rgba(212,175,55,0.6)'; 
+        c.lineWidth = 2;
+        c.strokeStyle = isSolar ? 'rgba(0,0,0,0.15)' : 'rgba(212,175,55,0.6)';
         c.stroke();
       }
 
@@ -474,8 +544,8 @@
 
       c.beginPath(); c.arc(CX, CY, RC, 0, Math.PI * 2);
       let centerCol = '#fff';
-      if(isSacred) centerCol = '#1e1044';
-      if(isRoyal) centerCol = '#0e3d25';
+      if (isSacred) centerCol = '#1e1044';
+      if (isRoyal) centerCol = '#0e3d25';
       c.fillStyle = centerCol; c.fill();
       c.lineWidth = 5; c.strokeStyle = isSolar ? '#1e3d72' : (isRoyal ? '#ffd700' : '#e8c84a'); c.stroke();
 

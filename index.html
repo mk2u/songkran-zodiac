@@ -144,27 +144,10 @@
       border-radius: 6px;
       background: var(--ctrl-bg);
       color: var(--ctrl-text);
+      font-size: 20px;
       font-weight: 900;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      cursor: pointer
     }
-
-    .floating-actions {
-      position: fixed; bottom: 25px; right: 20px;
-      display: flex; flex-direction: column-reverse; gap: 12px; z-index: 1000;
-    }
-    .fab {
-      width: 54px; height: 54px; border-radius: 50%; border: none;
-      background: linear-gradient(135deg, #e8c84a, #b8941a); color: #000;
-      font-size: 24px; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .fab:active { transform: scale(0.9); }
-    .fab-share { background: linear-gradient(135deg, #fff, #ddd); }
-    .fab-audio { background: linear-gradient(135deg, #ff9f43, #ee5253); color: #fff; }
-
-
 
     .controls button:active {
       background: #eee
@@ -326,18 +309,6 @@
     <input id="yearInput" type="number" inputmode="numeric" min="2400" max="2800" value="2569">
     <button id="nextYear" type="button">+</button>
   </div>
-
-  <div class="floating-actions">
-    <button class="fab fab-audio" id="audioBtn" title="เปิด/ปิดเพลง">🔇</button>
-    <button class="fab" id="saveBtn" title="เซฟรูป">📸</button>
-    <button class="fab fab-share" id="shareBtn2" title="แชร์">📤</button>
-  </div>
-
-  <audio id="bgMusic" loop>
-    <source src="https://ia802901.us.archive.org/24/items/ThaiTraditionalMusic/01%20Ranat%20Ek.mp3" type="audio/mpeg">
-  </audio>
-
-
   <div class="canvas-wrap">
     <canvas id="wheelCanvas" width="1400" height="1400"></canvas>
   </div>
@@ -418,17 +389,9 @@
 
     function draw(ai) {
       c.clearRect(0, 0, W, W);
-      
       const isSolar = currentTheme === 'solar';
       const isRoyal = currentTheme === 'royal';
       const isSacred = currentTheme === 'sacred';
-
-      // Force background fill for Share/Save
-      let bgCol = '#ffffff';
-      if(isSacred) bgCol = '#03010a';
-      if(isRoyal) bgCol = '#061a10';
-      c.fillStyle = bgCol;
-      c.fillRect(0, 0, W, W);
 
 
       const RO = 475;
@@ -510,11 +473,10 @@
       }
 
       c.beginPath(); c.arc(CX, CY, RC, 0, Math.PI * 2);
-      let centerCol = '#ffffff';
+      let centerCol = '#fff';
       if(isSacred) centerCol = '#1e1044';
       if(isRoyal) centerCol = '#0e3d25';
       c.fillStyle = centerCol; c.fill();
-
       c.lineWidth = 5; c.strokeStyle = isSolar ? '#1e3d72' : (isRoyal ? '#ffd700' : '#e8c84a'); c.stroke();
 
       for (let i = 0; i < 12; i++) {
@@ -570,59 +532,7 @@
       i.value = (Number(i.value) || BY) + 1; render();
     };
     document.getElementById('yearInput').addEventListener('input', render);
-
-    async function captureAndAction(mode) {
-      const canvas = document.getElementById('wheelCanvas');
-      // Use JPEG for sharing to avoid transparency issues (black backgrounds)
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-      try {
-        if (mode === 'save') {
-          const link = document.createElement('a');
-          link.download = `zodiac_${document.getElementById('yearInput').value}.jpg`;
-          link.href = dataUrl;
-          link.click();
-        } else {
-          const response = await fetch(dataUrl);
-          const blob = await response.blob();
-          const file = new File([blob], 'my_zodiac.jpg', { type: 'image/jpeg' });
-          if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              files: [file],
-              title: 'ดวงสงกรานต์ของฉัน',
-              text: document.getElementById('mainTitle').textContent
-            });
-          } else {
-            alert('เบราว์เซอร์ของคุณไม่รองรับการแชร์ไฟล์โดยตรง กรุณากดปุ่ม 📸 เพื่อเซฟรูปแทนครับ');
-          }
-        }
-      } catch (err) { console.error('Error:', err); }
-    }
-
-    document.getElementById('saveBtn').onclick = () => captureAndAction('save');
-    document.getElementById('shareBtn2').onclick = () => captureAndAction('share');
-
-    // Audio Logic
-    const audioBtn = document.getElementById('audioBtn');
-    const bgMusic = document.getElementById('bgMusic');
-    let isPlaying = false;
-
-    audioBtn.onclick = () => {
-      if (!isPlaying) {
-        bgMusic.play().then(() => {
-          isPlaying = true;
-          audioBtn.textContent = '🔊';
-          audioBtn.classList.remove('fab-audio'); // Change style when playing if desired
-        }).catch(err => alert("กรุณาแตะหน้าจอก่อนเพื่อเริ่มเพลง"));
-      } else {
-        bgMusic.pause();
-        isPlaying = false;
-        audioBtn.textContent = '🔇';
-        audioBtn.classList.add('fab-audio');
-      }
-    };
   </script>
-
-
 </body>
 
 </html>
