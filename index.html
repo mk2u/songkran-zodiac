@@ -76,6 +76,28 @@
       z-index: 100;
     }
 
+    .custom-link {
+      position: absolute;
+      top: 15px;
+      right: 70px;
+      height: 44px;
+      padding: 0 15px;
+      border-radius: 22px;
+      border: 2px solid var(--ctrl-border);
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      z-index: 100;
+      transition: transform 0.2s;
+    }
+    .custom-link:active { transform: scale(0.95); }
+
+
     .main-title {
       font-family: 'Srisakdi', cursive;
       font-size: clamp(32px, 8vw, 56px);
@@ -255,6 +277,7 @@
 </head>
 
 <body>
+  <a href="SongkranZodiac_Custom.html" class="custom-link">🎨 ออกแบบเอง</a>
   <button id="themeToggle" class="theme-toggle" title="เปลี่ยนโหมด">🌓</button>
   <h1 id="mainTitle" class="main-title">13 เมษา 2569 ปีมะเมีย</h1>
   <div class="controls">
