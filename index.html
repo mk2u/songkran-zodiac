@@ -419,9 +419,13 @@
     function draw(ai) {
       c.clearRect(0, 0, W, W);
       
-      // Force background fill for Share/Save (Prevents transparent -> black issues)
-      c.fillStyle = getComputedStyle(document.body).backgroundColor;
+      // Force background fill for Share/Save
+      let bgCol = '#ffffff';
+      if(isSacred) bgCol = '#03010a';
+      if(isRoyal) bgCol = '#061a10';
+      c.fillStyle = bgCol;
       c.fillRect(0, 0, W, W);
+
 
       const isSolar = currentTheme === 'solar';
 
@@ -508,10 +512,11 @@
       }
 
       c.beginPath(); c.arc(CX, CY, RC, 0, Math.PI * 2);
-      let centerCol = '#fff';
+      let centerCol = '#ffffff';
       if(isSacred) centerCol = '#1e1044';
       if(isRoyal) centerCol = '#0e3d25';
       c.fillStyle = centerCol; c.fill();
+
       c.lineWidth = 5; c.strokeStyle = isSolar ? '#1e3d72' : (isRoyal ? '#ffd700' : '#e8c84a'); c.stroke();
 
       for (let i = 0; i < 12; i++) {
