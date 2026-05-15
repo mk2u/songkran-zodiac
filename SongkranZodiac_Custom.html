@@ -921,17 +921,18 @@ function setTheme(t) {
 
 async function captureAndAction(mode) {
   const canvas = document.getElementById('wheelCanvas');
-  const dataUrl = canvas.toDataURL('image/png');
+  // Use JPEG to ensure NO transparency (fixes black background in apps like Telegram)
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
   try {
     if (mode === 'save') {
       const link = document.createElement('a');
-      link.download = `zodiac_custom.png`;
+      link.download = `zodiac_custom.jpg`;
       link.href = dataUrl;
       link.click();
     } else {
       const response = await fetch(dataUrl);
       const blob = await response.blob();
-      const file = new File([blob], 'custom_zodiac.png', { type: 'image/png' });
+      const file = new File([blob], 'custom_zodiac.jpg', { type: 'image/jpeg' });
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
           files: [file],
@@ -944,6 +945,7 @@ async function captureAndAction(mode) {
     }
   } catch (err) { console.error('Error:', err); }
 }
+
 document.getElementById('saveBtn').onclick = () => captureAndAction('save');
 document.getElementById('shareBtn2').onclick = () => captureAndAction('share');
 
