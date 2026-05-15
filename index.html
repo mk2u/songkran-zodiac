@@ -10,11 +10,12 @@
     href="https://fonts.googleapis.com/css2?family=K2D:wght@400;600;700;800&family=Srisakdi:wght@400;700&display=swap"
     rel="stylesheet">
   <style>
+    /* Solar Light (Default) */
     :root {
-      --bg: #fff;
+      --bg: #ffffff;
       --text: #1a1a1a;
-      --title: #111;
-      --ctrl-bg: #fff;
+      --title: #1a1a1a;
+      --ctrl-bg: #f5f5f5;
       --ctrl-text: #111;
       --ctrl-border: #333;
       --bottom-text: #c0392b;
@@ -23,18 +24,34 @@
       --title-shadow: transparent;
     }
 
-    body.dark-mode {
-      --bg: #0a0a0a;
-      --text: #e0e0e0;
-      --title: #ffd700;
-      --ctrl-bg: #1a1a1a;
-      --ctrl-text: #d4af37;
-      --ctrl-border: #d4af37;
-      --bottom-text: #ffd700;
-      --card-bg: #1a1a1a;
-      --card-border: #d4af37;
-      --title-shadow: rgba(255, 215, 0, 0.5);
+    /* Sacred Dark */
+    body.theme-sacred {
+      --bg: #03010a;
+      --text: #f0e6c8;
+      --title: #e8c84a;
+      --ctrl-bg: #1e1044;
+      --ctrl-text: #e8c84a;
+      --ctrl-border: #e8c84a;
+      --bottom-text: #e8c84a;
+      --card-bg: #0e0826;
+      --card-border: #e8c84a;
+      --title-shadow: rgba(232, 200, 74, 0.4);
     }
+
+    /* Royal Emerald */
+    body.theme-royal {
+      --bg: #061a10;
+      --text: #ffd700;
+      --title: #ffd700;
+      --ctrl-bg: #0e3d25;
+      --ctrl-text: #ffd700;
+      --ctrl-border: #ffd700;
+      --bottom-text: #ffd700;
+      --card-bg: #0a2e1c;
+      --card-border: #ffd700;
+      --title-shadow: rgba(255, 215, 0, 0.4);
+    }
+
 
     * {
       box-sizing: border-box;
@@ -58,33 +75,38 @@
       padding: 10px 6px 40px
     }
 
-    /* ── Theme Selector (Collapsible) ── */
+    /* ── Theme Selector (Clean Collapsible) ── */
     .theme-selector {
-      position: fixed; top: 12px; right: 12px; z-index: 100;
-      display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
+      position: fixed; top: 12px; right: 12px; z-index: 1000;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
     }
     .theme-main-btn {
-      width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--ctrl-border);
-      background: var(--ctrl-bg); color: var(--ctrl-text);
+      width: 48px; height: 48px; border-radius: 50%; 
+      border: 2px solid var(--ctrl-border); background: var(--ctrl-bg); color: var(--ctrl-text);
       cursor: pointer; display: flex; align-items: center; justify-content: center;
-      font-size: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      font-size: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
     }
+    .theme-main-btn:active { transform: scale(0.9); }
     .theme-options {
-      display: none; flex-direction: column; gap: 8px;
-      background: rgba(0,0,0,0.15); padding: 6px; border-radius: 25px; backdrop-filter: blur(8px);
+      display: none; flex-direction: column; gap: 10px;
+      background: rgba(0,0,0,0.8); padding: 10px; border-radius: 30px;
+      backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
-    .theme-selector.open .theme-options { display: flex; }
+    .theme-selector.open .theme-options { display: flex; animation: slideIn 0.25s ease-out; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     .theme-btn {
-      width: 36px; height: 36px; border-radius: 50%; border: 2px solid #fff;
-      cursor: pointer; transition: transform 0.2s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; text-decoration: none;
+      width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff;
+      cursor: pointer; transition: transform 0.2s; display: flex; align-items: center; justify-content: center;
+      text-decoration: none; box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
-    .theme-btn:hover { transform: scale(1.1); }
-    .theme-btn.active { border-color: #00ff00; outline: 2px solid rgba(0,255,0,0.3); }
+    .theme-btn.active { border-color: #00ff00; outline: 3px solid rgba(0,255,0,0.4); }
     .btn-sacred { background: linear-gradient(135deg, #03010a, #1e1044); }
-    .btn-solar  { background: linear-gradient(135deg, #fff, #eee); }
+    .btn-solar  { background: #ffffff; }
     .btn-royal  { background: linear-gradient(135deg, #061a10, #ffd700); }
-    .btn-custom { background: linear-gradient(135deg, #f00, #0f0, #00f); font-size: 16px; }
+    .btn-custom { background: linear-gradient(135deg, #f00, #0f0, #00f); font-size: 18px; }
+
 
 
     .custom-link:active { transform: scale(0.95); }
@@ -271,14 +293,15 @@
 
 <body>
   <div class="theme-selector" id="themeSelector">
-    <button class="theme-main-btn" onclick="document.getElementById('themeSelector').classList.toggle('open')" title="เลือกธีม">🌗</button>
+    <button class="theme-main-btn" onclick="event.stopPropagation(); document.getElementById('themeSelector').classList.toggle('open')" title="เลือกธีม">🌗</button>
     <div class="theme-options">
       <div class="theme-btn btn-sacred" onclick="setTheme('sacred')" title="มืด"></div>
-      <div class="theme-btn btn-solar active" onclick="setTheme('solar')" title="สว่าง"></div>
+      <div class="theme-btn btn-solar" onclick="setTheme('solar')" title="สว่าง"></div>
       <div class="theme-btn btn-royal" onclick="setTheme('royal')" title="มรกต"></div>
       <a href="SongkranZodiac_Custom.html" class="theme-btn btn-custom" title="ออกแบบเอง">🎨</a>
     </div>
   </div>
+
 
   <h1 id="mainTitle" class="main-title">13 เมษา 2569 ปีมะเมีย</h1>
   <div class="controls">
@@ -346,14 +369,28 @@
 
     function setTheme(t) {
       currentTheme = t;
-      document.body.className = t === 'sacred' ? '' : 'theme-' + t;
+      document.body.className = 'theme-' + t;
+      
+      // Mark active button
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.classList.contains('btn-' + t));
+      });
+
       document.getElementById('themeSelector').classList.remove('open');
       render();
     }
 
+
+    // Close selector when clicking outside
+    document.addEventListener('click', (e) => {
+      const sel = document.getElementById('themeSelector');
+      if (!sel.contains(e.target)) sel.classList.remove('open');
+    });
+
     function draw(ai) {
-      const isDark = document.body.classList.contains('dark-mode');
-      c.clearRect(0, 0, W, W);
+      const isSolar = currentTheme === 'solar';
+      const isRoyal = currentTheme === 'royal';
+      const isSacred = currentTheme === 'sacred';
 
       const RO = 460;
       const RI = 448;
@@ -362,21 +399,31 @@
       const RC = 85;
       const RL = 560;
 
+
       c.beginPath(); c.arc(CX, CY, RO, 0, Math.PI * 2);
-      c.fillStyle = isDark ? '#e0e0e0' : '#1e3d72'; c.fill(); 
+      let outerCol = '#1e3d72';
+      if(isSacred) outerCol = '#e8c84a';
+      if(isRoyal) outerCol = '#ffd700';
+      c.fillStyle = outerCol; c.fill(); 
+
       c.beginPath(); c.arc(CX, CY, RI, 0, Math.PI * 2);
-      c.fillStyle = isDark ? '#121212' : '#faf6ec'; c.fill();
+      let innerCol = '#faf6ec';
+      if(isSacred) innerCol = '#04020e';
+      if(isRoyal) innerCol = '#05140b';
+      c.fillStyle = innerCol; c.fill();
 
       for (let i = 0; i < 12; i++) {
         const a1 = toR(ang(i) + 15);
         c.beginPath();
         c.moveTo(CX + RC * Math.cos(a1), CY + RC * Math.sin(a1));
         c.lineTo(CX + RS * Math.cos(a1), CY + RS * Math.sin(a1));
-        c.lineWidth = 2; c.strokeStyle = '#c4a35a'; c.stroke();
+        c.lineWidth = 2; 
+        c.strokeStyle = isSolar ? 'rgba(0,0,0,0.15)' : 'rgba(212,175,55,0.6)'; 
+        c.stroke();
       }
 
       c.beginPath(); c.arc(CX, CY, RN, 0, Math.PI * 2);
-      c.lineWidth = 6; c.strokeStyle = isDark ? '#ff3131' : '#8b1a1a'; c.stroke();
+      c.lineWidth = 6; c.strokeStyle = isSolar ? '#8b1a1a' : '#ff3131'; c.stroke();
 
       for (let i = 0; i < 12; i++) {
         const a = toR(ang(i));
@@ -387,12 +434,12 @@
         if (img && img.complete) {
           const iw = 155;
           c.save();
-          if (isDark) {
-            c.filter = 'saturate(1.4) contrast(1.05) brightness(1.05)';
-            c.shadowColor = 'rgba(255,255,255,0.15)';
-          } else {
+          if (isSolar) {
             c.filter = 'saturate(1.5) contrast(1.1)';
-            c.shadowColor = 'rgba(0,0,0,0.4)';
+            c.shadowColor = 'rgba(0,0,0,0.3)';
+          } else {
+            c.filter = 'saturate(1.4) contrast(1.05) brightness(1.1)';
+            c.shadowColor = 'rgba(0,0,0,0.6)';
           }
           c.shadowBlur = 12;
           c.shadowOffsetX = 4;
@@ -406,8 +453,8 @@
         let rot = a + Math.PI / 2;
         rot = (rot % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
 
-        c.font = `bold 28px ${FONT}`;
-        c.fillStyle = isDark ? '#d4af37' : '#1a1a1a';
+        c.font = `900 42px ${FONT}`;
+        c.fillStyle = isSolar ? '#1a1a1a' : (isRoyal ? '#ffd700' : '#e8c84a');
         c.textAlign = 'center';
 
         if (rot > Math.PI / 2 && rot < Math.PI * 1.5) {
@@ -423,8 +470,11 @@
       }
 
       c.beginPath(); c.arc(CX, CY, RC, 0, Math.PI * 2);
-      c.fillStyle = isDark ? '#1a1a1a' : '#fff'; c.fill();
-      c.lineWidth = 5; c.strokeStyle = isDark ? '#d4af37' : '#1e3d72'; c.stroke();
+      let centerCol = '#fff';
+      if(isSacred) centerCol = '#1e1044';
+      if(isRoyal) centerCol = '#0e3d25';
+      c.fillStyle = centerCol; c.fill();
+      c.lineWidth = 5; c.strokeStyle = isSolar ? '#1e3d72' : (isRoyal ? '#ffd700' : '#e8c84a'); c.stroke();
 
       for (let i = 0; i < 12; i++) {
         const ti = mod(i - ai, 12);
@@ -433,9 +483,12 @@
         const lx = CX + RL * Math.cos(a);
         const ly = CY + RL * Math.sin(a);
 
+        const textCol = isSolar ? '#1a1a1a' : (isRoyal ? '#ffd700' : '#f0e6c8');
+        const badCol = isSolar ? '#c0392b' : '#ff4d4d';
+
         if (ti === 0) {
-          c.font = `900 42px ${FONT}`;
-          c.fillStyle = isDark ? '#d4af37' : '#1a1a1a';
+          c.font = `900 72px ${FONT}`;
+          c.fillStyle = textCol;
           c.textAlign = 'center'; c.textBaseline = 'middle';
           c.fillText('ตนุ', lx, ly);
 
@@ -445,16 +498,17 @@
           const ly_lor = CY + r_lor * Math.sin(a_lor);
 
           c.font = `900 120px ${FONT}`;
-          c.fillStyle = isDark ? '#ff4d4d' : '#c0392b';
+          c.fillStyle = badCol;
           c.fillText('ล', lx_lor, ly_lor);
         } else {
           const isBad = tk.bad;
-          c.font = isBad ? `900 54px ${FONT}` : `900 48px ${FONT}`;
-          c.fillStyle = isBad ? (isDark ? '#ff4d4d' : '#c0392b') : (isDark ? '#fff' : '#1a1a1a');
+          c.font = isBad ? `900 76px ${FONT}` : `900 64px ${FONT}`;
+          c.fillStyle = isBad ? badCol : textCol;
           c.textAlign = 'center'; c.textBaseline = 'middle';
           c.fillText(tk.name, lx, ly);
         }
       }
+
     }
 
     function render() {

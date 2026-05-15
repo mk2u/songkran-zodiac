@@ -320,18 +320,36 @@
       padding: 6px; border-radius: 30px;
       backdrop-filter: blur(8px);
       border: 1px solid rgba(255,255,255,0.1);
+      position: fixed; top: 12px; right: 12px; z-index: 1000;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 10px;
     }
+    .theme-main-btn {
+      width: 48px; height: 48px; border-radius: 50%; 
+      border: 2px solid rgba(255,255,255,0.3); background: rgba(0,0,0,0.65); color: #fff;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 22px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); backdrop-filter: blur(8px);
+      transition: transform 0.2s;
+    }
+    .theme-main-btn:active { transform: scale(0.9); }
+    .theme-options {
+      display: none; flex-direction: column; gap: 10px;
+      background: rgba(0,0,0,0.8); padding: 10px; border-radius: 30px;
+      backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+    .theme-selector.open .theme-options { display: flex; animation: slideIn 0.25s ease-out; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     .theme-btn {
-      width: 32px; height: 32px;
-      border-radius: 50%; border: 2px solid #fff;
-      cursor: pointer; transition: transform 0.2s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; text-decoration: none;
+      width: 40px; height: 40px; border-radius: 50%; border: 2px solid #fff;
+      cursor: pointer; transition: transform 0.2s; display: flex; align-items: center; justify-content: center;
+      text-decoration: none; box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
     .theme-btn:hover { transform: scale(1.15); }
-    .theme-btn.active { border-color: #00ff00; outline: 2px solid rgba(0,255,0,0.3); }
+    .theme-btn.active { border-color: #00ff00; outline: 3px solid rgba(0,255,0,0.4); }
     .btn-sacred { background: linear-gradient(135deg, #03010a, #1e1044); }
     .btn-solar  { background: linear-gradient(135deg, #fff, #eee); }
     .btn-royal  { background: linear-gradient(135deg, #061a10, #ffd700); }
+    .btn-custom { background: linear-gradient(135deg, #f00, #0f0, #00f); font-size: 18px; }
 
     .back-link {
       position: fixed; top: 12px; left: 12px; z-index: 100;
@@ -344,8 +362,6 @@
       transition: all 0.2s;
     }
     .back-link:hover { background: rgba(255,255,255,0.25); transform: scale(1.1); }
-
-
 
     /* ── Customizer Panel ── */
     .customizer {
@@ -393,12 +409,12 @@
 
 
 <div class="theme-selector" id="themeSelector">
-  <button class="theme-main-btn" onclick="document.getElementById('themeSelector').classList.toggle('open')" title="เลือกธีม">🌗</button>
+  <button class="theme-main-btn" onclick="event.stopPropagation(); document.getElementById('themeSelector').classList.toggle('open')" title="เลือกธีม">🌗</button>
   <div class="theme-options">
     <div class="theme-btn btn-sacred" onclick="setTheme('sacred')" title="มืด"></div>
     <div class="theme-btn btn-solar active" onclick="setTheme('solar')" title="สว่าง"></div>
     <div class="theme-btn btn-royal" onclick="setTheme('royal')" title="มรกต"></div>
-    <div class="theme-btn" style="background: linear-gradient(135deg, #f00, #0f0, #00f);" onclick="document.getElementById('customizer').classList.toggle('open'); document.getElementById('themeSelector').classList.remove('open');" title="ออกแบบเอง">🎨</div>
+    <div class="theme-btn btn-custom" onclick="event.stopPropagation(); document.getElementById('customizer').classList.toggle('open'); document.getElementById('themeSelector').classList.remove('open');" title="ออกแบบเอง">🎨</div>
   </div>
 </div>
 
