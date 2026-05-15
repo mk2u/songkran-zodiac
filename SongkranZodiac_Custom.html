@@ -233,8 +233,11 @@
 
     /* ── Controls ── */
     .controls {
+      position: relative;
+      width: min(96vw, 620px);
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       margin: 8px 0 14px;
     }
@@ -298,6 +301,14 @@
       box-shadow: 0 0 0 3px rgba(232, 200, 74, 0.15), 0 0 20px rgba(232, 200, 74, 0.28);
     }
 
+    .controls .year-reset-btn {
+      position: absolute;
+      left: min(calc(50% + 116px), calc(100% - 48px));
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+    }
+
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
       -webkit-appearance: none;
@@ -312,6 +323,8 @@
       position: relative;
       width: min(96vw, 620px);
       aspect-ratio: 1;
+      touch-action: pan-y;
+      user-select: none;
     }
 
     .canvas-wrap canvas {
@@ -707,6 +720,187 @@
       cursor: pointer;
     }
 
+    .birth-panel {
+      width: min(96vw, 620px);
+      display: grid;
+      gap: 10px;
+      margin: 0 0 10px;
+      padding: 12px;
+      border: 1.5px solid var(--card-border);
+      border-radius: 16px;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 42px rgba(180, 140, 20, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .birth-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .birth-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .birth-field label {
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .birth-field input {
+      width: 100%;
+      height: 46px;
+      border: 1.5px solid var(--ctrl-border);
+      border-radius: 10px;
+      background: var(--ctrl-bg);
+      color: var(--text);
+      text-align: center;
+      font-family: inherit;
+      font-size: 21px;
+      font-weight: 900;
+      outline: none;
+    }
+
+    .birth-field input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(232, 200, 74, 0.15), 0 0 20px rgba(232, 200, 74, 0.22);
+    }
+
+    .personal-card {
+      display: none;
+      gap: 6px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1.5px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+      text-align: center;
+    }
+
+    .personal-card.show {
+      display: grid;
+    }
+
+    .personal-card .card-line {
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .personal-card .card-main {
+      color: var(--gold);
+      font-family: var(--font-title);
+      font-size: clamp(30px, 8vw, 48px);
+      font-weight: 700;
+      line-height: 1.1;
+      filter: drop-shadow(0 0 12px rgba(232, 200, 74, 0.4));
+    }
+
+    .personal-card .card-meta {
+      font-size: 16px;
+      font-weight: 700;
+      opacity: 0.9;
+    }
+
+    .taksa-good {
+      color: #1f9d55;
+    }
+
+    .taksa-bad {
+      color: #d92d20;
+    }
+
+    body:not(.theme-solar) .taksa-good {
+      color: #57e389;
+    }
+
+    body:not(.theme-solar) .taksa-bad {
+      color: #ff6b6b;
+    }
+
+    .share-group {
+      position: fixed;
+      right: 0;
+      bottom: 30px;
+      z-index: 9998;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px 25px 12px 12px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 45px 0 0 45px;
+      border: 1.5px solid #ffd700;
+      border-right: none;
+      box-shadow: -5px 0 25px rgba(255, 215, 0, 0.2);
+      backdrop-filter: blur(12px);
+      transform: translateX(68%);
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .share-group.active {
+      transform: translateX(0);
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .share-btn {
+      width: 50px;
+      height: 50px;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffd700, #b8860b);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 23px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+
+    .share-btn:active {
+      transform: scale(0.9);
+    }
+
+    .share-notice {
+      position: fixed;
+      left: 50%;
+      bottom: 106px;
+      z-index: 10001;
+      max-width: min(92vw, 520px);
+      padding: 12px 16px;
+      border: 1.5px solid #ffd700;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.88);
+      color: #ffd700;
+      font-size: 15px;
+      font-weight: 800;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 12px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .share-notice.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 560px) {
+      .birth-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .birth-field label,
+      .personal-card .card-line,
+      .personal-card .card-meta {
+        font-size: 16px;
+      }
+    }
+
     /* ── Music Controls ── */
     .music-btn {
       width: 50px; height: 50px; border-radius: 50%;
@@ -802,6 +996,12 @@
     </div>
   </div>
 
+  <div class="share-group" id="shareGroup" onclick="activateShareGroup()">
+    <button id="shareImageBtn" class="share-btn" type="button" onclick="event.stopPropagation(); shareCurrentImage()" title="แชร์รูป">📤</button>
+    <button id="saveImageFloatBtn" class="share-btn" type="button" onclick="event.stopPropagation(); saveCurrentImage()" title="บันทึกรูป">💾</button>
+  </div>
+  <div id="shareNotice" class="share-notice" role="status" aria-live="polite"></div>
+
 
 
 
@@ -849,7 +1049,22 @@
       <button id="prevYear" type="button">−</button>
       <input id="yearInput" type="number" inputmode="numeric" min="2400" max="2800" value="2569">
       <button id="nextYear" type="button">+</button>
+      <button id="resetYearBtn" class="year-reset-btn" type="button" title="รีเซ็ตปี">↺</button>
     </div>
+    <section class="birth-panel" aria-label="ปีเกิดและเปรียบดวง">
+      <div class="birth-grid">
+        <div class="birth-field">
+          <label for="birthYearA">ปีเกิด พ.ศ. คนที่ 1</label>
+          <input id="birthYearA" type="number" inputmode="numeric" min="2400" max="2800" placeholder="เช่น 2536">
+        </div>
+        <div class="birth-field">
+          <label for="birthYearB">ปีเกิด พ.ศ. คนที่ 2</label>
+          <input id="birthYearB" type="number" inputmode="numeric" min="2400" max="2800" placeholder="เทียบคู่">
+        </div>
+      </div>
+      <div id="personalCard" class="personal-card" aria-live="polite"></div>
+      <div id="compareCard" class="personal-card" aria-live="polite"></div>
+    </section>
     <div class="canvas-wrap">
       <canvas id="wheelCanvas" width="1400" height="1400"></canvas>
     </div>
@@ -924,11 +1139,135 @@
     function y2i(y) { return mod(Number(y) - BY + BI, 12); }
     function toR(d) { return d * Math.PI / 180; }
     function ang(i) { return -90 - i * 30; }
+    function currentBEYear() { return new Date().getFullYear() + 543; }
+    function selectedYear() {
+      const y = Number(document.getElementById('yearInput').value);
+      return Number.isFinite(y) && y >= 2400 && y <= 2800 ? y : currentBEYear();
+    }
 
     const cv = document.getElementById('wheelCanvas');
     const ctx = cv.getContext('2d');
     const W = cv.width, CX = W / 2, CY = W / 2;
     const RO = 485, RI = 469, RS = 463, RN = 305, RC = 93, RL = 583, RZ = 384;
+    const PROFILE_COLORS = ['#1f9d55', '#2f80ed'];
+    let birthProfiles = [];
+
+    function profileFromInput(inputId, order, ai) {
+      const el = document.getElementById(inputId);
+      if (!el) return null;
+      const raw = String(el.value || '').trim();
+      if (raw.length < 4) return null;
+      const year = Number(raw);
+      if (!Number.isFinite(year) || year < 2400 || year > 2800) return null;
+      const zi = y2i(year);
+      const ti = mod(zi - ai, 12);
+      const tk = TK[ti];
+      return {
+        order,
+        year,
+        zodiacIndex: zi,
+        zodiac: Z[zi],
+        taksaIndex: ti,
+        taksa: tk,
+        isBad: tk.bad,
+        color: PROFILE_COLORS[order - 1] || '#ffd700'
+      };
+    }
+
+    function taksaStatus(profile) {
+      return profile.isBad ? 'ร้าย' : 'ดี';
+    }
+
+    function taksaDot(profile) {
+      return profile.isBad ? '🔴' : '🟢';
+    }
+
+    function profileText(profile) {
+      return `คนที่ ${profile.order} เกิดปี ${profile.year} · ปี${profile.zodiac.thai} → ทักษา ${profile.taksa.name} ${taksaDot(profile)} ${taksaStatus(profile)}`;
+    }
+
+    function updateBirthProfiles(ai, y) {
+      birthProfiles = [
+        profileFromInput('birthYearA', 1, ai),
+        profileFromInput('birthYearB', 2, ai)
+      ].filter(Boolean);
+
+      const personalCard = document.getElementById('personalCard');
+      const compareCard = document.getElementById('compareCard');
+      const first = birthProfiles.find(p => p.order === 1);
+      const second = birthProfiles.find(p => p.order === 2);
+      const annual = Z[ai];
+
+      if (first) {
+        const cls = first.isBad ? 'taksa-bad' : 'taksa-good';
+        personalCard.innerHTML = `
+          <div class="card-line">ปี ${y} · ปี${annual.thai} · คุณเกิดปี${first.zodiac.thai}</div>
+          <div class="card-main ${cls}">ตกทักษา ${first.taksa.name} ${taksaDot(first)}</div>
+          <div class="card-meta">${taksaStatus(first)} · นับจากปีสงกรานต์ไปหาปีเกิด</div>
+        `;
+        personalCard.classList.add('show');
+      } else {
+        personalCard.innerHTML = '';
+        personalCard.classList.remove('show');
+      }
+
+      if (first && second) {
+        const firstCls = first.isBad ? 'taksa-bad' : 'taksa-good';
+        const secondCls = second.isBad ? 'taksa-bad' : 'taksa-good';
+        compareCard.innerHTML = `
+          <div class="card-line">เปรียบดวงสองคน</div>
+          <div class="card-meta"><span class="${firstCls}">${profileText(first)}</span></div>
+          <div class="card-meta"><span class="${secondCls}">${profileText(second)}</span></div>
+        `;
+        compareCard.classList.add('show');
+      } else {
+        compareCard.innerHTML = '';
+        compareCard.classList.remove('show');
+      }
+    }
+
+    function drawBirthHighlights() {
+      if (!birthProfiles.length) return;
+      const grouped = {};
+      birthProfiles.forEach(profile => {
+        grouped[profile.zodiacIndex] = grouped[profile.zodiacIndex] || [];
+        grouped[profile.zodiacIndex].push(profile);
+      });
+
+      birthProfiles.forEach(profile => {
+        const same = grouped[profile.zodiacIndex] || [profile];
+        const sameIndex = same.findIndex(p => p.order === profile.order);
+        const spread = same.length > 1 ? (sameIndex - (same.length - 1) / 2) * 42 : 0;
+        const a = toR(ang(profile.zodiacIndex));
+        const x = CX + (RZ + spread) * Math.cos(a);
+        const y = CY + (RZ + spread) * Math.sin(a);
+        const markerX = CX + (RZ + 114 + spread) * Math.cos(a);
+        const markerY = CY + (RZ + 114 + spread) * Math.sin(a);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(x, y, 100, 0, Math.PI * 2);
+        ctx.fillStyle = profile.isBad ? 'rgba(217,45,32,0.16)' : 'rgba(31,157,85,0.16)';
+        ctx.fill();
+        ctx.lineWidth = 9;
+        ctx.strokeStyle = profile.color;
+        ctx.shadowBlur = 24;
+        ctx.shadowColor = profile.color;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(markerX, markerY, 30, 0, Math.PI * 2);
+        ctx.fillStyle = profile.color;
+        ctx.shadowBlur = 18;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#fff';
+        ctx.font = `900 28px ${FONT}`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(profile.order), markerX, markerY + 1);
+        ctx.restore();
+      });
+    }
 
 
     function drawWheel(ai) {
@@ -1107,6 +1446,8 @@
         ctx.restore();
       }
 
+      drawBirthHighlights();
+
       /* Center circle */
       const cg = ctx.createRadialGradient(CX, CY, 0, CX, CY, RC);
       cg.addColorStop(0, theme.center[0]);
@@ -1253,12 +1594,13 @@
 
     /* Render */
     function render(animate) {
-      const y = Number(document.getElementById('yearInput').value) || BY;
+      const y = selectedYear();
       const ai = y2i(y);
       const titleEl = document.getElementById('mainTitle');
       titleEl.textContent = `13 เมษา ${y} ปี${Z[ai].thai}`;
       titleEl.classList.remove('title-pop'); void titleEl.offsetWidth; titleEl.classList.add('title-pop');
       if (animate) triggerSpin();
+      updateBirthProfiles(ai, y);
       const hasDanger = drawWheel(ai);
       updateCard(ai, hasDanger);
       if (animate && hasDanger) triggerDanger();
@@ -1268,15 +1610,49 @@
       }
     }
 
-    document.getElementById('prevYear').onclick = () => {
+    function changeYear(delta) {
       const inp = document.getElementById('yearInput');
-      inp.value = (Number(inp.value) || BY) - 1; render(true);
-    };
-    document.getElementById('nextYear').onclick = () => {
-      const inp = document.getElementById('yearInput');
-      inp.value = (Number(inp.value) || BY) + 1; render(true);
+      inp.value = selectedYear() + delta;
+      render(true);
+    }
+
+    document.getElementById('prevYear').onclick = () => changeYear(-1);
+    document.getElementById('nextYear').onclick = () => changeYear(1);
+    document.getElementById('resetYearBtn').onclick = () => {
+      document.getElementById('yearInput').value = currentBEYear();
+      document.getElementById('birthYearA').value = '';
+      document.getElementById('birthYearB').value = '';
+      render(true);
     };
     document.getElementById('yearInput').addEventListener('input', () => render(false));
+    ['birthYearA', 'birthYearB'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => render(false));
+    });
+
+    const wheelWrap = document.querySelector('.canvas-wrap');
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+    let swipeStartTime = 0;
+    if (wheelWrap) {
+      wheelWrap.addEventListener('pointerdown', event => {
+        swipeStartX = event.clientX;
+        swipeStartY = event.clientY;
+        swipeStartTime = Date.now();
+        if (event.pointerType === 'touch' && wheelWrap.setPointerCapture) {
+          wheelWrap.setPointerCapture(event.pointerId);
+        }
+      });
+
+      wheelWrap.addEventListener('pointerup', event => {
+        const dx = event.clientX - swipeStartX;
+        const dy = event.clientY - swipeStartY;
+        const elapsed = Date.now() - swipeStartTime;
+        const isHorizontal = Math.abs(dx) > 54 && Math.abs(dx) > Math.abs(dy) * 1.35;
+        if (elapsed < 900 && isHorizontal) {
+          changeYear(dx < 0 ? 1 : -1);
+        }
+      });
+    }
 
     function setTheme(t) {
       currentTheme = t;
@@ -1358,20 +1734,325 @@
     const savedTheme = localStorage.getItem('songkran_theme');
     if (savedTheme) setTheme(savedTheme);
 
+    document.getElementById('yearInput').value = currentBEYear();
     render(false);
 
     // ── Continuous Animation Loop ──
     function animate() {
-      const y = Number(document.getElementById('yearInput').value) || BY;
+      const y = selectedYear();
       const ai = y2i(y);
       drawWheel(ai);
       requestAnimationFrame(animate);
     }
     requestAnimationFrame(animate);
 
+    function exportPalette() {
+      if (currentTheme === 'custom') {
+        return {
+          bg: document.getElementById('cp-bg').value,
+          card: document.getElementById('cp-wheel').value,
+          border: document.getElementById('cp-gold').value,
+          text: document.getElementById('cp-text').value,
+          title: document.getElementById('cp-gold').value
+        };
+      }
+      if (currentTheme === 'royal') {
+        return { bg: '#061a10', card: '#0a2e1c', border: '#ffd700', text: '#e0f0e6', title: '#ffd700' };
+      }
+      if (currentTheme === 'solar') {
+        return { bg: '#ffffff', card: '#fffbf0', border: '#b8941a', text: '#111111', title: '#8b6b10' };
+      }
+      return { bg: '#03010a', card: '#0e0826', border: '#e8c84a', text: '#f0e6c8', title: '#e8c84a' };
+    }
+
+    function roundRect(ctx2, x, y, w, h, r) {
+      ctx2.beginPath();
+      ctx2.moveTo(x + r, y);
+      ctx2.arcTo(x + w, y, x + w, y + h, r);
+      ctx2.arcTo(x + w, y + h, x, y + h, r);
+      ctx2.arcTo(x, y + h, x, y, r);
+      ctx2.arcTo(x, y, x + w, y, r);
+      ctx2.closePath();
+    }
+
+    function drawFittedText(ctx2, text, x, y, maxWidth, size, weight, color, align = 'center') {
+      let fontSize = size;
+      ctx2.textAlign = align;
+      ctx2.textBaseline = 'middle';
+      ctx2.fillStyle = color;
+      do {
+        ctx2.font = `${weight} ${fontSize}px ${FONT}`;
+        if (ctx2.measureText(text).width <= maxWidth || fontSize <= 26) break;
+        fontSize -= 2;
+      } while (fontSize > 26);
+      ctx2.fillText(text, x, y);
+      return fontSize;
+    }
+
+    function exportFileName() {
+      const y = selectedYear();
+      const first = birthProfiles.find(p => p.order === 1);
+      const second = birthProfiles.find(p => p.order === 2);
+      const suffix = [first, second].filter(Boolean).map(p => `birth-${p.year}`).join('-');
+      return suffix ? `songkran-custom-${y}-${suffix}.png` : `songkran-custom-${y}.png`;
+    }
+
+    function createExportCanvas() {
+      const y = selectedYear();
+      const ai = y2i(y);
+      updateBirthProfiles(ai, y);
+      drawWheel(ai);
+
+      const out = document.createElement('canvas');
+      out.width = 1600;
+      out.height = 1600;
+      const x = out.getContext('2d');
+      const p = exportPalette();
+      const annual = Z[ai];
+
+      x.fillStyle = p.bg;
+      x.fillRect(0, 0, out.width, out.height);
+      x.save();
+      x.globalAlpha = currentTheme === 'solar' ? 0.08 : 0.2;
+      x.strokeStyle = p.border;
+      x.lineWidth = 2;
+      for (let r = 170; r <= 760; r += 118) {
+        x.beginPath();
+        x.arc(800, 790, r, 0, Math.PI * 2);
+        x.stroke();
+      }
+      for (let i = 0; i < 48; i++) {
+        const a = i * Math.PI / 24;
+        x.beginPath();
+        x.arc(800 + Math.cos(a) * 710, 790 + Math.sin(a) * 710, i % 3 === 0 ? 4 : 2, 0, Math.PI * 2);
+        x.fillStyle = p.border;
+        x.fill();
+      }
+      x.restore();
+
+      drawFittedText(x, `13 เมษา ${y} ปี${annual.thai}`, 800, 82, 1420, 72, 900, p.title);
+      x.drawImage(cv, 230, 130, 1140, 1140);
+
+      const cardX = 110, cardY = 1235, cardW = 1380, cardH = 270;
+      x.save();
+      roundRect(x, cardX, cardY, cardW, cardH, 36);
+      x.fillStyle = p.card;
+      x.shadowBlur = 32;
+      x.shadowColor = currentTheme === 'solar' ? 'rgba(0,0,0,0.18)' : 'rgba(255,215,0,0.22)';
+      x.fill();
+      x.shadowBlur = 0;
+      x.lineWidth = 5;
+      x.strokeStyle = p.border;
+      x.stroke();
+      x.restore();
+
+      const first = birthProfiles.find(profile => profile.order === 1);
+      const second = birthProfiles.find(profile => profile.order === 2);
+      drawFittedText(x, `ปี ${y} · ปี${annual.thai}`, 800, 1292, 1240, 48, 900, p.title);
+
+      if (first) {
+        const firstColor = first.isBad ? '#d92d20' : '#1f9d55';
+        drawFittedText(x, `คนที่ 1 เกิดปี ${first.year} · ปี${first.zodiac.thai}`, 800, 1354, 1240, 44, 900, p.text);
+        drawFittedText(x, `ตกทักษา ${first.taksa.name} · ${taksaStatus(first)}`, 800, 1415, 1240, 52, 900, firstColor);
+      } else {
+        drawFittedText(x, 'กรอกปีเกิด เพื่อสร้างการ์ดดวงส่วนตัว', 800, 1384, 1240, 50, 900, p.text);
+      }
+
+      if (second) {
+        const secondColor = second.isBad ? '#d92d20' : '#2f80ed';
+        drawFittedText(x, `คนที่ 2 เกิดปี ${second.year} · ปี${second.zodiac.thai} → ทักษา ${second.taksa.name} · ${taksaStatus(second)}`, 800, 1472, 1240, 34, 900, secondColor);
+      }
+
+      drawFittedText(x, 'นับจากปีสงกรานต์ไปหาปีเกิด', 800, 1534, 1240, 28, 800, p.text);
+      drawFittedText(x, 'Credit ❤️ by คนโบราณ', 800, 1572, 1240, 26, 800, p.text);
+      return out;
+    }
+
+    function canvasToBlob(canvas) {
+      return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    }
+
+    function canvasToPngBlobSync(canvas) {
+      const dataUrl = canvas.toDataURL('image/png');
+      const parts = dataUrl.split(',');
+      const binary = atob(parts[1]);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new Blob([bytes], { type: 'image/png' });
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1200);
+    }
+
+    let shareNoticeTimer = null;
+    function showShareNotice(message) {
+      const notice = document.getElementById('shareNotice');
+      if (!notice) return;
+      notice.textContent = message;
+      notice.classList.add('show');
+      clearTimeout(shareNoticeTimer);
+      shareNoticeTimer = setTimeout(() => notice.classList.remove('show'), 3600);
+    }
+
+    async function saveCurrentImage() {
+      render(false);
+      const canvas = createExportCanvas();
+      const blob = await canvasToBlob(canvas);
+      if (!blob) return;
+      downloadBlob(blob, exportFileName());
+      activateShareGroup();
+    }
+
+    async function shareCurrentImage() {
+      render(false);
+      const canvas = createExportCanvas();
+      const filename = exportFileName();
+      const y = selectedYear();
+      const blob = canvasToPngBlobSync(canvas);
+      if (!blob) return;
+      if (typeof File === 'undefined') {
+        showShareNotice('เครื่องนี้ไม่รองรับแชร์ไฟล์ภาพ กำลังบันทึกรูปแทน');
+        downloadBlob(blob, filename);
+        activateShareGroup();
+        return;
+      }
+      const file = new File([blob], filename, { type: 'image/png' });
+      const shareData = {
+        title: `ดวงปีสงกรานต์ ${y}`,
+        text: `ดวงปีสงกรานต์ พ.ศ. ${y}`,
+        files: [file]
+      };
+
+      if (!window.isSecureContext) {
+        showShareNotice('แชร์ตรงต้องเปิดผ่าน HTTPS/localhost ตอนนี้จะบันทึกรูปแทน');
+        downloadBlob(blob, filename);
+        activateShareGroup();
+        return;
+      }
+
+      if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+        try {
+          await navigator.share(shareData);
+          activateShareGroup();
+          return;
+        } catch (err) {
+          if (err && err.name === 'AbortError') return;
+          showShareNotice('เบราว์เซอร์บล็อกการแชร์ กำลังบันทึกรูปแทน');
+        }
+      } else {
+        showShareNotice('เบราว์เซอร์นี้ไม่รองรับแชร์รูป กำลังบันทึกรูปแทน');
+      }
+      downloadBlob(blob, filename);
+      activateShareGroup();
+    }
+
+    let shareGroupTimer = null;
+    function activateShareGroup() {
+      const group = document.getElementById('shareGroup');
+      if (!group) return;
+      group.classList.add('active');
+      clearTimeout(shareGroupTimer);
+      shareGroupTimer = setTimeout(() => group.classList.remove('active'), 5000);
+    }
+
     // ── Seamless Music Logic ──
+    const MUSIC_PLAYLIST = [
+      {
+        title: 'โชคชะตาแห่งดวงดาว - Destiny of the Stars',
+        url: 'https://cdn1.suno.ai/b0aadeef-7861-4e8e-b972-f5b1bd76698d.mp3'
+      },
+      {
+        title: 'ชะตาแห่งดวงดาว - Destiny of the Stars',
+        url: 'https://cdn1.suno.ai/b1936e1e-2c3e-4c0a-8fe8-e671f31f13bb.mp3'
+      },
+      {
+        title: 'โชคชะตาแห่งดวงดาว - Destiny of the Stars',
+        url: 'https://cdn1.suno.ai/c95ce48b-cd01-4a99-9209-4dde6b47622a.mp3'
+      },
+      {
+        title: 'ชะตาแห่งดวงดาว - Destiny of the Stars',
+        url: 'https://cdn1.suno.ai/b843c822-bfb4-4873-b3a0-48f3a9a07ed0.mp3'
+      }
+    ];
     let musicPlaying = false;
     let volTimer = null;
+
+    function normalizeMusicIndex(index) {
+      return ((Number(index) || 0) % MUSIC_PLAYLIST.length + MUSIC_PLAYLIST.length) % MUSIC_PLAYLIST.length;
+    }
+
+    function getStoredMusicIndex() {
+      return normalizeMusicIndex(localStorage.getItem('zodiacMusicTrackIndex'));
+    }
+
+    function setMusicTrack(index, startTime = 0) {
+      const m = document.getElementById('bgMusic');
+      if (!m) return null;
+      const safeIndex = normalizeMusicIndex(index);
+      const track = MUSIC_PLAYLIST[safeIndex];
+      const changed = !m.src || m.src !== track.url;
+      if (changed) {
+        m.src = track.url;
+        m.load();
+      }
+      m.dataset.trackIndex = String(safeIndex);
+      m.dataset.trackTitle = track.title;
+      localStorage.setItem('zodiacMusicTrackIndex', String(safeIndex));
+
+      const time = Number(startTime) || 0;
+      if (time > 0) {
+        const applyTime = () => {
+          try {
+            const maxTime = Number.isFinite(m.duration) ? Math.max(0, m.duration - 0.5) : time;
+            m.currentTime = Math.min(time, maxTime);
+          } catch (err) {
+            console.warn('Could not restore music time', err);
+          }
+        };
+        if (m.readyState >= 1) applyTime();
+        else m.addEventListener('loadedmetadata', applyTime, { once: true });
+      }
+      return track;
+    }
+
+    function updateMusicButton(playing) {
+      const b = document.getElementById('toggleMusic');
+      if (!b) return;
+      b.textContent = playing ? '🔊' : '🎵';
+      b.style.background = playing ? '#00ff00' : '#ffd700';
+    }
+
+    function playCurrentMusic() {
+      const m = document.getElementById('bgMusic');
+      if (!m) return Promise.resolve();
+      musicPlaying = true;
+      return m.play().then(() => {
+        updateMusicButton(true);
+        localStorage.setItem('zodiacMusicPlaying', 'true');
+      }).catch(e => {
+        musicPlaying = false;
+        updateMusicButton(false);
+        console.error("Audio error:", e);
+      });
+    }
+
+    function playNextMusicTrack() {
+      const m = document.getElementById('bgMusic');
+      const current = m ? Number(m.dataset.trackIndex || getStoredMusicIndex()) : getStoredMusicIndex();
+      setMusicTrack(current + 1, 0);
+      localStorage.setItem('zodiacMusicTime', '0');
+      playCurrentMusic();
+    }
 
     function showVolume() {
       const v = document.getElementById('volContainer');
@@ -1402,18 +2083,13 @@
 
     function toggleMusic() {
       const m = document.getElementById('bgMusic');
-      const b = document.getElementById('toggleMusic');
       if (m.paused) {
-        musicPlaying = true;
-        m.play().catch(e => console.error("Audio error:", e));
-        b.textContent = '🔊';
-        b.style.background = '#00ff00';
-        localStorage.setItem('zodiacMusicPlaying', 'true');
+        setMusicTrack(getStoredMusicIndex(), localStorage.getItem('zodiacMusicTime'));
+        playCurrentMusic();
       } else {
         musicPlaying = false;
         m.pause();
-        b.textContent = '🎵';
-        b.style.background = '#ffd700';
+        updateMusicButton(false);
         const v = document.getElementById('volContainer');
         v.style.opacity = '0';
         v.style.pointerEvents = 'none';
@@ -1434,23 +2110,16 @@
       const savedTime = localStorage.getItem('zodiacMusicTime');
       const savedVol = localStorage.getItem('zodiacMusicVolume');
       const isPlaying = localStorage.getItem('zodiacMusicPlaying');
+      setMusicTrack(getStoredMusicIndex(), savedTime);
+      m.addEventListener('ended', playNextMusicTrack);
 
       if (savedVol) {
         m.volume = savedVol;
         const vIn = document.querySelector('#volContainer input');
         if(vIn) vIn.value = savedVol;
       }
-      if (savedTime) m.currentTime = parseFloat(savedTime);
-      
       if (isPlaying === 'true') {
-        m.play().then(() => {
-          musicPlaying = true;
-          const b = document.getElementById('toggleMusic');
-          if(b) {
-            b.textContent = '🔊';
-            b.style.background = '#00ff00';
-          }
-        }).catch(() => console.log("Music interaction required"));
+        playCurrentMusic().catch(() => console.log("Music interaction required"));
       }
     });
 
@@ -1458,6 +2127,7 @@
       const m = document.getElementById('bgMusic');
       if (m && !m.paused) {
         localStorage.setItem('zodiacMusicTime', m.currentTime);
+        localStorage.setItem('zodiacMusicTrackIndex', m.dataset.trackIndex || '0');
       }
     }, 1000);
 
@@ -1484,7 +2154,11 @@
 
 
   <!-- Music System -->
-  <audio id="bgMusic" src="https://cdn1.suno.ai/ab120d2f-136a-466f-8115-6ee311d7327c.mp3" loop></audio>
+  <audio
+    id="bgMusic"
+    src="https://cdn1.suno.ai/b0aadeef-7861-4e8e-b972-f5b1bd76698d.mp3"
+    data-playlist-url="https://suno.com/playlist/1473c3a5-7c1d-48e2-9840-eb0cf32d941e"
+    data-track-title="โชคชะตาแห่งดวงดาว - Destiny of the Stars"></audio>
 
   <div class="audio-group" id="audioGroup" onclick="activateAudioGroup()">
     <button id="toggleMusic" class="music-btn" onclick="event.stopPropagation(); toggleMusic()">🎵</button>
