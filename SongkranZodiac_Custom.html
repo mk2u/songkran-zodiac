@@ -334,27 +334,31 @@
     .btn-royal  { background: linear-gradient(135deg, #061a10, #ffd700); }
 
     .back-link {
-      position: fixed; top: 18px; left: 12px; z-index: 100;
+      position: fixed; top: 12px; left: 12px; z-index: 100;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
       background: rgba(255,255,255,0.15); color: #fff;
-      text-decoration: none; padding: 8px 14px;
-      border-radius: 20px; font-size: 13px; font-weight: 700;
-      backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.2);
+      text-decoration: none; border-radius: 50%;
+      font-size: 20px; backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.2);
       transition: all 0.2s;
     }
-    .back-link:hover { background: rgba(255,255,255,0.25); transform: scale(1.05); }
+    .back-link:hover { background: rgba(255,255,255,0.25); transform: scale(1.1); }
+
 
 
     /* ── Customizer Panel ── */
     .customizer {
-      position: fixed; bottom: 20px; left: 12px; z-index: 101;
-      background: rgba(0,0,0,0.85); color: #fff;
+      position: fixed; bottom: 20px; right: 12px; z-index: 101;
+      background: rgba(0,0,0,0.92); color: #fff;
       padding: 15px; border-radius: 12px;
-      width: 240px; backdrop-filter: blur(10px);
+      width: 260px; backdrop-filter: blur(12px);
       border: 1px solid rgba(255,255,255,0.2);
-      transform: translateY(calc(100% - 40px));
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: none;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     }
-    .customizer.open { transform: translateY(0); }
+    .customizer.open { display: block; }
+
     .customizer-toggle {
       position: absolute; top: -45px; left: 0;
       background: #e8c84a; color: #000;
@@ -375,26 +379,26 @@
 </head>
 <body>
 
-<a href="index.html" class="back-link">🏠 กลับหน้าหลัก</a>
+  <a href="index.html" class="back-link">🏠</a>
 
-<div class="customizer" id="customizer">
+  <div class="customizer" id="customizer">
+    <div class="custom-row"><span>สีพื้นหลังแอป</span> <input type="color" id="cp-bg" value="#03010a"></div>
+    <div class="custom-row"><span>สีข้อความ</span> <input type="color" id="cp-text" value="#f0e6c8"></div>
+    <div class="custom-row"><span>พื้นในวงล้อ</span> <input type="color" id="cp-wheel" value="#0e0826"></div>
+    <div class="custom-row"><span>สีเส้นแบ่ง</span> <input type="color" id="cp-lines" value="#c8a028"></div>
+    <div class="custom-row"><span>สีทองหลัก</span> <input type="color" id="cp-gold" value="#e8c84a"></div>
+    <button class="reset-btn" onclick="resetCustom()">ล้างค่าใหม่</button>
+  </div>
 
-  <button class="customizer-toggle" onclick="document.getElementById('customizer').classList.toggle('open')">🎨 ออกแบบเอง</button>
-  <div class="custom-row"><span>สีพื้นหลังแอป</span> <input type="color" id="cp-bg" value="#03010a"></div>
-  <div class="custom-row"><span>สีข้อความ</span> <input type="color" id="cp-text" value="#f0e6c8"></div>
-  <div class="custom-row"><span>พื้นในวงล้อ</span> <input type="color" id="cp-wheel" value="#0e0826"></div>
-  <div class="custom-row"><span>สีเส้นแบ่ง</span> <input type="color" id="cp-lines" value="#c8a028"></div>
-  <div class="custom-row"><span>สีทองหลัก</span> <input type="color" id="cp-gold" value="#e8c84a"></div>
-  <button class="reset-btn" onclick="resetCustom()">ล้างค่าใหม่</button>
-</div>
 
 
 <div class="theme-selector">
   <div class="theme-btn btn-sacred active" onclick="setTheme('sacred')" title="Sacred Dark"></div>
   <div class="theme-btn btn-solar" onclick="setTheme('solar')" title="Solar Light"></div>
   <div class="theme-btn btn-royal" onclick="setTheme('royal')" title="Royal Emerald"></div>
-  <div class="theme-btn" style="background: linear-gradient(135deg, #f00, #0f0, #00f);" onclick="setTheme('custom')" title="ออกแบบเอง"></div>
+  <div class="theme-btn" style="background: linear-gradient(135deg, #f00, #0f0, #00f);" onclick="document.getElementById('customizer').classList.toggle('open')" title="ออกแบบเอง"></div>
 </div>
+
 
 
 
