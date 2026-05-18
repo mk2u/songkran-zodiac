@@ -1,0 +1,2025 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>อายุจรประจำปี</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=K2D:wght@400;600;700;800&family=Srisakdi:wght@400;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1a1a1a;
+      --muted: #656565;
+      --title: #1a1a1a;
+      --ctrl-bg: #f5f5f5;
+      --ctrl-text: #111111;
+      --ctrl-border: #333333;
+      --card-bg: #fffbf0;
+      --card-border: #c8951a;
+      --surface: #ffffff;
+      --soft: #f6f3ea;
+      --good: #147d49;
+      --good-bg: #e9f7ef;
+      --good-glow: rgba(20, 125, 73, 0.22);
+      --caution: #b3261e;
+      --caution-bg: #fff0ee;
+      --caution-glow: rgba(179, 38, 30, 0.2);
+      --focus: #2f80ed;
+      --shadow: rgba(0, 0, 0, 0.16);
+      --title-shadow: transparent;
+    }
+
+    body.theme-sacred {
+      --bg: #03010a;
+      --text: #f0e6c8;
+      --muted: #bba979;
+      --title: #e8c84a;
+      --ctrl-bg: #1e1044;
+      --ctrl-text: #e8c84a;
+      --ctrl-border: #e8c84a;
+      --card-bg: #0e0826;
+      --card-border: #e8c84a;
+      --surface: #100923;
+      --soft: #1b1038;
+      --good: #72d89a;
+      --good-bg: #102d1d;
+      --good-glow: rgba(114, 216, 154, 0.28);
+      --caution: #ff9a92;
+      --caution-bg: #32100f;
+      --caution-glow: rgba(255, 154, 146, 0.26);
+      --focus: #7eb6ff;
+      --shadow: rgba(0, 0, 0, 0.45);
+      --title-shadow: rgba(232, 200, 74, 0.45);
+    }
+
+    body.theme-royal {
+      --bg: #061a10;
+      --text: #ffd700;
+      --muted: #e3c35a;
+      --title: #ffd700;
+      --ctrl-bg: #0e3d25;
+      --ctrl-text: #ffd700;
+      --ctrl-border: #ffd700;
+      --card-bg: #0a2e1c;
+      --card-border: #ffd700;
+      --surface: #092617;
+      --soft: #103b25;
+      --good: #a8f0b6;
+      --good-bg: #13391f;
+      --good-glow: rgba(168, 240, 182, 0.25);
+      --caution: #ffb4ab;
+      --caution-bg: #3f1712;
+      --caution-glow: rgba(255, 180, 171, 0.24);
+      --focus: #8fc7ff;
+      --shadow: rgba(0, 0, 0, 0.45);
+      --title-shadow: rgba(255, 215, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'K2D', sans-serif;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .theme-selector {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .theme-main-btn {
+      width: 48px;
+      height: 48px;
+      border: 2px solid var(--ctrl-border);
+      border-radius: 50%;
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      font-size: 18px;
+      font-weight: 800;
+      box-shadow: 0 4px 15px var(--shadow);
+    }
+
+    .theme-options {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 30px;
+      background: rgba(0, 0, 0, 0.76);
+      box-shadow: 0 8px 28px var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .theme-selector.open .theme-options {
+      display: flex;
+    }
+
+    .theme-btn {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+
+    .theme-btn.active {
+      outline: 3px solid rgba(47, 128, 237, 0.42);
+      border-color: var(--focus);
+    }
+
+    .btn-sacred {
+      background: linear-gradient(135deg, #03010a, #1e1044);
+    }
+
+    .btn-solar {
+      background: #ffffff;
+    }
+
+    .btn-royal {
+      background: linear-gradient(135deg, #061a10, #ffd700);
+    }
+
+    .btn-custom {
+      background: linear-gradient(135deg, #f00, #0f0, #00f);
+      color: #ffffff;
+      font-size: 18px;
+      text-decoration: none;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 clamp(8px, 3vw, 16px) 36px;
+    }
+
+    .tool-nav {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 6px;
+      margin: 68px 0 8px;
+      padding: 5px;
+      border: 2px solid var(--ctrl-border);
+      border-radius: 8px;
+      background: var(--ctrl-bg);
+    }
+
+    .tool-nav a {
+      min-width: 0;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 6px;
+      border-radius: 6px;
+      color: var(--ctrl-text);
+      font-size: clamp(14px, 3.8vw, 17px);
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    .tool-nav a.active {
+      background: var(--card-border);
+      color: var(--bg);
+    }
+
+    .page-head {
+      padding: 8px 0 8px;
+      text-align: center;
+    }
+
+    .page-head h1 {
+      margin: 0;
+      color: var(--title);
+      font-family: 'Srisakdi', cursive;
+      font-size: clamp(28px, 7.5vw, 54px);
+      line-height: 1.05;
+      text-shadow: 0 0 10px var(--title-shadow);
+    }
+
+    .range-summary {
+      min-height: 25px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .control-panel {
+      padding: 10px;
+      border: 2px solid var(--card-border);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, color-mix(in srgb, var(--card-bg) 92%, var(--good-bg) 8%), var(--card-bg) 48%, color-mix(in srgb, var(--card-bg) 92%, var(--caution-bg) 8%));
+      box-shadow: 0 8px 26px var(--shadow);
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+      padding: 4px;
+      border: 1px solid var(--ctrl-border);
+      border-radius: 8px;
+      background: var(--surface);
+    }
+
+    .segmented button,
+    .filter-row button,
+    .action-row button {
+      min-width: 0;
+      min-height: 42px;
+      padding: 0 6px;
+      border: 1px solid var(--ctrl-border);
+      border-radius: 6px;
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      font-weight: 800;
+      line-height: 1.15;
+    }
+
+    .segmented button.active,
+    .filter-row button.active {
+      background: var(--card-border);
+      color: var(--bg);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+      gap: 10px;
+    }
+
+    .field {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      min-width: 0;
+      min-height: 44px;
+      border: 2px solid var(--ctrl-border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 0 10px;
+      font-size: 17px;
+      font-weight: 800;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--focus);
+      box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.2);
+    }
+
+    body[data-age-mode="month"] .annual-only,
+    body[data-age-mode="year"] .month-only {
+      display: none;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .filter-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(110px, 100%), 1fr));
+      gap: 6px;
+      margin: 12px 0 8px;
+    }
+
+    .filter-row button[data-filter="good"].active {
+      background: var(--good);
+      color: #ffffff;
+      box-shadow: 0 0 0 3px var(--good-glow);
+    }
+
+    .filter-row button[data-filter="caution"].active {
+      background: var(--caution);
+      color: #ffffff;
+      box-shadow: 0 0 0 3px var(--caution-glow);
+    }
+
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin: 10px 0 8px;
+    }
+
+    .summary-pill {
+      min-width: 0;
+      padding: 8px 6px;
+      border: 1px solid var(--ctrl-border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      text-align: center;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+    }
+
+    .summary-pill strong {
+      display: block;
+      font-size: clamp(19px, 5.5vw, 26px);
+      line-height: 1;
+    }
+
+    .summary-pill span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .summary-pill.good {
+      border-color: var(--good);
+      background: var(--good-bg);
+      box-shadow: 0 0 18px var(--good-glow);
+    }
+
+    .summary-pill.caution {
+      border-color: var(--caution);
+      background: var(--caution-bg);
+      box-shadow: 0 0 18px var(--caution-glow);
+    }
+
+    .month-filter {
+      margin: 8px 0;
+    }
+
+    .month-filter select {
+      width: 100%;
+      min-height: 44px;
+      border: 2px solid var(--ctrl-border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 0 10px;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .notice {
+      min-height: 24px;
+      margin: 8px 2px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .results {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .day-card {
+      position: relative;
+      width: 100%;
+      min-height: 78px;
+      display: grid;
+      grid-template-columns: minmax(76px, 0.5fr) minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border: 2px solid var(--ctrl-border);
+      border-left-width: 7px;
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      text-align: left;
+      overflow: hidden;
+      box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+      transform: translateY(0);
+      animation: cardIn 0.32s ease both;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .day-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+    }
+
+    .day-card:active {
+      transform: scale(0.985);
+    }
+
+    .day-card:focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .day-card.good {
+      border-left-color: var(--good);
+      border-color: color-mix(in srgb, var(--good) 55%, var(--ctrl-border));
+      background:
+        linear-gradient(90deg, var(--good-bg), var(--surface) 52%),
+        var(--good-bg);
+      box-shadow: 0 8px 22px var(--good-glow);
+    }
+
+    .day-card.good::before {
+      background: linear-gradient(110deg, transparent 0%, rgba(255, 255, 255, 0.2) 42%, rgba(255, 255, 255, 0.75) 50%, rgba(255, 255, 255, 0.2) 58%, transparent 100%);
+      transform: translateX(-120%);
+      animation: goodSweep 3.8s ease-in-out infinite;
+      opacity: 1;
+    }
+
+    .day-card.caution {
+      border-left-color: var(--caution);
+      border-color: color-mix(in srgb, var(--caution) 62%, var(--ctrl-border));
+      background:
+        linear-gradient(90deg, var(--caution-bg), var(--surface) 55%),
+        var(--caution-bg);
+      box-shadow: 0 8px 22px var(--caution-glow);
+      animation: cardIn 0.32s ease both, cautionPulse 2.6s ease-in-out infinite;
+    }
+
+    .day-card.caution::before {
+      background: repeating-linear-gradient(135deg, transparent 0 10px, color-mix(in srgb, var(--caution) 20%, transparent) 10px 12px);
+      opacity: 0.2;
+    }
+
+    .date-line {
+      min-width: 0;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .date-year {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .house-line {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .house-name {
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    .house-short {
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .level {
+      min-width: 48px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+      box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.12);
+    }
+
+    .good .level {
+      background: var(--good);
+      color: #ffffff;
+      box-shadow: 0 0 14px var(--good-glow);
+    }
+
+    .caution .level {
+      background: var(--caution);
+      color: #ffffff;
+      box-shadow: 0 0 14px var(--caution-glow);
+    }
+
+    .empty-state {
+      padding: 24px 12px;
+      border: 2px dashed var(--ctrl-border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .sheet-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: flex-end;
+      background: rgba(0, 0, 0, 0.48);
+      padding: 12px;
+    }
+
+    .sheet-overlay.open {
+      display: flex;
+    }
+
+    .sheet {
+      width: min(100%, 720px);
+      max-height: 86vh;
+      margin: 0 auto;
+      overflow: auto;
+      border: 2px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      box-shadow: 0 18px 40px var(--shadow);
+      animation: sheetUp 0.22s ease both;
+    }
+
+    .sheet-head {
+      position: sticky;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px;
+      border-bottom: 1px solid var(--ctrl-border);
+      background: var(--surface);
+    }
+
+    .sheet-title {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .sheet-close {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--ctrl-border);
+      border-radius: 50%;
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .sheet-body {
+      padding: 14px;
+    }
+
+    .sheet-date {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .sheet-meaning {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.65;
+    }
+
+    .credit {
+      margin: 20px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .audio-group {
+      position: fixed;
+      bottom: 30px;
+      left: 0;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px 12px 12px 25px;
+      border: 1.5px solid #ffd700;
+      border-left: none;
+      border-radius: 0 45px 45px 0;
+      background: rgba(0, 0, 0, 0.5);
+      box-shadow: 5px 0 25px rgba(255, 215, 0, 0.2);
+      backdrop-filter: blur(12px);
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .music-btn,
+    .vol-toggle-btn,
+    .share-btn {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffd700, #b8860b);
+      color: #000000;
+      font-size: 23px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.5);
+      transition: transform 0.18s ease, filter 0.18s ease;
+    }
+
+    .music-btn:hover,
+    .vol-toggle-btn:hover,
+    .share-btn:hover {
+      filter: brightness(1.08);
+    }
+
+    .music-btn:active,
+    .vol-toggle-btn:active,
+    .share-btn:active {
+      transform: scale(0.9);
+    }
+
+    .vol-toggle-btn {
+      font-size: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .audio-group {
+        transform: translateX(-68%);
+      }
+
+      .audio-group.active {
+        transform: translateX(0);
+        background: rgba(0, 0, 0, 0.85);
+      }
+    }
+
+    .vol-container {
+      position: fixed;
+      bottom: 35px;
+      left: 100px;
+      z-index: 41;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      border: 1.5px solid #ffd700;
+      border-radius: 40px;
+      background: rgba(0, 0, 0, 0.9);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 215, 0, 0.2);
+      backdrop-filter: blur(15px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .vol-container input[type=range] {
+      width: 110px;
+      height: 6px;
+      border-radius: 3px;
+      appearance: none;
+      background: rgba(255, 215, 0, 0.2);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .vol-container input[type=range]::-webkit-slider-thumb {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      appearance: none;
+      background: #ffd700;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.9);
+    }
+
+    .share-group {
+      position: fixed;
+      right: 0;
+      bottom: 30px;
+      z-index: 39;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px 25px 12px 12px;
+      border: 1.5px solid #ffd700;
+      border-right: none;
+      border-radius: 45px 0 0 45px;
+      background: rgba(0, 0, 0, 0.5);
+      box-shadow: -5px 0 25px rgba(255, 215, 0, 0.2);
+      backdrop-filter: blur(12px);
+      transform: translateX(68%);
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .share-group.active {
+      transform: translateX(0);
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .share-notice {
+      position: fixed;
+      left: 50%;
+      bottom: 106px;
+      z-index: 52;
+      max-width: min(92vw, 520px);
+      padding: 12px 16px;
+      border: 1.5px solid #ffd700;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.88);
+      color: #ffd700;
+      font-size: 15px;
+      font-weight: 800;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 12px);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+
+    .share-notice.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (min-width: 680px) {
+      .results {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .app-shell {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+
+      .control-panel {
+        padding: 8px;
+      }
+
+      .form-grid {
+        gap: 8px;
+      }
+
+      .day-card {
+        grid-template-columns: 76px 1fr;
+        min-height: 84px;
+      }
+
+      .level {
+        grid-column: 2;
+        justify-self: start;
+      }
+    }
+
+    @media (max-width: 340px) {
+      .tool-nav,
+      .segmented {
+        grid-template-columns: 1fr;
+      }
+
+      .day-card {
+        grid-template-columns: 1fr;
+      }
+
+      .level {
+        grid-column: 1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .day-card,
+      .day-card.good::before,
+      .day-card.caution,
+      .sheet {
+        animation: none;
+      }
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes goodSweep {
+      0%,
+      62% {
+        transform: translateX(-120%);
+      }
+
+      100% {
+        transform: translateX(120%);
+      }
+    }
+
+    @keyframes cautionPulse {
+      0%,
+      100% {
+        box-shadow: 0 8px 22px var(--caution-glow);
+      }
+
+      50% {
+        box-shadow: 0 8px 28px color-mix(in srgb, var(--caution-glow) 60%, var(--caution));
+      }
+    }
+
+    @keyframes sheetUp {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body data-age-mode="month">
+  <div class="theme-selector" id="themeSelector">
+    <button class="theme-main-btn" type="button" title="เลือกธีม">🌗</button>
+    <div class="theme-options">
+      <button class="theme-btn btn-sacred" type="button" data-theme="sacred" title="มืด"></button>
+      <button class="theme-btn btn-solar active" type="button" data-theme="solar" title="สว่าง"></button>
+      <button class="theme-btn btn-royal" type="button" data-theme="royal" title="มรกต"></button>
+      <a href="SongkranZodiac_Custom.html" class="theme-btn btn-custom" title="ออกแบบเอง">🎨</a>
+    </div>
+  </div>
+
+  <audio
+    id="bgMusic"
+    preload="metadata"
+    src="https://cdn1.suno.ai/b0aadeef-7861-4e8e-b972-f5b1bd76698d.mp3"
+    data-playlist-url="https://suno.com/playlist/1473c3a5-7c1d-48e2-9840-eb0cf32d941e"
+    data-track-title="โชคชะตาแห่งดวงดาว - Destiny of the Stars"></audio>
+
+  <div class="audio-group" id="audioGroup">
+    <button id="toggleMusic" class="music-btn" type="button" title="ฟังเพลง">🎵</button>
+    <button id="volToggle" class="vol-toggle-btn" type="button" title="เสียง">🔊</button>
+  </div>
+
+  <div class="vol-container" id="volContainer" style="opacity: 0; pointer-events: none; transform: translateX(-20px);">
+    <span style="color: #ffd700; font-size: 18px;">🔈</span>
+    <input type="range" min="0" max="1" step="0.01" value="0.5" aria-label="ระดับเสียง">
+    <span style="color: #ffd700; font-size: 18px;">🔊</span>
+  </div>
+
+  <div class="share-group" id="shareGroup">
+    <button id="shareImageBtn" class="share-btn" type="button" title="แชร์รูป">📤</button>
+    <button id="saveImageFloatBtn" class="share-btn" type="button" title="บันทึกรูป">💾</button>
+  </div>
+  <div id="shareNotice" class="share-notice" role="status" aria-live="polite"></div>
+
+  <main class="app-shell">
+    <nav class="tool-nav" aria-label="เครื่องมือดูดวง">
+      <a href="index.html">ปีนักษัตรสงกรานต์</a>
+      <a class="active" href="age-cycle.html">อายุจรประจำปี</a>
+    </nav>
+
+    <header class="page-head">
+      <h1>อายุจรประจำปี</h1>
+      <div class="range-summary" id="rangeSummary"></div>
+    </header>
+
+    <section class="control-panel" aria-label="ตั้งค่าอายุจร">
+      <div class="segmented" aria-label="โหมดคำนวณ">
+        <button class="active" type="button" data-mode="month">รายเดือน</button>
+        <button type="button" data-mode="year">ครบ 1 ปี</button>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="birthDay">วันที่เกิด</label>
+          <select id="birthDay"></select>
+        </div>
+        <div class="field annual-only">
+          <label for="birthMonth">เดือนเกิด</label>
+          <select id="birthMonth"></select>
+        </div>
+        <div class="field month-only">
+          <label for="targetMonth">เดือนที่ดู</label>
+          <select id="targetMonth"></select>
+        </div>
+        <div class="field">
+          <label for="targetYear">ปีที่ดู พ.ศ.</label>
+          <input id="targetYear" type="number" inputmode="numeric" min="2400" max="2800">
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button id="todayBtn" type="button">วันนี้ตกอะไร</button>
+        <button id="copyBtn" type="button">คัดลอกผลย่อ</button>
+      </div>
+    </section>
+
+    <div class="filter-row" aria-label="กรองผลลัพธ์">
+      <button class="active" type="button" data-filter="all">ทั้งหมด</button>
+      <button type="button" data-filter="good">วันดี</button>
+      <button type="button" data-filter="caution">วันไม่ดี</button>
+    </div>
+
+    <div class="summary-strip" id="summaryStrip" aria-label="สรุปวันดีและวันไม่ดี"></div>
+
+    <div class="month-filter annual-only">
+      <select id="resultMonth" aria-label="เดือนในผลลัพธ์"></select>
+    </div>
+
+    <div class="notice" id="notice" role="status" aria-live="polite"></div>
+    <section class="results" id="results" aria-live="polite"></section>
+
+    <div class="credit">Developed with ❤️ by คนโบราณ</div>
+  </main>
+
+  <div class="sheet-overlay" id="sheetOverlay" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <article class="sheet">
+      <header class="sheet-head">
+        <h2 class="sheet-title" id="sheetTitle"></h2>
+        <button class="sheet-close" id="sheetClose" type="button" aria-label="ปิด">×</button>
+      </header>
+      <div class="sheet-body">
+        <p class="sheet-date" id="sheetDate"></p>
+        <p class="sheet-meaning" id="sheetMeaning"></p>
+      </div>
+    </article>
+  </div>
+
+  <script>
+    const MONTHS = [
+      { short: 'ม.ค.', full: 'มกราคม' },
+      { short: 'ก.พ.', full: 'กุมภาพันธ์' },
+      { short: 'มี.ค.', full: 'มีนาคม' },
+      { short: 'เม.ย.', full: 'เมษายน' },
+      { short: 'พ.ค.', full: 'พฤษภาคม' },
+      { short: 'มิ.ย.', full: 'มิถุนายน' },
+      { short: 'ก.ค.', full: 'กรกฎาคม' },
+      { short: 'ส.ค.', full: 'สิงหาคม' },
+      { short: 'ก.ย.', full: 'กันยายน' },
+      { short: 'ต.ค.', full: 'ตุลาคม' },
+      { short: 'พ.ย.', full: 'พฤศจิกายน' },
+      { short: 'ธ.ค.', full: 'ธันวาคม' }
+    ];
+
+    const HOUSES = [
+      {
+        name: 'ตนุ',
+        short: 'ตัวเราเอง การเริ่มต้น การตัดสินใจ',
+        meaning: 'ตัวเราเองผู้กระทำเอง สั่งการเอง ลงมือเอง ตัดสินใจเอง',
+        level: 'neutral'
+      },
+      {
+        name: 'กดุมภะ',
+        short: 'การเงิน ทรัพย์ รายรับรายจ่าย',
+        meaning: 'การเงิน ข้อนี้มันร้ายนักจะฆ่ากันตายเพราะเรื่องเงิน',
+        level: 'neutral'
+      },
+      {
+        name: 'สหัชชะ',
+        short: 'การเดินทาง ญาติพี่น้อง เพื่อนฝูง',
+        meaning: 'การเดินทางไกล ใกล้ ญาติพี่น้อง เพื่อนฝูง',
+        level: 'neutral'
+      },
+      {
+        name: 'พันธุ',
+        short: 'บ้าน ที่ดิน พ่อแม่ ญาติ',
+        meaning: 'สมบัติ ที่ดิน งานบ้าน งานข้างนอก พ่อ-แม่ ญาติพี่น้อง',
+        level: 'neutral'
+      },
+      {
+        name: 'ปุตตะ',
+        short: 'รายได้ ลูกบริวาร เงินเข้า',
+        meaning: 'รายได้ ลูกบริวาร การใช้จ่าย มีเงินเข้ามา',
+        level: 'neutral'
+      },
+      {
+        name: 'อริ',
+        short: 'อุปสรรค หนี้สิน ป่วย ถูกโกง',
+        meaning: 'อุปสรรค นานา หนี้สิน วิตก ถูกโกง ป่วยไข้ อุบัติเหตุ ถูกจองจำ ตาย',
+        level: 'caution'
+      },
+      {
+        name: 'ปัตนิ',
+        short: 'คู่ครอง คู่สัญญา หุ้นส่วน',
+        meaning: 'สามี - ภรรยา คู่สัญญา คู่ชู้ หุ้นส่วน คนรู้จักเก่าแก่',
+        level: 'neutral'
+      },
+      {
+        name: 'มรณะ',
+        short: 'สูญเสีย ห่างไกล ขาดทุน',
+        meaning: 'ความตาย สูญเสีย ห่างไกล ว่างเปล่า ขาดทุน เสียหาย ถูกจองจำ ตาย',
+        level: 'caution'
+      },
+      {
+        name: 'ศุภะ',
+        short: 'ความเจริญรุ่งเรือง',
+        meaning: 'ความเจริญรุ่งเรืองส่วนตัว ทั้งในบ้านและที่ทำงาน',
+        level: 'good'
+      },
+      {
+        name: 'กัมมะ',
+        short: 'งาน การติดต่อ การจัดการ',
+        meaning: 'งานที่ติดต่อ บริหารจัดการ ในครัวเรือน และนอกบ้าน',
+        level: 'neutral'
+      },
+      {
+        name: 'ลาภะ',
+        short: 'โชคลาภ ลาภผล',
+        meaning: 'โชคลาภ ลาภผลที่ได้รับมา จะมีจะหมดว่ากันไป',
+        level: 'good'
+      },
+      {
+        name: 'วินาศ',
+        short: 'สูญเสีย เหนื่อยล้า วิตก',
+        meaning: 'ความสูญเสีย เหนื่อยล้า วิตกกังวล ว่างเปล่า ขาดทุน ถูกจองจำ ตาย',
+        level: 'caution'
+      }
+    ];
+
+    const state = {
+      mode: 'month',
+      filter: 'all',
+      resultMonth: 'all',
+      items: []
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const AGE_SETTINGS_KEY = 'ageCycleSettings';
+    const AGE_THEME_KEY = 'ageCycleTheme';
+    const MUSIC_PLAYLIST = [
+      {
+        title: 'โชคชะตาแห่งดวงดาว - Destiny of the Stars',
+        url: 'https://cdn1.suno.ai/b0aadeef-7861-4e8e-b972-f5b1bd76698d.mp3'
+      },
+      {
+        title: 'ชะตาแห่งดวงดาว - Destiny of the Stars',
+        url: 'https://cdn1.suno.ai/b1936e1e-2c3e-4c0a-8fe8-e671f31f13bb.mp3'
+      },
+      {
+        title: 'โชคชะตาแห่งดวงดาว - Destiny of the Stars',
+        url: 'https://cdn1.suno.ai/c95ce48b-cd01-4a99-9209-4dde6b47622a.mp3'
+      },
+      {
+        title: 'ชะตาแห่งดวงดาว - Destiny of the Stars',
+        url: 'https://cdn1.suno.ai/b843c822-bfb4-4873-b3a0-48f3a9a07ed0.mp3'
+      }
+    ];
+    let musicPlaying = false;
+    let volTimer = null;
+    let audioGroupTimer = null;
+    let shareGroupTimer = null;
+    let shareNoticeTimer = null;
+
+    function currentBEYear() {
+      return new Date().getFullYear() + 543;
+    }
+
+    function daysInMonth(adYear, monthIndex) {
+      return new Date(adYear, monthIndex + 1, 0).getDate();
+    }
+
+    function dateKey(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function monthKey(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    function formatDate(date, includeYear = false) {
+      const base = `${date.getDate()} ${MONTHS[date.getMonth()].short}`;
+      return includeYear ? `${base} ${date.getFullYear() + 543}` : base;
+    }
+
+    function levelLabel(level) {
+      if (level === 'good') return 'ดี';
+      if (level === 'caution') return 'ไม่ดี';
+      return 'กลาง';
+    }
+
+    function populateSelects() {
+      $('birthDay').innerHTML = Array.from({ length: 31 }, (_, i) => {
+        const day = i + 1;
+        return `<option value="${day}">${day}</option>`;
+      }).join('');
+
+      const monthOptions = MONTHS.map((month, index) => (
+        `<option value="${index}">${month.full}</option>`
+      )).join('');
+
+      $('birthMonth').innerHTML = monthOptions;
+      $('targetMonth').innerHTML = monthOptions;
+      $('targetYear').value = currentBEYear();
+      $('birthDay').value = '29';
+      $('birthMonth').value = '0';
+      $('targetMonth').value = '0';
+    }
+
+    function saveAgeSettings() {
+      const settings = {
+        mode: state.mode,
+        filter: state.filter,
+        resultMonth: state.resultMonth,
+        birthDay: $('birthDay')?.value || '29',
+        birthMonth: $('birthMonth')?.value || '0',
+        targetMonth: $('targetMonth')?.value || '0',
+        targetYear: $('targetYear')?.value || String(currentBEYear()),
+        theme: document.body.classList.contains('theme-sacred')
+          ? 'sacred'
+          : document.body.classList.contains('theme-royal')
+            ? 'royal'
+            : 'solar'
+      };
+      localStorage.setItem(AGE_SETTINGS_KEY, JSON.stringify(settings));
+      localStorage.setItem(AGE_THEME_KEY, settings.theme);
+    }
+
+    function restoreAgeSettings() {
+      let settings = {};
+      try {
+        settings = JSON.parse(localStorage.getItem(AGE_SETTINGS_KEY) || '{}') || {};
+      } catch (error) {
+        settings = {};
+      }
+
+      const theme = settings.theme || localStorage.getItem(AGE_THEME_KEY) || 'solar';
+      setTheme(theme, false);
+
+      if (settings.birthDay) $('birthDay').value = settings.birthDay;
+      if (settings.birthMonth) $('birthMonth').value = settings.birthMonth;
+      if (settings.targetMonth) $('targetMonth').value = settings.targetMonth;
+      if (settings.targetYear) $('targetYear').value = settings.targetYear;
+
+      state.mode = settings.mode === 'year' ? 'year' : 'month';
+      state.filter = ['all', 'good', 'caution'].includes(settings.filter) ? settings.filter : 'all';
+      state.resultMonth = settings.resultMonth || 'all';
+      document.body.dataset.ageMode = state.mode;
+      document.querySelectorAll('[data-mode]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.mode === state.mode);
+      });
+      activateFilterButton();
+    }
+
+    function readInputs() {
+      return {
+        birthDay: Number($('birthDay').value),
+        birthMonth: Number($('birthMonth').value),
+        targetMonth: Number($('targetMonth').value),
+        beYear: Number($('targetYear').value),
+        adYear: Number($('targetYear').value) - 543
+      };
+    }
+
+    function buildMonthly() {
+      const { birthDay, targetMonth, beYear, adYear } = readInputs();
+      const monthDays = daysInMonth(adYear, targetMonth);
+
+      if (!beYear || birthDay > monthDays) {
+        return {
+          error: `เดือน${MONTHS[targetMonth].full} พ.ศ. ${beYear || ''} ไม่มีวันที่ ${birthDay}`
+        };
+      }
+
+      const items = [];
+      for (let day = 1; day <= monthDays; day++) {
+        const offset = day >= birthDay
+          ? day - birthDay
+          : (monthDays - birthDay + 1) + (day - 1);
+        const house = HOUSES[offset % HOUSES.length];
+        const itemDate = new Date(adYear, targetMonth, day);
+        items.push({
+          date: itemDate,
+          house,
+          order: offset,
+          key: dateKey(itemDate)
+        });
+      }
+
+      items.sort((a, b) => a.order - b.order);
+      return {
+        items,
+        summary: `เริ่ม ${birthDay} ${MONTHS[targetMonth].short} ${beYear} ที่ตนุ`
+      };
+    }
+
+    function nextAnnualStart(adYear, monthIndex, day) {
+      const maxDay = daysInMonth(adYear + 1, monthIndex);
+      return new Date(adYear + 1, monthIndex, Math.min(day, maxDay));
+    }
+
+    function buildAnnual() {
+      const { birthDay, birthMonth, beYear, adYear } = readInputs();
+      const monthDays = daysInMonth(adYear, birthMonth);
+
+      if (!beYear || birthDay > monthDays) {
+        return {
+          error: `เดือน${MONTHS[birthMonth].full} พ.ศ. ${beYear || ''} ไม่มีวันที่ ${birthDay}`
+        };
+      }
+
+      const start = new Date(adYear, birthMonth, birthDay);
+      const end = nextAnnualStart(adYear, birthMonth, birthDay);
+      const items = [];
+      let index = 0;
+      for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {
+        const house = HOUSES[index % HOUSES.length];
+        items.push({
+          date: new Date(cursor),
+          house,
+          order: index,
+          key: dateKey(cursor)
+        });
+        index += 1;
+      }
+
+      return {
+        items,
+        summary: `${formatDate(start, true)} ถึง ${formatDate(new Date(end.getFullYear(), end.getMonth(), end.getDate() - 1), true)}`
+      };
+    }
+
+    function buildMonthOptions(items) {
+      const seen = new Map();
+      items.forEach((item) => {
+        const key = monthKey(item.date);
+        if (!seen.has(key)) {
+          seen.set(key, `${MONTHS[item.date.getMonth()].full} ${item.date.getFullYear() + 543}`);
+        }
+      });
+
+      $('resultMonth').innerHTML = [
+        '<option value="all">ทุกเดือนในรอบนี้</option>',
+        ...Array.from(seen, ([key, label]) => `<option value="${key}">${label}</option>`)
+      ].join('');
+
+      if (!seen.has(state.resultMonth)) {
+        state.resultMonth = 'all';
+      }
+      $('resultMonth').value = state.resultMonth;
+    }
+
+    function filteredItems() {
+      return state.items.filter((item) => {
+        if (state.filter !== 'all' && item.house.level !== state.filter) return false;
+        if (state.mode === 'year' && state.resultMonth !== 'all' && monthKey(item.date) !== state.resultMonth) return false;
+        return true;
+      });
+    }
+
+    function renderSummaryStrip() {
+      const counts = state.items.reduce((acc, item) => {
+        acc[item.house.level] = (acc[item.house.level] || 0) + 1;
+        return acc;
+      }, { good: 0, neutral: 0, caution: 0 });
+
+      $('summaryStrip').innerHTML = `
+        <div class="summary-pill good"><strong>${counts.good || 0}</strong><span>วันดี</span></div>
+        <div class="summary-pill"><strong>${counts.neutral || 0}</strong><span>วันกลาง</span></div>
+        <div class="summary-pill caution"><strong>${counts.caution || 0}</strong><span>วันไม่ดี</span></div>
+      `;
+    }
+
+    function render() {
+      const result = state.mode === 'month' ? buildMonthly() : buildAnnual();
+
+      if (result.error) {
+        state.items = [];
+        $('rangeSummary').textContent = '';
+        $('summaryStrip').innerHTML = '';
+        $('notice').textContent = result.error;
+        $('results').innerHTML = '<div class="empty-state">เลือกวันที่ใหม่อีกครั้ง</div>';
+        return;
+      }
+
+      state.items = result.items;
+      $('rangeSummary').textContent = result.summary;
+      $('notice').textContent = '';
+
+      if (state.mode === 'year') {
+        buildMonthOptions(state.items);
+      }
+
+      renderSummaryStrip();
+      renderCards();
+    }
+
+    function renderCards() {
+      const items = filteredItems();
+      if (!items.length) {
+        $('results').innerHTML = '<div class="empty-state">ไม่มีวันที่ตรงกับตัวกรองนี้</div>';
+        return;
+      }
+
+      $('results').innerHTML = items.map((item, index) => {
+        const includeYear = state.mode === 'year';
+        const level = item.house.level;
+        const levelClass = level === 'neutral' ? '' : level;
+        const delay = Math.min(index, 16) * 0.025;
+        return `
+          <button class="day-card ${levelClass}" type="button" data-key="${item.key}" style="animation-delay: ${delay}s">
+            <span class="date-line">
+              ${formatDate(item.date, false)}
+              ${includeYear ? `<span class="date-year">${item.date.getFullYear() + 543}</span>` : ''}
+            </span>
+            <span class="house-line">
+              <span class="house-name">${item.house.name}</span>
+              <span class="house-short">${item.house.short}</span>
+            </span>
+            <span class="level">${levelLabel(level)}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function openSheet(key) {
+      const item = state.items.find((entry) => entry.key === key);
+      if (!item) return;
+      $('sheetTitle').textContent = item.house.name;
+      $('sheetDate').textContent = `${formatDate(item.date, true)} · ${levelLabel(item.house.level)}`;
+      $('sheetMeaning').textContent = item.house.meaning;
+      $('sheetOverlay').classList.add('open');
+    }
+
+    function closeSheet() {
+      $('sheetOverlay').classList.remove('open');
+    }
+
+    function setMode(mode) {
+      state.mode = mode;
+      state.resultMonth = 'all';
+      document.body.dataset.ageMode = mode;
+      document.querySelectorAll('[data-mode]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.mode === mode);
+      });
+      render();
+      saveAgeSettings();
+    }
+
+    function setFilter(filter) {
+      state.filter = filter;
+      document.querySelectorAll('[data-filter]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.filter === filter);
+      });
+      renderCards();
+      saveAgeSettings();
+    }
+
+    function activateFilterButton() {
+      document.querySelectorAll('[data-filter]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.filter === state.filter);
+      });
+    }
+
+    function revealToday(today) {
+      const key = dateKey(today);
+      const card = document.querySelector(`.day-card[data-key="${key}"]`);
+      if (card) {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        card.focus({ preventScroll: true });
+        openSheet(key);
+        $('notice').textContent = '';
+      } else {
+        $('notice').textContent = 'วันนี้ไม่ได้อยู่ในผลลัพธ์ที่กำลังแสดง';
+      }
+    }
+
+    function jumpToToday() {
+      const today = new Date();
+      state.filter = 'all';
+      activateFilterButton();
+
+      if (state.mode === 'month') {
+        $('targetMonth').value = String(today.getMonth());
+        $('targetYear').value = String(today.getFullYear() + 543);
+        render();
+        requestAnimationFrame(() => revealToday(today));
+        return;
+      }
+
+      renderCards();
+      requestAnimationFrame(() => revealToday(today));
+    }
+
+    async function copySummary() {
+      const items = filteredItems().slice(0, 24);
+      if (!items.length) return;
+      const lines = items.map((item) => (
+        `${formatDate(item.date, true)}: ${item.house.name} (${levelLabel(item.house.level)})`
+      ));
+      const more = filteredItems().length > items.length ? `\n...อีก ${filteredItems().length - items.length} วัน` : '';
+      const text = [`อายุจรประจำปี`, $('rangeSummary').textContent, ...lines].join('\n') + more;
+      try {
+        await navigator.clipboard.writeText(text);
+        $('notice').textContent = 'คัดลอกแล้ว';
+      } catch (error) {
+        $('notice').textContent = text;
+      }
+    }
+
+    function cssVar(name, fallback) {
+      const value = getComputedStyle(document.body).getPropertyValue(name).trim();
+      return value || fallback;
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      const radius = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + w, y, x + w, y + h, radius);
+      ctx.arcTo(x + w, y + h, x, y + h, radius);
+      ctx.arcTo(x, y + h, x, y, radius);
+      ctx.arcTo(x, y, x + w, y, radius);
+      ctx.closePath();
+    }
+
+    function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 2) {
+      const words = String(text).split(' ');
+      const lines = [];
+      let line = '';
+      words.forEach((word) => {
+        const test = line ? `${line} ${word}` : word;
+        if (ctx.measureText(test).width > maxWidth && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = test;
+        }
+      });
+      if (line) lines.push(line);
+      lines.slice(0, maxLines).forEach((lineText, index) => {
+        const suffix = index === maxLines - 1 && lines.length > maxLines ? '…' : '';
+        ctx.fillText(lineText + suffix, x, y + index * lineHeight);
+      });
+      return Math.min(lines.length, maxLines) * lineHeight;
+    }
+
+    function createExportCanvas() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1200;
+      canvas.height = 1600;
+      const ctx = canvas.getContext('2d');
+      const bg = cssVar('--bg', '#ffffff');
+      const text = cssVar('--text', '#1a1a1a');
+      const muted = cssVar('--muted', '#656565');
+      const card = cssVar('--surface', '#ffffff');
+      const gold = cssVar('--card-border', '#c8951a');
+      const good = cssVar('--good', '#147d49');
+      const goodBg = cssVar('--good-bg', '#e9f7ef');
+      const caution = cssVar('--caution', '#b3261e');
+      const cautionBg = cssVar('--caution-bg', '#fff0ee');
+      const soft = cssVar('--soft', '#f6f3ea');
+      const items = filteredItems();
+      const counts = state.items.reduce((acc, item) => {
+        acc[item.house.level] = (acc[item.house.level] || 0) + 1;
+        return acc;
+      }, { good: 0, neutral: 0, caution: 0 });
+
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = text;
+      ctx.font = "800 72px 'K2D', sans-serif";
+      ctx.fillText('อายุจรประจำปี', 600, 105);
+      ctx.font = "700 34px 'K2D', sans-serif";
+      ctx.fillStyle = muted;
+      ctx.fillText($('rangeSummary').textContent || '', 600, 158);
+
+      const pillY = 205;
+      const pills = [
+        { label: 'วันดี', count: counts.good || 0, fill: goodBg, color: good },
+        { label: 'วันกลาง', count: counts.neutral || 0, fill: soft, color: text },
+        { label: 'วันไม่ดี', count: counts.caution || 0, fill: cautionBg, color: caution }
+      ];
+      pills.forEach((pill, index) => {
+        const x = 80 + index * 360;
+        roundRect(ctx, x, pillY, 320, 120, 24);
+        ctx.fillStyle = pill.fill;
+        ctx.fill();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = pill.color;
+        ctx.stroke();
+        ctx.fillStyle = pill.color;
+        ctx.font = "800 44px 'K2D', sans-serif";
+        ctx.fillText(String(pill.count), x + 160, pillY + 52);
+        ctx.font = "800 28px 'K2D', sans-serif";
+        ctx.fillText(pill.label, x + 160, pillY + 92);
+      });
+
+      ctx.textAlign = 'left';
+      let y = 380;
+      const visible = items.slice(0, 14);
+      visible.forEach((item) => {
+        const level = item.house.level;
+        const accent = level === 'good' ? good : level === 'caution' ? caution : '#444444';
+        const fill = level === 'good' ? goodBg : level === 'caution' ? cautionBg : card;
+        roundRect(ctx, 70, y, 1060, 78, 20);
+        ctx.fillStyle = fill;
+        ctx.fill();
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = accent;
+        ctx.stroke();
+        ctx.fillStyle = accent;
+        ctx.fillRect(70, y, 14, 78);
+
+        ctx.fillStyle = text;
+        ctx.font = "800 32px 'K2D', sans-serif";
+        ctx.fillText(formatDate(item.date, state.mode === 'year'), 105, y + 49);
+        ctx.font = "800 32px 'K2D', sans-serif";
+        ctx.fillText(item.house.name, 330, y + 37);
+        ctx.font = "700 23px 'K2D', sans-serif";
+        ctx.fillStyle = muted;
+        drawWrappedText(ctx, item.house.short, 330, y + 66, 540, 26, 1);
+
+        ctx.textAlign = 'center';
+        roundRect(ctx, 965, y + 21, 110, 38, 19);
+        ctx.fillStyle = level === 'good' ? good : level === 'caution' ? caution : soft;
+        ctx.fill();
+        ctx.fillStyle = level === 'neutral' ? text : '#ffffff';
+        ctx.font = "800 22px 'K2D', sans-serif";
+        ctx.fillText(levelLabel(level), 1020, y + 47);
+        ctx.textAlign = 'left';
+        y += 92;
+      });
+
+      if (items.length > visible.length) {
+        ctx.textAlign = 'center';
+        ctx.fillStyle = muted;
+        ctx.font = "800 28px 'K2D', sans-serif";
+        ctx.fillText(`และอีก ${items.length - visible.length} วัน`, 600, y + 18);
+      }
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = muted;
+      ctx.font = "700 24px 'K2D', sans-serif";
+      ctx.fillText('Developed with ❤️ by คนโบราณ', 600, 1540);
+      return canvas;
+    }
+
+    function exportFileName() {
+      const y = $('targetYear').value || currentBEYear();
+      const mode = state.mode === 'year' ? 'annual' : MONTHS[Number($('targetMonth').value || 0)].short.replace('.', '');
+      return `age-cycle-${y}-${mode}.png`;
+    }
+
+    function canvasToBlob(canvas) {
+      return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    }
+
+    function canvasToPngBlobSync(canvas) {
+      const dataUrl = canvas.toDataURL('image/png');
+      const parts = dataUrl.split(',');
+      const binary = atob(parts[1]);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return new Blob([bytes], { type: 'image/png' });
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1200);
+    }
+
+    function showShareNotice(message) {
+      const notice = $('shareNotice');
+      if (!notice) return;
+      notice.textContent = message;
+      notice.classList.add('show');
+      clearTimeout(shareNoticeTimer);
+      shareNoticeTimer = setTimeout(() => notice.classList.remove('show'), 3600);
+    }
+
+    async function saveCurrentImage() {
+      render();
+      const canvas = createExportCanvas();
+      const blob = await canvasToBlob(canvas);
+      if (!blob) return;
+      downloadBlob(blob, exportFileName());
+      activateShareGroup();
+    }
+
+    async function shareCurrentImage() {
+      render();
+      const canvas = createExportCanvas();
+      const filename = exportFileName();
+      const blob = canvasToPngBlobSync(canvas);
+      if (!blob) return;
+      if (typeof File === 'undefined') {
+        showShareNotice('เครื่องนี้ไม่รองรับแชร์ไฟล์ภาพ กำลังบันทึกรูปแทน');
+        downloadBlob(blob, filename);
+        activateShareGroup();
+        return;
+      }
+
+      const file = new File([blob], filename, { type: 'image/png' });
+      const shareData = {
+        title: 'อายุจรประจำปี',
+        text: $('rangeSummary').textContent || 'อายุจรประจำปี',
+        files: [file]
+      };
+
+      if (navigator.share && window.isSecureContext && (!navigator.canShare || navigator.canShare(shareData))) {
+        try {
+          await navigator.share(shareData);
+          activateShareGroup();
+          return;
+        } catch (error) {
+          if (error && error.name === 'AbortError') return;
+          showShareNotice('แชร์ไม่สำเร็จ กำลังบันทึกรูปแทน');
+        }
+      } else {
+        showShareNotice('แชร์ตรงต้องเปิดผ่าน HTTPS/localhost กำลังบันทึกรูปแทน');
+      }
+      downloadBlob(blob, filename);
+      activateShareGroup();
+    }
+
+    function activateShareGroup() {
+      const group = $('shareGroup');
+      if (!group) return;
+      group.classList.add('active');
+      clearTimeout(shareGroupTimer);
+      shareGroupTimer = setTimeout(() => group.classList.remove('active'), 5000);
+    }
+
+    function normalizeMusicIndex(index) {
+      return ((Number(index) || 0) % MUSIC_PLAYLIST.length + MUSIC_PLAYLIST.length) % MUSIC_PLAYLIST.length;
+    }
+
+    function getStoredMusicIndex() {
+      return normalizeMusicIndex(localStorage.getItem('zodiacMusicTrackIndex'));
+    }
+
+    function restoredMusicTime() {
+      const saved = Number(localStorage.getItem('zodiacMusicTime')) || 0;
+      const wasPlaying = localStorage.getItem('zodiacMusicPlaying') === 'true';
+      const savedAt = Number(localStorage.getItem('zodiacMusicLastSavedAt')) || 0;
+      if (!wasPlaying || !savedAt) return saved;
+      return saved + Math.max(0, (Date.now() - savedAt) / 1000);
+    }
+
+    function setMusicTrack(index, startTime = 0) {
+      const music = $('bgMusic');
+      if (!music) return null;
+      const safeIndex = normalizeMusicIndex(index);
+      const track = MUSIC_PLAYLIST[safeIndex];
+      if (!music.src || music.src !== track.url) {
+        music.src = track.url;
+        music.load();
+      }
+      music.dataset.trackIndex = String(safeIndex);
+      music.dataset.trackTitle = track.title;
+      localStorage.setItem('zodiacMusicTrackIndex', String(safeIndex));
+
+      const time = Number(startTime) || 0;
+      if (time > 0) {
+        const applyTime = () => {
+          try {
+            const maxTime = Number.isFinite(music.duration) ? Math.max(0, music.duration - 0.5) : time;
+            music.currentTime = Math.min(time, maxTime);
+          } catch (error) {
+            console.warn('Could not restore music time', error);
+          }
+        };
+        if (music.readyState >= 1) applyTime();
+        else music.addEventListener('loadedmetadata', applyTime, { once: true });
+      }
+      return track;
+    }
+
+    function updateMusicButton(playing) {
+      const button = $('toggleMusic');
+      if (!button) return;
+      button.textContent = playing ? '🔊' : '🎵';
+      button.style.background = playing ? '#00ff00' : 'linear-gradient(135deg, #ffd700, #b8860b)';
+    }
+
+    function saveMusicState() {
+      const music = $('bgMusic');
+      if (!music) return;
+      if (Number.isFinite(music.currentTime)) {
+        localStorage.setItem('zodiacMusicTime', String(music.currentTime));
+      }
+      localStorage.setItem('zodiacMusicTrackIndex', music.dataset.trackIndex || '0');
+      localStorage.setItem('zodiacMusicPlaying', music.paused ? 'false' : 'true');
+      localStorage.setItem('zodiacMusicLastSavedAt', String(Date.now()));
+    }
+
+    function playCurrentMusic() {
+      const music = $('bgMusic');
+      if (!music) return Promise.resolve();
+      musicPlaying = true;
+      return music.play().then(() => {
+        updateMusicButton(true);
+        localStorage.setItem('zodiacMusicPlaying', 'true');
+        localStorage.setItem('zodiacMusicLastSavedAt', String(Date.now()));
+      }).catch((error) => {
+        musicPlaying = false;
+        updateMusicButton(false);
+        showShareNotice('แตะปุ่มเพลงเพื่อเล่นต่อ');
+        console.warn('Audio play blocked', error);
+      });
+    }
+
+    function playNextMusicTrack() {
+      const music = $('bgMusic');
+      const current = music ? Number(music.dataset.trackIndex || getStoredMusicIndex()) : getStoredMusicIndex();
+      setMusicTrack(current + 1, 0);
+      localStorage.setItem('zodiacMusicTime', '0');
+      localStorage.setItem('zodiacMusicLastSavedAt', String(Date.now()));
+      playCurrentMusic();
+    }
+
+    function toggleMusic() {
+      const music = $('bgMusic');
+      if (!music) return;
+      if (music.paused) {
+        setMusicTrack(getStoredMusicIndex(), restoredMusicTime());
+        playCurrentMusic();
+      } else {
+        musicPlaying = false;
+        music.pause();
+        updateMusicButton(false);
+        const volume = $('volContainer');
+        volume.style.opacity = '0';
+        volume.style.pointerEvents = 'none';
+        saveMusicState();
+        localStorage.setItem('zodiacMusicPlaying', 'false');
+      }
+    }
+
+    function showVolume() {
+      const volume = $('volContainer');
+      const isHidden = volume.style.opacity === '0';
+      if (isHidden) {
+        volume.style.opacity = '1';
+        volume.style.pointerEvents = 'auto';
+        volume.style.transform = 'translateX(0)';
+      } else {
+        volume.style.opacity = '0';
+        volume.style.pointerEvents = 'none';
+        volume.style.transform = 'translateX(-20px)';
+      }
+      clearTimeout(volTimer);
+      if (!isHidden) return;
+      volTimer = setTimeout(() => {
+        if (musicPlaying) {
+          volume.style.opacity = '0';
+          volume.style.pointerEvents = 'none';
+          volume.style.transform = 'translateX(-20px)';
+        }
+      }, 3000);
+    }
+
+    function setVolume(value) {
+      const music = $('bgMusic');
+      if (!music) return;
+      music.volume = value;
+      localStorage.setItem('zodiacMusicVolume', value);
+      const volume = $('volContainer');
+      volume.style.opacity = '1';
+      volume.style.pointerEvents = 'auto';
+      volume.style.transform = 'translateX(0)';
+      clearTimeout(volTimer);
+      volTimer = setTimeout(() => {
+        if (musicPlaying) {
+          volume.style.opacity = '0';
+          volume.style.pointerEvents = 'none';
+          volume.style.transform = 'translateX(-20px)';
+        }
+      }, 3000);
+    }
+
+    function activateAudioGroup() {
+      const group = $('audioGroup');
+      if (!group) return;
+      group.classList.add('active');
+      clearTimeout(audioGroupTimer);
+      audioGroupTimer = setTimeout(() => {
+        group.classList.remove('active');
+        const volume = $('volContainer');
+        volume.style.opacity = '0';
+        volume.style.pointerEvents = 'none';
+        volume.style.transform = 'translateX(-20px)';
+      }, 5000);
+    }
+
+    function initMusic() {
+      const music = $('bgMusic');
+      if (!music) return;
+      const savedVol = localStorage.getItem('zodiacMusicVolume');
+      setMusicTrack(getStoredMusicIndex(), restoredMusicTime());
+      music.addEventListener('ended', playNextMusicTrack);
+      if (savedVol) {
+        music.volume = Number(savedVol);
+        const volumeInput = document.querySelector('#volContainer input');
+        if (volumeInput) volumeInput.value = savedVol;
+      }
+      if (localStorage.getItem('zodiacMusicPlaying') === 'true') {
+        playCurrentMusic();
+      } else {
+        updateMusicButton(false);
+      }
+    }
+
+    function setTheme(theme, persist = true) {
+      document.body.classList.remove('theme-sacred', 'theme-royal');
+      if (theme !== 'solar') {
+        document.body.classList.add(`theme-${theme}`);
+      }
+      document.querySelectorAll('[data-theme]').forEach((button) => {
+        button.classList.toggle('active', button.dataset.theme === theme);
+      });
+      $('themeSelector').classList.remove('open');
+      if (persist) {
+        localStorage.setItem(AGE_THEME_KEY, theme);
+        saveAgeSettings();
+      }
+    }
+
+    function bindEvents() {
+      $('themeSelector').querySelector('.theme-main-btn').addEventListener('click', (event) => {
+        event.stopPropagation();
+        $('themeSelector').classList.toggle('open');
+      });
+
+      $('audioGroup').addEventListener('click', activateAudioGroup);
+      $('toggleMusic').addEventListener('click', (event) => {
+        event.stopPropagation();
+        toggleMusic();
+      });
+      $('volToggle').addEventListener('click', (event) => {
+        event.stopPropagation();
+        showVolume();
+      });
+      document.querySelector('#volContainer input').addEventListener('input', (event) => {
+        setVolume(event.target.value);
+      });
+
+      $('shareGroup').addEventListener('click', activateShareGroup);
+      $('shareImageBtn').addEventListener('click', (event) => {
+        event.stopPropagation();
+        shareCurrentImage();
+      });
+      $('saveImageFloatBtn').addEventListener('click', (event) => {
+        event.stopPropagation();
+        saveCurrentImage();
+      });
+
+      document.querySelectorAll('[data-theme]').forEach((button) => {
+        button.addEventListener('click', (event) => {
+          event.stopPropagation();
+          setTheme(button.dataset.theme);
+        });
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!$('themeSelector').contains(event.target)) {
+          $('themeSelector').classList.remove('open');
+        }
+      });
+
+      document.querySelectorAll('[data-mode]').forEach((button) => {
+        button.addEventListener('click', () => setMode(button.dataset.mode));
+      });
+
+      document.querySelectorAll('[data-filter]').forEach((button) => {
+        button.addEventListener('click', () => setFilter(button.dataset.filter));
+      });
+
+      ['birthDay', 'birthMonth', 'targetMonth', 'targetYear'].forEach((id) => {
+        $(id).addEventListener('input', () => {
+          render();
+          saveAgeSettings();
+        });
+      });
+
+      $('resultMonth').addEventListener('input', () => {
+        state.resultMonth = $('resultMonth').value;
+        renderCards();
+        saveAgeSettings();
+      });
+
+      $('todayBtn').addEventListener('click', jumpToToday);
+      $('copyBtn').addEventListener('click', copySummary);
+      $('sheetClose').addEventListener('click', closeSheet);
+      $('sheetOverlay').addEventListener('click', (event) => {
+        if (event.target === $('sheetOverlay')) closeSheet();
+      });
+
+      $('results').addEventListener('click', (event) => {
+        const card = event.target.closest('.day-card');
+        if (card) openSheet(card.dataset.key);
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeSheet();
+      });
+
+      document.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          saveMusicState();
+          saveAgeSettings();
+        });
+      });
+
+      window.addEventListener('pagehide', () => {
+        saveMusicState();
+        saveAgeSettings();
+      });
+      window.addEventListener('beforeunload', () => {
+        saveMusicState();
+        saveAgeSettings();
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') {
+          saveMusicState();
+          saveAgeSettings();
+        }
+      });
+    }
+
+    populateSelects();
+    restoreAgeSettings();
+    bindEvents();
+    initMusic();
+    render();
+    setInterval(() => {
+      const music = $('bgMusic');
+      if (music && !music.paused) saveMusicState();
+    }, 1000);
+  </script>
+</body>
+
+</html>

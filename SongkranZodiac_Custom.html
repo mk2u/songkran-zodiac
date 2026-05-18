@@ -183,6 +183,48 @@
       align-items: center;
     }
 
+    .tool-nav {
+      width: min(96vw, 620px);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 6px;
+      margin: 68px 0 8px;
+      padding: 5px;
+      border: 1.5px solid var(--ctrl-border);
+      border-radius: 8px;
+      background: var(--ctrl-bg);
+      box-shadow: 0 0 18px rgba(232, 200, 74, 0.16);
+      backdrop-filter: blur(10px);
+    }
+
+    .tool-nav a {
+      min-width: 0;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 6px;
+      border-radius: 6px;
+      color: var(--gold);
+      font-family: var(--font-main);
+      font-size: clamp(14px, 3.8vw, 17px);
+      font-weight: 900;
+      line-height: 1.2;
+      text-align: center;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+
+    .tool-nav a.active {
+      background: linear-gradient(180deg, var(--gold2), var(--gold3));
+      color: var(--bg);
+      box-shadow: 0 0 16px rgba(232, 200, 74, 0.28);
+    }
+
+    .tool-nav + .main-title {
+      margin-top: 12px;
+    }
+
     /* ── Title ── */
     .main-title {
       font-family: 'Srisakdi', cursive;
@@ -1078,6 +1120,11 @@
   <div id="dangerFlash"></div>
 
   <div class="page-wrap">
+    <nav class="tool-nav" aria-label="เครื่องมือดูดวง">
+      <a class="active" href="index.html">ปีนักษัตรสงกรานต์</a>
+      <a href="age-cycle.html">อายุจรประจำปี</a>
+    </nav>
+
     <h1 id="mainTitle" class="main-title">13 เมษา 2569 ปีมะเมีย</h1>
     <div class="controls">
       <button id="prevYear" type="button">−</button>
@@ -2029,6 +2076,14 @@
       return normalizeMusicIndex(localStorage.getItem('zodiacMusicTrackIndex'));
     }
 
+    function restoredMusicTime() {
+      const saved = Number(localStorage.getItem('zodiacMusicTime')) || 0;
+      const wasPlaying = localStorage.getItem('zodiacMusicPlaying') === 'true';
+      const savedAt = Number(localStorage.getItem('zodiacMusicLastSavedAt')) || 0;
+      if (!wasPlaying || !savedAt) return saved;
+      return saved + Math.max(0, (Date.now() - savedAt) / 1000);
+    }
+
     function setMusicTrack(index, startTime = 0) {
       const m = document.getElementById('bgMusic');
       if (!m) return null;
@@ -2073,6 +2128,7 @@
       return m.play().then(() => {
         updateMusicButton(true);
         localStorage.setItem('zodiacMusicPlaying', 'true');
+        localStorage.setItem('zodiacMusicLastSavedAt', String(Date.now()));
       }).catch(e => {
         musicPlaying = false;
         updateMusicButton(false);
@@ -2085,6 +2141,7 @@
       const current = m ? Number(m.dataset.trackIndex || getStoredMusicIndex()) : getStoredMusicIndex();
       setMusicTrack(current + 1, 0);
       localStorage.setItem('zodiacMusicTime', '0');
+      localStorage.setItem('zodiacMusicLastSavedAt', String(Date.now()));
       playCurrentMusic();
     }
 
@@ -2118,7 +2175,7 @@
     function toggleMusic() {
       const m = document.getElementById('bgMusic');
       if (m.paused) {
-        setMusicTrack(getStoredMusicIndex(), localStorage.getItem('zodiacMusicTime'));
+        setMusicTrack(getStoredMusicIndex(), restoredMusicTime());
         playCurrentMusic();
       } else {
         musicPlaying = false;
@@ -2128,6 +2185,7 @@
         v.style.opacity = '0';
         v.style.pointerEvents = 'none';
         localStorage.setItem('zodiacMusicPlaying', 'false');
+        saveMusicState();
       }
     }
 
@@ -2141,7 +2199,7 @@
 
     window.addEventListener('load', () => {
       const m = document.getElementById('bgMusic');
-      const savedTime = localStorage.getItem('zodiacMusicTime');
+      const savedTime = restoredMusicTime();
       const savedVol = localStorage.getItem('zodiacMusicVolume');
       const isPlaying = localStorage.getItem('zodiacMusicPlaying');
       setMusicTrack(getStoredMusicIndex(), savedTime);
@@ -2157,13 +2215,28 @@
       }
     });
 
+    function saveMusicState() {
+      const m = document.getElementById('bgMusic');
+      if (m) {
+        localStorage.setItem('zodiacMusicTime', m.currentTime);
+        localStorage.setItem('zodiacMusicTrackIndex', m.dataset.trackIndex || '0');
+        localStorage.setItem('zodiacMusicPlaying', m.paused ? 'false' : 'true');
+        localStorage.setItem('zodiacMusicLastSavedAt', String(Date.now()));
+      }
+    }
+
     setInterval(() => {
       const m = document.getElementById('bgMusic');
       if (m && !m.paused) {
-        localStorage.setItem('zodiacMusicTime', m.currentTime);
-        localStorage.setItem('zodiacMusicTrackIndex', m.dataset.trackIndex || '0');
+        saveMusicState();
       }
     }, 1000);
+
+    window.addEventListener('pagehide', saveMusicState);
+    window.addEventListener('beforeunload', saveMusicState);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') saveMusicState();
+    });
 
     let groupTimer = null;
     function activateAudioGroup() {
