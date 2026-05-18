@@ -232,19 +232,16 @@
       color: var(--title);
       font-family: 'Srisakdi', cursive;
       font-size: clamp(28px, 7.5vw, 54px);
-      line-height: 1.35;
-      padding: 0.04em 0 0.16em;
+      line-height: 1.05;
       text-shadow: 0 0 10px var(--title-shadow);
     }
 
     .range-summary {
-      min-height: 28px;
-      margin-top: 2px;
+      min-height: 25px;
+      margin-top: 8px;
       color: var(--muted);
       font-size: 15px;
       font-weight: 700;
-      line-height: 1.5;
-      padding-bottom: 2px;
     }
 
     .control-panel {
@@ -1124,17 +1121,19 @@
     .page-head h1 {
       position: relative;
       overflow: visible;
+      padding-bottom: 6px;
     }
 
     .page-head h1::after {
       content: '';
       position: absolute;
-      top: 0.08em; left: -100%;
+      top: 0; left: -100%;
       width: 60%;
-      height: calc(100% - 0.18em);
+      height: 100%;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
       animation: titleSweep 4s ease-in-out infinite;
       pointer-events: none;
+      overflow: hidden;
     }
 
     body.theme-sacred .page-head h1::after,
@@ -1597,25 +1596,33 @@
         };
       }
 
+      // เริ่มจากวันเกิดในเดือนที่เลือก วิ่งไปข้างหน้า 1 เดือนเต็ม
+      const start = new Date(adYear, targetMonth, birthDay);
+      // สิ้นสุดก่อนวันเดียวกันของเดือนถัดไป
+      const nextMonth = targetMonth === 11 ? 0 : targetMonth + 1;
+      const nextYear  = targetMonth === 11 ? adYear + 1 : adYear;
+      const maxDay    = daysInMonth(nextYear, nextMonth);
+      const end       = new Date(nextYear, nextMonth, Math.min(birthDay, maxDay));
+
       const items = [];
-      for (let day = 1; day <= monthDays; day++) {
-        const offset = day >= birthDay
-          ? day - birthDay
-          : (monthDays - birthDay + 1) + (day - 1);
-        const house = HOUSES[offset % HOUSES.length];
-        const itemDate = new Date(adYear, targetMonth, day);
+      let index = 0;
+      for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {
+        const house = HOUSES[index % HOUSES.length];
+        const d = new Date(cursor);
         items.push({
-          date: itemDate,
+          date: d,
           house,
-          order: offset,
-          key: dateKey(itemDate)
+          order: index,
+          key: dateKey(d)
         });
+        index++;
       }
 
-      items.sort((a, b) => a.order - b.order);
+      const beEnd = end.getFullYear() + 543;
+      const endLabel = `${end.getDate()} ${MONTHS[end.getMonth()].short} ${beEnd}`;
       return {
         items,
-        summary: `เริ่ม ${birthDay} ${MONTHS[targetMonth].short} ${beYear} ที่ตนุ`
+        summary: `${birthDay} ${MONTHS[targetMonth].short} ${beYear} – ${endLabel}`
       };
     }
 
