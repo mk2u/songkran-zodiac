@@ -5,6 +5,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>อายุจรประจำปี</title>
+  <meta name="description" content="คำนวณอายุจรประจำปีตามโหราศาสตร์ไทย ดูวันดีวันไม่ดีรายวัน รายเดือน และครบรอบปี">
+  <meta property="og:title" content="อายุจรประจำปี">
+  <meta property="og:description" content="คำนวณอายุจรประจำปีตามโหราศาสตร์ไทย ดูวันดีวันไม่ดีรายวัน รายเดือน และครบรอบปี">
+  <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=K2D:wght@400;600;700;800&family=Srisakdi:wght@400;700&display=swap"
@@ -654,14 +658,21 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      padding: 12px 12px 12px 25px;
+      padding: 12px 12px 12px 12px;
       border: 1.5px solid #ffd700;
       border-left: none;
       border-radius: 0 45px 45px 0;
       background: rgba(0, 0, 0, 0.5);
       box-shadow: 5px 0 25px rgba(255, 215, 0, 0.2);
       backdrop-filter: blur(12px);
+      /* ซ่อนทิ้งไว้เหลือแค่ขอบเล็กน้อย — เลื่อนออกซ้ายให้เหลือ ~8px โผล่ */
+      transform: translateX(calc(-100% + 8px));
       transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .audio-group.active {
+      transform: translateX(0);
+      background: rgba(0, 0, 0, 0.85);
     }
 
     .music-btn,
@@ -696,17 +707,6 @@
 
     .vol-toggle-btn {
       font-size: 20px;
-    }
-
-    @media (max-width: 768px) {
-      .audio-group {
-        transform: translateX(-68%);
-      }
-
-      .audio-group.active {
-        transform: translateX(0);
-        background: rgba(0, 0, 0, 0.85);
-      }
     }
 
     .vol-container {
@@ -754,14 +754,15 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
-      padding: 12px 25px 12px 12px;
+      padding: 12px 12px 12px 12px;
       border: 1.5px solid #ffd700;
       border-right: none;
       border-radius: 45px 0 0 45px;
       background: rgba(0, 0, 0, 0.5);
       box-shadow: -5px 0 25px rgba(255, 215, 0, 0.2);
       backdrop-filter: blur(12px);
-      transform: translateX(68%);
+      /* ซ่อนทางขวา เหลือ ~8px โผล่ */
+      transform: translateX(calc(100% - 8px));
       transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
@@ -896,10 +897,355 @@
         transform: translateY(0);
       }
     }
+
+    /* ── DRAG HANDLE ── */
+    .sheet-drag-handle {
+      width: 40px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--ctrl-border);
+      margin: 10px auto 0;
+      opacity: 0.55;
+    }
+
+    /* ── GRADIENT TITLE for sacred/royal themes ── */
+    body.theme-sacred .page-head h1 {
+      background: linear-gradient(135deg, #e8c84a 0%, #fff5c0 45%, #c8951a 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+      filter: drop-shadow(0 0 18px rgba(232,200,74,0.55));
+    }
+
+    body.theme-royal .page-head h1 {
+      background: linear-gradient(135deg, #ffd700 0%, #fffde0 45%, #b8860b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+      filter: drop-shadow(0 0 18px rgba(255,215,0,0.55));
+    }
+
+    /* ── ENHANCED CARD HOVER ── */
+    @media (hover: hover) {
+      .day-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px var(--shadow);
+        border-color: var(--card-border);
+      }
+
+      .day-card.good:hover {
+        box-shadow: 0 14px 32px var(--good-glow), 0 0 0 1px var(--good);
+      }
+
+      .day-card.caution:hover {
+        box-shadow: 0 14px 32px var(--caution-glow), 0 0 0 1px var(--caution);
+      }
+    }
+
+    /* ── PRIMARY ACTION BUTTON ── */
+    #todayBtn {
+      background: linear-gradient(135deg, #c8951a 0%, #f0c040 50%, #c8951a 100%);
+      background-size: 200% 100%;
+      color: #1a0a00;
+      border-color: #b8860b;
+      font-weight: 800;
+      transition: background-position 0.4s ease, transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 4px 14px rgba(200, 149, 26, 0.35);
+    }
+
+    #todayBtn:hover {
+      background-position: 100% 0;
+      box-shadow: 0 6px 20px rgba(200, 149, 26, 0.55);
+    }
+
+    #todayBtn:active {
+      transform: scale(0.96);
+    }
+
+    body.theme-sacred #todayBtn,
+    body.theme-royal #todayBtn {
+      box-shadow: 0 4px 18px rgba(232, 200, 74, 0.45);
+    }
+
+    /* ── COPY BUTTON SUCCESS STATE ── */
+    #copyBtn.copied {
+      background: var(--good);
+      color: #ffffff;
+      border-color: var(--good);
+    }
+
+    /* ── SUMMARY PILLS ENHANCED ── */
+    .summary-pill .pill-icon {
+      display: block;
+      font-size: clamp(18px, 4.5vw, 24px);
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .summary-pill strong {
+      display: block;
+      font-size: clamp(19px, 5.5vw, 26px);
+      line-height: 1;
+    }
+
+    /* ── FILTER COUNT BADGE ── */
+    .filter-row button .filter-count {
+      display: inline-block;
+      margin-left: 4px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.15);
+      font-size: 11px;
+      font-weight: 800;
+      vertical-align: middle;
+      line-height: 16px;
+    }
+
+    .filter-row button.active .filter-count {
+      background: rgba(255,255,255,0.25);
+    }
+
+    /* ── VOL CONTAINER HIDDEN CLASS ── */
+    .vol-hidden {
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: translateX(-20px) !important;
+    }
+
+    /* ── SKELETON LOADING ── */
+    .skeleton-card {
+      width: 100%;
+      min-height: 78px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 2px solid var(--ctrl-border);
+      border-left-width: 7px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .skeleton-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
+      animation: skeletonShimmer 1.4s ease-in-out infinite;
+    }
+
+    body.theme-sacred .skeleton-card::after,
+    body.theme-royal .skeleton-card::after {
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.07) 50%, transparent 100%);
+    }
+
+    @keyframes skeletonShimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* ── CONTROL PANEL SECTION DIVIDER ── */
+    .panel-divider {
+      height: 1px;
+      background: var(--ctrl-border);
+      opacity: 0.35;
+      margin: 10px 0;
+    }
+
+    /* ── ENHANCED SHEET ── */
+    .sheet-head {
+      border-radius: 8px 8px 0 0;
+    }
+
+    .sheet-level-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      background: var(--soft);
+      color: var(--text);
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .sheet-level-badge.good {
+      background: var(--good);
+      color: #ffffff;
+    }
+
+    .sheet-level-badge.caution {
+      background: var(--caution);
+      color: #ffffff;
+    }
+
+    /* ── STARFIELD CANVAS ── */
+    #starCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    body.theme-sacred #starCanvas,
+    body.theme-royal #starCanvas {
+      opacity: 1;
+    }
+
+    /* ── CONTENT ABOVE CANVAS ── */
+    main {
+      position: relative;
+      z-index: 1;
+    }
+    /* fixed elements already have z-index set individually above canvas z-index:0 */
+
+    /* ── RIPPLE EFFECT ── */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.35);
+      transform: scale(0);
+      animation: rippleAnim 0.55s linear forwards;
+      pointer-events: none;
+    }
+
+    @keyframes rippleAnim {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    /* ── TITLE SHIMMER SWEEP ── */
+    .page-head h1 {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-head h1::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+      animation: titleSweep 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    body.theme-sacred .page-head h1::after,
+    body.theme-royal .page-head h1::after {
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    }
+
+    @keyframes titleSweep {
+      0%, 60% { left: -100%; }
+      100%     { left: 160%; }
+    }
+
+    /* ── FLOATING PARTICLES ── */
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      border-radius: 50%;
+      animation: floatUp linear forwards;
+      opacity: 0;
+    }
+
+    @keyframes floatUp {
+      0%   { opacity: 0;   transform: translateY(0)    scale(0.5); }
+      15%  { opacity: 0.7; }
+      85%  { opacity: 0.5; }
+      100% { opacity: 0;   transform: translateY(-110vh) scale(1.2); }
+    }
+
+    /* ── CARD TILT (CSS custom properties updated via JS) ── */
+    .day-card {
+      --rotX: 0deg;
+      --rotY: 0deg;
+      transform-style: preserve-3d;
+      transform: perspective(600px) rotateX(var(--rotX)) rotateY(var(--rotY)) translateY(0);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      will-change: transform;
+    }
+
+    .day-card:active {
+      transform: perspective(600px) rotateX(0deg) rotateY(0deg) scale(0.985) !important;
+    }
+
+    /* ── GOOD CARD SPARKLE ── */
+    .sparkle {
+      position: absolute;
+      pointer-events: none;
+      font-size: 14px;
+      animation: sparklePop 0.7s ease forwards;
+      z-index: 5;
+    }
+
+    @keyframes sparklePop {
+      0%   { opacity: 1; transform: scale(0.5) translateY(0); }
+      60%  { opacity: 1; transform: scale(1.3) translateY(-18px); }
+      100% { opacity: 0; transform: scale(0.8) translateY(-32px); }
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .day-card.reveal-hidden {
+      opacity: 0;
+      transform: perspective(600px) translateY(20px);
+    }
+
+    .day-card.reveal-visible {
+      animation: cardIn 0.38s ease both;
+    }
+
+    /* ── PULSE DOT on "today" card ── */
+    .day-card.today-card::after {
+      content: '';
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--focus);
+      box-shadow: 0 0 0 0 var(--focus);
+      animation: pulseDot 1.6s ease-in-out infinite;
+    }
+
+    @keyframes pulseDot {
+      0%   { box-shadow: 0 0 0 0   rgba(47,128,237,0.6); }
+      70%  { box-shadow: 0 0 0 8px rgba(47,128,237,0); }
+      100% { box-shadow: 0 0 0 0   rgba(47,128,237,0); }
+    }
+
+    /* ── SHEET SLIDE-UP ENHANCED ── */
+    @keyframes sheetUp {
+      from { opacity: 0; transform: translateY(40px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)    scale(1); }
+    }
+
+    /* ── NUMBER COUNT-UP (for pills) ── */
+    .summary-pill strong {
+      display: block;
+      font-size: clamp(19px, 5.5vw, 26px);
+      line-height: 1;
+      transition: transform 0.2s ease;
+    }
+
+    .summary-pill strong.pop {
+      animation: numPop 0.35s ease;
+    }
+
+    @keyframes numPop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.35); }
+      100% { transform: scale(1); }
+    }
   </style>
 </head>
 
 <body data-age-mode="month">
+  <canvas id="starCanvas" aria-hidden="true"></canvas>
   <div class="theme-selector" id="themeSelector">
     <button class="theme-main-btn" type="button" title="เลือกธีม">🌗</button>
     <div class="theme-options">
@@ -922,7 +1268,7 @@
     <button id="volToggle" class="vol-toggle-btn" type="button" title="เสียง">🔊</button>
   </div>
 
-  <div class="vol-container" id="volContainer" style="opacity: 0; pointer-events: none; transform: translateX(-20px);">
+  <div class="vol-container vol-hidden" id="volContainer">
     <span style="color: #ffd700; font-size: 18px;">🔈</span>
     <input type="range" min="0" max="1" step="0.01" value="0.5" aria-label="ระดับเสียง">
     <span style="color: #ffd700; font-size: 18px;">🔊</span>
@@ -970,9 +1316,11 @@
         </div>
       </div>
 
+      <div class="panel-divider"></div>
+
       <div class="action-row">
-        <button id="todayBtn" type="button">วันนี้ตกอะไร</button>
-        <button id="copyBtn" type="button">คัดลอกผลย่อ</button>
+        <button id="todayBtn" type="button">⭐ วันนี้ตกอะไร</button>
+        <button id="copyBtn" type="button">📋 คัดลอกผลย่อ</button>
       </div>
     </section>
 
@@ -996,6 +1344,7 @@
 
   <div class="sheet-overlay" id="sheetOverlay" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
     <article class="sheet">
+      <div class="sheet-drag-handle" aria-hidden="true"></div>
       <header class="sheet-head">
         <h2 class="sheet-title" id="sheetTitle"></h2>
         <button class="sheet-close" id="sheetClose" type="button" aria-label="ปิด">×</button>
@@ -1338,13 +1687,14 @@
       }, { good: 0, neutral: 0, caution: 0 });
 
       $('summaryStrip').innerHTML = `
-        <div class="summary-pill good"><strong>${counts.good || 0}</strong><span>วันดี</span></div>
-        <div class="summary-pill"><strong>${counts.neutral || 0}</strong><span>วันกลาง</span></div>
-        <div class="summary-pill caution"><strong>${counts.caution || 0}</strong><span>วันไม่ดี</span></div>
+        <div class="summary-pill good"><span class="pill-icon">✨</span><strong>${counts.good || 0}</strong><span>วันดี</span></div>
+        <div class="summary-pill"><span class="pill-icon">☁️</span><strong>${counts.neutral || 0}</strong><span>วันกลาง</span></div>
+        <div class="summary-pill caution"><span class="pill-icon">⚠️</span><strong>${counts.caution || 0}</strong><span>วันไม่ดี</span></div>
       `;
     }
 
     function render() {
+      showSkeletons(6);
       const result = state.mode === 'month' ? buildMonthly() : buildAnnual();
 
       if (result.error) {
@@ -1365,7 +1715,31 @@
       }
 
       renderSummaryStrip();
+      renderFilterCounts();
       renderCards();
+    }
+
+    function renderFilterCounts() {
+      const counts = { all: state.items.length, good: 0, neutral: 0, caution: 0 };
+      state.items.forEach((item) => {
+        counts[item.house.level] = (counts[item.house.level] || 0) + 1;
+      });
+      document.querySelectorAll('[data-filter]').forEach((button) => {
+        const filter = button.dataset.filter;
+        const count = filter === 'all' ? counts.all : (filter === 'good' ? counts.good : counts.caution);
+        const existing = button.querySelector('.filter-count');
+        if (existing) existing.remove();
+        if (count > 0) {
+          const badge = document.createElement('span');
+          badge.className = 'filter-count';
+          badge.textContent = count;
+          button.appendChild(badge);
+        }
+      });
+    }
+
+    function showSkeletons(count = 4) {
+      $('results').innerHTML = Array.from({ length: count }, () => `<div class="skeleton-card"></div>`).join('');
     }
 
     function renderCards() {
@@ -1399,8 +1773,10 @@
     function openSheet(key) {
       const item = state.items.find((entry) => entry.key === key);
       if (!item) return;
-      $('sheetTitle').textContent = item.house.name;
-      $('sheetDate').textContent = `${formatDate(item.date, true)} · ${levelLabel(item.house.level)}`;
+      const level = item.house.level;
+      const badgeClass = level === 'neutral' ? '' : level;
+      $('sheetTitle').innerHTML = `${item.house.name}<span class="sheet-level-badge ${badgeClass}">${levelLabel(level)}</span>`;
+      $('sheetDate').textContent = `${formatDate(item.date, true)}`;
       $('sheetMeaning').textContent = item.house.meaning;
       $('sheetOverlay').classList.add('open');
     }
@@ -1473,9 +1849,17 @@
       ));
       const more = filteredItems().length > items.length ? `\n...อีก ${filteredItems().length - items.length} วัน` : '';
       const text = [`อายุจรประจำปี`, $('rangeSummary').textContent, ...lines].join('\n') + more;
+      const copyBtn = $('copyBtn');
       try {
         await navigator.clipboard.writeText(text);
-        $('notice').textContent = 'คัดลอกแล้ว';
+        $('notice').textContent = 'คัดลอกแล้ว ✓';
+        copyBtn.textContent = '✓ คัดลอกแล้ว';
+        copyBtn.classList.add('copied');
+        setTimeout(() => {
+          copyBtn.textContent = '📋 คัดลอกผลย่อ';
+          copyBtn.classList.remove('copied');
+          $('notice').textContent = '';
+        }, 2200);
       } catch (error) {
         $('notice').textContent = text;
       }
@@ -1876,8 +2260,7 @@
         music.pause();
         updateMusicButton(false);
         const volume = $('volContainer');
-        volume.style.opacity = '0';
-        volume.style.pointerEvents = 'none';
+        volume.classList.add('vol-hidden');
         saveMusicState();
         localStorage.setItem('zodiacMusicPlaying', 'false');
       }
@@ -1885,23 +2268,17 @@
 
     function showVolume() {
       const volume = $('volContainer');
-      const isHidden = volume.style.opacity === '0';
+      const isHidden = volume.classList.contains('vol-hidden');
       if (isHidden) {
-        volume.style.opacity = '1';
-        volume.style.pointerEvents = 'auto';
-        volume.style.transform = 'translateX(0)';
+        volume.classList.remove('vol-hidden');
       } else {
-        volume.style.opacity = '0';
-        volume.style.pointerEvents = 'none';
-        volume.style.transform = 'translateX(-20px)';
+        volume.classList.add('vol-hidden');
       }
       clearTimeout(volTimer);
       if (!isHidden) return;
       volTimer = setTimeout(() => {
         if (musicPlaying) {
-          volume.style.opacity = '0';
-          volume.style.pointerEvents = 'none';
-          volume.style.transform = 'translateX(-20px)';
+          volume.classList.add('vol-hidden');
         }
       }, 3000);
     }
@@ -1912,15 +2289,11 @@
       music.volume = value;
       localStorage.setItem('zodiacMusicVolume', value);
       const volume = $('volContainer');
-      volume.style.opacity = '1';
-      volume.style.pointerEvents = 'auto';
-      volume.style.transform = 'translateX(0)';
+      volume.classList.remove('vol-hidden');
       clearTimeout(volTimer);
       volTimer = setTimeout(() => {
         if (musicPlaying) {
-          volume.style.opacity = '0';
-          volume.style.pointerEvents = 'none';
-          volume.style.transform = 'translateX(-20px)';
+          volume.classList.add('vol-hidden');
         }
       }, 3000);
     }
@@ -1933,9 +2306,7 @@
       audioGroupTimer = setTimeout(() => {
         group.classList.remove('active');
         const volume = $('volContainer');
-        volume.style.opacity = '0';
-        volume.style.pointerEvents = 'none';
-        volume.style.transform = 'translateX(-20px)';
+        volume.classList.add('vol-hidden');
       }, 5000);
     }
 
@@ -1979,6 +2350,7 @@
       });
 
       $('audioGroup').addEventListener('click', activateAudioGroup);
+      $('audioGroup').addEventListener('touchstart', activateAudioGroup, { passive: true });
       $('toggleMusic').addEventListener('click', (event) => {
         event.stopPropagation();
         toggleMusic();
@@ -1992,6 +2364,7 @@
       });
 
       $('shareGroup').addEventListener('click', activateShareGroup);
+      $('shareGroup').addEventListener('touchstart', activateShareGroup, { passive: true });
       $('shareImageBtn').addEventListener('click', (event) => {
         event.stopPropagation();
         shareCurrentImage();
@@ -2083,6 +2456,207 @@
       const music = $('bgMusic');
       if (music && !music.paused) saveMusicState();
     }, 1000);
+
+    /* ═══════════════════════════════════════════════
+       VISUAL FX — starfield, particles, ripple, tilt
+       ═══════════════════════════════════════════════ */
+
+    /* ── STARFIELD ── */
+    (function initStarfield() {
+      const canvas = document.getElementById('starCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let stars = [];
+      let raf;
+
+      function resize() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+        stars = Array.from({ length: 160 }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.4 + 0.3,
+          speed: Math.random() * 0.25 + 0.05,
+          alpha: Math.random() * 0.7 + 0.2,
+          drift: (Math.random() - 0.5) * 0.15,
+          twinkleSpeed: Math.random() * 0.02 + 0.005,
+          twinkleOffset: Math.random() * Math.PI * 2,
+        }));
+      }
+
+      function draw(time) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const t = time / 1000;
+        stars.forEach((s) => {
+          const twinkle = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * s.twinkleSpeed * 60 + s.twinkleOffset));
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 245, 200, ${s.alpha * twinkle})`;
+          ctx.fill();
+          s.y -= s.speed;
+          s.x += s.drift;
+          if (s.y < -2) { s.y = canvas.height + 2; s.x = Math.random() * canvas.width; }
+          if (s.x < -2) s.x = canvas.width + 2;
+          if (s.x > canvas.width + 2) s.x = -2;
+        });
+        raf = requestAnimationFrame(draw);
+      }
+
+      resize();
+      window.addEventListener('resize', resize);
+      raf = requestAnimationFrame(draw);
+
+      // Only animate when dark themes active
+      const observer = new MutationObserver(() => {
+        const isDark = document.body.classList.contains('theme-sacred') || document.body.classList.contains('theme-royal');
+        if (!isDark && raf) { cancelAnimationFrame(raf); raf = null; }
+        if (isDark && !raf) raf = requestAnimationFrame(draw);
+      });
+      observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    })();
+
+    /* ── FLOATING PARTICLES (gold dots for dark themes) ── */
+    (function initParticles() {
+      const COLORS_DARK = ['rgba(255,215,0,0.7)', 'rgba(232,200,74,0.6)', 'rgba(255,255,200,0.5)', 'rgba(168,240,182,0.5)'];
+      const COLORS_LIGHT = ['rgba(200,149,26,0.25)', 'rgba(20,125,73,0.2)', 'rgba(47,128,237,0.18)'];
+
+      function spawnParticle() {
+        const isDark = document.body.classList.contains('theme-sacred') || document.body.classList.contains('theme-royal');
+        const palette = isDark ? COLORS_DARK : COLORS_LIGHT;
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 5 + 2;
+        const dur  = Math.random() * 9 + 6;
+        const left = Math.random() * 100;
+        p.style.cssText = `
+          width:${size}px; height:${size}px;
+          left:${left}vw; bottom:-10px;
+          background:${palette[Math.floor(Math.random() * palette.length)]};
+          animation-duration:${dur}s;
+          filter: blur(${Math.random() > 0.5 ? 1 : 0}px);
+        `;
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), dur * 1000);
+      }
+
+      setInterval(spawnParticle, 900);
+    })();
+
+    /* ── CLICK RIPPLE on cards ── */
+    document.getElementById('results').addEventListener('mousedown', (e) => {
+      const card = e.target.closest('.day-card');
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      const size = Math.max(rect.width, rect.height) * 1.5;
+      ripple.style.cssText = `
+        width:${size}px; height:${size}px;
+        left:${e.clientX - rect.left - size / 2}px;
+        top:${e.clientY - rect.top  - size / 2}px;
+      `;
+      card.style.overflow = 'hidden';
+      card.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove(), { once: true });
+    });
+
+    /* ── 3D CARD TILT on mouse move ── */
+    (function initCardTilt() {
+      let current = null;
+      document.getElementById('results').addEventListener('mousemove', (e) => {
+        const card = e.target.closest('.day-card');
+        if (card !== current) {
+          if (current) { current.style.removeProperty('--rotX'); current.style.removeProperty('--rotY'); }
+          current = card;
+        }
+        if (!card) return;
+        const rect = card.getBoundingClientRect();
+        const cx = rect.left + rect.width  / 2;
+        const cy = rect.top  + rect.height / 2;
+        const dx = (e.clientX - cx) / (rect.width  / 2);
+        const dy = (e.clientY - cy) / (rect.height / 2);
+        card.style.setProperty('--rotX', `${-dy * 4}deg`);
+        card.style.setProperty('--rotY', `${dx  * 6}deg`);
+      });
+      document.getElementById('results').addEventListener('mouseleave', () => {
+        if (current) { current.style.removeProperty('--rotX'); current.style.removeProperty('--rotY'); current = null; }
+      });
+    })();
+
+    /* ── SPARKLES on good-card hover ── */
+    (function initSparkles() {
+      const EMOJIS = ['✨', '⭐', '🌟', '💫', '🍀'];
+      let hoverTimeout = null;
+
+      document.getElementById('results').addEventListener('mouseenter', (e) => {
+        const card = e.target.closest('.day-card.good');
+        if (!card) return;
+        clearTimeout(hoverTimeout);
+        let count = 0;
+        function pop() {
+          if (count >= 3) return;
+          count++;
+          const sp = document.createElement('span');
+          sp.className = 'sparkle';
+          sp.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+          sp.style.cssText = `left:${10 + Math.random() * 80}%; top:${10 + Math.random() * 60}%;`;
+          card.appendChild(sp);
+          sp.addEventListener('animationend', () => sp.remove(), { once: true });
+          hoverTimeout = setTimeout(pop, 180);
+        }
+        pop();
+      }, true);
+    })();
+
+    /* ── SCROLL REVEAL for cards ── */
+    (function initScrollReveal() {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.remove('reveal-hidden');
+            entry.target.classList.add('reveal-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      // Re-observe whenever cards are re-rendered
+      const resultsEl = document.getElementById('results');
+      new MutationObserver(() => {
+        resultsEl.querySelectorAll('.day-card').forEach((card) => {
+          if (!card.classList.contains('reveal-visible')) io.observe(card);
+        });
+      }).observe(resultsEl, { childList: true });
+    })();
+
+    /* ── TODAY CARD PULSE DOT ── */
+    (function markTodayCard() {
+      const todayKey = (() => {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${dd}`;
+      })();
+
+      new MutationObserver(() => {
+        document.querySelectorAll('.day-card').forEach((card) => {
+          card.classList.toggle('today-card', card.dataset.key === todayKey);
+        });
+      }).observe(document.getElementById('results'), { childList: true });
+    })();
+
+    /* ── PILL NUMBER POP ANIMATION ── */
+    (function initPillPop() {
+      const strip = document.getElementById('summaryStrip');
+      new MutationObserver(() => {
+        strip.querySelectorAll('strong').forEach((el) => {
+          el.classList.remove('pop');
+          requestAnimationFrame(() => el.classList.add('pop'));
+        });
+      }).observe(strip, { childList: true, subtree: true });
+    })();
+
   </script>
 </body>
 
