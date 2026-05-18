@@ -1840,8 +1840,18 @@
       activateFilterButton();
 
       if (state.mode === 'month') {
-        $('targetMonth').value = String(today.getMonth());
-        $('targetYear').value = String(today.getFullYear() + 543);
+        const birthDay = Number($('birthDay').value);
+        let month = today.getMonth();
+        let year  = today.getFullYear();
+
+        // ถ้าวันนี้ยังไม่ถึงวันเกิดในเดือนนี้ → ย้อนไปรอบเดือนที่แล้ว
+        if (today.getDate() < birthDay) {
+          month -= 1;
+          if (month < 0) { month = 11; year -= 1; }
+        }
+
+        $('targetMonth').value = String(month);
+        $('targetYear').value  = String(year + 543);
         render();
         requestAnimationFrame(() => revealToday(today));
         return;
