@@ -1518,10 +1518,49 @@
       return Math.min(lines.length, maxLines) * lineHeight;
     }
 
+    function resultMonthLabel() {
+      if (state.mode !== 'year') return '';
+      if (state.resultMonth === 'all') return 'ทุกเดือนในรอบนี้';
+      const item = state.items.find((entry) => monthKey(entry.date) === state.resultMonth);
+      if (!item) return 'ทุกเดือนในรอบนี้';
+      return `${MONTHS[item.date.getMonth()].full} ${item.date.getFullYear() + 543}`;
+    }
+
+    function exportContextLines(itemCount) {
+      const { birthDay, birthMonth, targetMonth, beYear } = readInputs();
+      const filterLabel = state.filter === 'good'
+        ? 'เฉพาะวันดี'
+        : state.filter === 'caution'
+          ? 'เฉพาะวันไม่ดี'
+          : 'ทั้งหมด';
+
+      if (state.mode === 'year') {
+        return [
+          `วันเกิด: ${birthDay} ${MONTHS[birthMonth].full}`,
+          `ปีที่ดู: พ.ศ. ${beYear} | เดือนที่แสดง: ${resultMonthLabel()}`,
+          `ตัวกรอง: ${filterLabel} | แสดง ${itemCount} วัน`
+        ];
+      }
+
+      return [
+        `วันที่ตั้งต้น: ${birthDay} ${MONTHS[targetMonth].full}`,
+        `เดือนที่ดู: ${MONTHS[targetMonth].full} | ปีที่ดู: พ.ศ. ${beYear}`,
+        `ตัวกรอง: ${filterLabel} | แสดงครบ ${itemCount} วัน`
+      ];
+    }
+
     function createExportCanvas() {
+      const items = filteredItems();
+      const longAnnual = state.mode === 'year' && items.length > 90;
+      const columns = longAnnual ? 2 : 1;
+      const rowHeight = longAnnual ? 70 : 92;
+      const cardHeight = longAnnual ? 60 : 78;
+      const headerHeight = 455;
+      const footerHeight = 110;
+      const rows = Math.ceil(items.length / columns);
       const canvas = document.createElement('canvas');
       canvas.width = 1200;
-      canvas.height = 1600;
+      canvas.height = Math.max(900, headerHeight + rows * rowHeight + footerHeight);
       const ctx = canvas.getContext('2d');
       const bg = cssVar('--bg', '#ffffff');
       const text = cssVar('--text', '#1a1a1a');
@@ -1533,7 +1572,6 @@
       const caution = cssVar('--caution', '#b3261e');
       const cautionBg = cssVar('--caution-bg', '#fff0ee');
       const soft = cssVar('--soft', '#f6f3ea');
-      const items = filteredItems();
       const counts = state.items.reduce((acc, item) => {
         acc[item.house.level] = (acc[item.house.level] || 0) + 1;
         return acc;
@@ -1550,7 +1588,19 @@
       ctx.fillStyle = muted;
       ctx.fillText($('rangeSummary').textContent || '', 600, 158);
 
-      const pillY = 205;
+      roundRect(ctx, 80, 188, 1040, 122, 22);
+      ctx.fillStyle = card;
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = gold;
+      ctx.stroke();
+      ctx.fillStyle = text;
+      ctx.font = "800 30px 'K2D', sans-serif";
+      exportContextLines(items.length).forEach((line, index) => {
+        ctx.fillText(line, 600, 229 + index * 36);
+      });
+
+      const pillY = 338;
       const pills = [
         { label: 'วันดี', count: counts.good || 0, fill: goodBg, color: good },
         { label: 'วันกลาง', count: counts.neutral || 0, fill: soft, color: text },
@@ -1572,59 +1622,73 @@
       });
 
       ctx.textAlign = 'left';
-      let y = 380;
-      const visible = items.slice(0, 14);
-      visible.forEach((item) => {
+      const startY = 485;
+      const columnWidth = longAnnual ? 510 : 1060;
+      const columnGap = 25;
+      items.forEach((item, index) => {
+        const column = index % columns;
+        const row = Math.floor(index / columns);
+        const x = 70 + column * (columnWidth + columnGap);
+        const y = startY + row * rowHeight;
         const level = item.house.level;
         const accent = level === 'good' ? good : level === 'caution' ? caution : '#444444';
         const fill = level === 'good' ? goodBg : level === 'caution' ? cautionBg : card;
-        roundRect(ctx, 70, y, 1060, 78, 20);
+        roundRect(ctx, x, y, columnWidth, cardHeight, 20);
         ctx.fillStyle = fill;
         ctx.fill();
-        ctx.lineWidth = 4;
+        ctx.lineWidth = longAnnual ? 3 : 4;
         ctx.strokeStyle = accent;
         ctx.stroke();
         ctx.fillStyle = accent;
-        ctx.fillRect(70, y, 14, 78);
+        ctx.fillRect(x, y, 14, cardHeight);
 
         ctx.fillStyle = text;
-        ctx.font = "800 32px 'K2D', sans-serif";
-        ctx.fillText(formatDate(item.date, state.mode === 'year'), 105, y + 49);
-        ctx.font = "800 32px 'K2D', sans-serif";
-        ctx.fillText(item.house.name, 330, y + 37);
-        ctx.font = "700 23px 'K2D', sans-serif";
+        ctx.font = longAnnual ? "800 23px 'K2D', sans-serif" : "800 32px 'K2D', sans-serif";
+        ctx.fillText(formatDate(item.date, state.mode === 'year'), x + 34, y + (longAnnual ? 38 : 49));
+        ctx.font = longAnnual ? "800 24px 'K2D', sans-serif" : "800 32px 'K2D', sans-serif";
+        ctx.fillText(item.house.name, x + (longAnnual ? 198 : 260), y + (longAnnual ? 31 : 37));
+        ctx.font = longAnnual ? "700 17px 'K2D', sans-serif" : "700 23px 'K2D', sans-serif";
         ctx.fillStyle = muted;
-        drawWrappedText(ctx, item.house.short, 330, y + 66, 540, 26, 1);
+        drawWrappedText(
+          ctx,
+          item.house.short,
+          x + (longAnnual ? 198 : 260),
+          y + (longAnnual ? 53 : 66),
+          longAnnual ? 190 : 620,
+          longAnnual ? 20 : 26,
+          1
+        );
 
         ctx.textAlign = 'center';
-        roundRect(ctx, 965, y + 21, 110, 38, 19);
+        const badgeWidth = longAnnual ? 86 : 110;
+        const badgeHeight = longAnnual ? 32 : 38;
+        const badgeX = x + columnWidth - badgeWidth - 36;
+        const badgeY = y + (cardHeight - badgeHeight) / 2;
+        roundRect(ctx, badgeX, badgeY, badgeWidth, badgeHeight, badgeHeight / 2);
         ctx.fillStyle = level === 'good' ? good : level === 'caution' ? caution : soft;
         ctx.fill();
         ctx.fillStyle = level === 'neutral' ? text : '#ffffff';
-        ctx.font = "800 22px 'K2D', sans-serif";
-        ctx.fillText(levelLabel(level), 1020, y + 47);
+        ctx.font = longAnnual ? "800 18px 'K2D', sans-serif" : "800 22px 'K2D', sans-serif";
+        ctx.fillText(levelLabel(level), badgeX + badgeWidth / 2, badgeY + (longAnnual ? 22 : 26));
         ctx.textAlign = 'left';
-        y += 92;
       });
-
-      if (items.length > visible.length) {
-        ctx.textAlign = 'center';
-        ctx.fillStyle = muted;
-        ctx.font = "800 28px 'K2D', sans-serif";
-        ctx.fillText(`และอีก ${items.length - visible.length} วัน`, 600, y + 18);
-      }
 
       ctx.textAlign = 'center';
       ctx.fillStyle = muted;
       ctx.font = "700 24px 'K2D', sans-serif";
-      ctx.fillText('Developed with ❤️ by คนโบราณ', 600, 1540);
+      ctx.fillText('Developed with ❤️ by คนโบราณ', 600, canvas.height - 48);
       return canvas;
     }
 
     function exportFileName() {
-      const y = $('targetYear').value || currentBEYear();
-      const mode = state.mode === 'year' ? 'annual' : MONTHS[Number($('targetMonth').value || 0)].short.replace('.', '');
-      return `age-cycle-${y}-${mode}.png`;
+      const { birthDay, birthMonth, targetMonth, beYear } = readInputs();
+      const day = String(birthDay).padStart(2, '0');
+      const mode = state.mode === 'year'
+        ? `annual-birth-${day}-${String(birthMonth + 1).padStart(2, '0')}`
+        : `month-${String(targetMonth + 1).padStart(2, '0')}-start-${day}`;
+      const resultMonthPart = state.mode === 'year' && state.resultMonth !== 'all' ? `-${state.resultMonth}` : '';
+      const filterPart = state.filter === 'all' ? '' : `-${state.filter}`;
+      return `age-cycle-${beYear}-${mode}${resultMonthPart}${filterPart}.png`;
     }
 
     function canvasToBlob(canvas) {
