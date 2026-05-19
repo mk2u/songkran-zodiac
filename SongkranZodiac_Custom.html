@@ -2121,7 +2121,7 @@
       if (!group) return;
       group.classList.add('active');
       clearTimeout(shareGroupTimer);
-      shareGroupTimer = setTimeout(() => group.classList.remove('active'), 1000);
+      shareGroupTimer = setTimeout(() => group.classList.remove('active'), 5000);
     }
 
     // ── Seamless Music Logic ──
@@ -2330,7 +2330,7 @@
           v.style.pointerEvents = 'none';
           v.style.transform = 'translateX(-20px)';
         }
-      }, 1000);
+      }, 5000);
     }
   </script>
 
