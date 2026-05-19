@@ -920,8 +920,14 @@
     const c = cv.getContext('2d');
     const W = cv.width, CX = W / 2, CY = W / 2;
     const FONT = "'K2D', sans-serif";
+    const WHEEL_SCALE = 1.055;
     const SHOW_ALL_TAKSA_LABELS = false;
     const SHOW_RASI_NUMBERS = true;
+    const ZODIAC_IMAGE_RADIUS = Math.round(384 * WHEEL_SCALE);
+    const TAKSA_LABEL_RADIUS = 575;
+    const LOR_LABEL_RADIUS = 596;
+    const TAKSA_BAD_FONT_SIZE = 76;
+    const VINAS_FONT_SIZE = 66;
     const PROFILE_COLORS = ['#1f9d55', '#2f80ed'];
     let birthProfiles = [];
 
@@ -1002,7 +1008,7 @@
 
     function drawBirthHighlights(ai) {
       if (!birthProfiles.length) return;
-      const er = 384;
+      const er = ZODIAC_IMAGE_RADIUS;
       const grouped = {};
       birthProfiles.forEach(profile => {
         grouped[profile.zodiacIndex] = grouped[profile.zodiacIndex] || [];
@@ -1197,12 +1203,12 @@
       const isSacred = currentTheme === 'sacred';
 
 
-      const RO = 485;
-      const RI = 469;
-      const RS = 463;
-      const RN = 305;
+      const RO = Math.round(485 * WHEEL_SCALE);
+      const RI = Math.round(469 * WHEEL_SCALE);
+      const RS = Math.round(463 * WHEEL_SCALE);
+      const RN = Math.round(305 * WHEEL_SCALE);
       const RC = 93;
-      const RL = 583;
+      const RL = TAKSA_LABEL_RADIUS;
 
 
 
@@ -1236,7 +1242,7 @@
         const a = toR(ang(i));
         const z = Z[i];
 
-        const er = 384;
+        const er = ZODIAC_IMAGE_RADIUS;
         const img = loadedImgs[z.en];
         if (img && img.complete) {
           const iw = 160;
@@ -1319,7 +1325,7 @@
             c.fillText('ตนุ', lx, ly);
           }
 
-          const r_lor = RL + 65;
+          const r_lor = LOR_LABEL_RADIUS;
           const a_lor = a + 0.08;
           const lx_lor = CX + r_lor * Math.cos(a_lor);
           const ly_lor = CY + r_lor * Math.sin(a_lor);
@@ -1330,7 +1336,8 @@
         } else {
           const isBad = tk.bad;
           if (!SHOW_ALL_TAKSA_LABELS && !isBad) continue;
-          c.font = isBad ? `900 76px ${FONT}` : `900 64px ${FONT}`;
+          const badFontSize = tk.name === 'วินาสน์' ? VINAS_FONT_SIZE : TAKSA_BAD_FONT_SIZE;
+          c.font = isBad ? `900 ${badFontSize}px ${FONT}` : `900 64px ${FONT}`;
           c.fillStyle = isBad ? badCol : textCol;
           c.textAlign = 'center'; c.textBaseline = 'middle';
           c.fillText(tk.name, lx, ly);
