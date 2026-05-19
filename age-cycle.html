@@ -409,6 +409,14 @@
       margin: 8px 0;
     }
 
+    .month-filter label {
+      display: block;
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
     .month-filter select {
       width: 100%;
       min-height: 44px;
@@ -1476,7 +1484,8 @@
     <div class="summary-strip" id="summaryStrip" aria-label="สรุปวันดีและวันไม่ดี"></div>
 
     <div class="month-filter annual-only">
-      <select id="resultMonth" aria-label="เดือนในผลลัพธ์"></select>
+      <label for="resultMonth">เลือกรอบเดือน</label>
+      <select id="resultMonth" aria-label="รอบเดือนในผลลัพธ์"></select>
     </div>
 
     <div class="notice" id="notice" role="status" aria-live="polite"></div>
@@ -1812,7 +1821,8 @@
           date: itemDate,
           house,
           order: offset,
-          key: dateKey(cursor)
+          key: dateKey(cursor),
+          periodKey: dateKey(periodStart)
         });
       }
 
@@ -1823,21 +1833,34 @@
       };
     }
 
+    function periodEndForStart(starts, index, items) {
+      if (starts[index + 1]) {
+        const nextStart = starts[index + 1].date;
+        return new Date(nextStart.getFullYear(), nextStart.getMonth(), nextStart.getDate() - 1);
+      }
+      return items[items.length - 1]?.date || starts[index].date;
+    }
+
+    function periodOptionLabel(start, end) {
+      return `รอบ ${formatDate(start, true)} – ${formatDate(end, true)}`;
+    }
+
     function buildMonthOptions(items) {
-      const seen = new Map();
-      items.forEach((item) => {
-        const key = monthKey(item.date);
-        if (!seen.has(key)) {
-          seen.set(key, `${MONTHS[item.date.getMonth()].full} ${item.date.getFullYear() + 543}`);
-        }
+      const starts = items.filter((item) => item.order === 0);
+      const options = starts.map((item, index) => {
+        const end = periodEndForStart(starts, index, items);
+        return {
+          key: item.periodKey || item.key,
+          label: periodOptionLabel(item.date, end)
+        };
       });
 
       $('resultMonth').innerHTML = [
         '<option value="all">ทุกเดือนในรอบนี้</option>',
-        ...Array.from(seen, ([key, label]) => `<option value="${key}">${label}</option>`)
+        ...options.map((option) => `<option value="${option.key}">${option.label}</option>`)
       ].join('');
 
-      if (!seen.has(state.resultMonth)) {
+      if (!options.some((option) => option.key === state.resultMonth)) {
         state.resultMonth = 'all';
       }
       $('resultMonth').value = state.resultMonth;
@@ -1846,7 +1869,7 @@
     function filteredItems() {
       return state.items.filter((item) => {
         if (state.filter !== 'all' && item.house.level !== state.filter) return false;
-        if (state.mode === 'year' && state.resultMonth !== 'all' && monthKey(item.date) !== state.resultMonth) return false;
+        if (state.mode === 'year' && state.resultMonth !== 'all' && item.periodKey !== state.resultMonth) return false;
         return true;
       });
     }
@@ -2104,9 +2127,10 @@
     function resultMonthLabel() {
       if (state.mode !== 'year') return '';
       if (state.resultMonth === 'all') return 'ทุกเดือนในรอบนี้';
-      const item = state.items.find((entry) => monthKey(entry.date) === state.resultMonth);
-      if (!item) return 'ทุกเดือนในรอบนี้';
-      return `${MONTHS[item.date.getMonth()].full} ${item.date.getFullYear() + 543}`;
+      const starts = state.items.filter((item) => item.order === 0);
+      const index = starts.findIndex((item) => item.periodKey === state.resultMonth || item.key === state.resultMonth);
+      if (index < 0) return 'ทุกเดือนในรอบนี้';
+      return periodOptionLabel(starts[index].date, periodEndForStart(starts, index, state.items));
     }
 
     function exportContextLines(itemCount) {
