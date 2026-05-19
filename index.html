@@ -802,7 +802,7 @@
   <div class="canvas-wrap">
     <canvas id="wheelCanvas" width="1400" height="1400"></canvas>
   </div>
-  <div class="bottom-text">นับจากปีสงกรานต์ไปหาปีเกิด</div>
+  <div class="bottom-text">นับจากปีเกิดไปหาปีสงกรานต์</div>
   <div class="credit">Developed with ❤️ by คนโบราณ</div>
 
   <script>
@@ -906,6 +906,7 @@
     const c = cv.getContext('2d');
     const W = cv.width, CX = W / 2, CY = W / 2;
     const FONT = "'K2D', sans-serif";
+    const SHOW_ALL_TAKSA_LABELS = false;
     const PROFILE_COLORS = ['#1f9d55', '#2f80ed'];
     let birthProfiles = [];
 
@@ -917,7 +918,7 @@
       const year = Number(raw);
       if (!Number.isFinite(year) || year < 2400 || year > 2800) return null;
       const zi = y2i(year);
-      const ti = mod(zi - ai, 12);
+      const ti = mod(ai - zi, 12);
       const tk = TK[ti];
       return {
         order,
@@ -960,7 +961,7 @@
         personalCard.innerHTML = `
           <div class="card-line">ปี ${y} · ปี${annual.thai} · คุณเกิดปี${first.zodiac.thai}</div>
           <div class="card-main ${cls}">ตกทักษา ${first.taksa.name} ${taksaDot(first)}</div>
-          <div class="card-meta">${taksaStatus(first)} · นับจากปีสงกรานต์ไปหาปีเกิด</div>
+          <div class="card-meta">${taksaStatus(first)} · นับจากปีเกิดไปหาปีสงกรานต์</div>
         `;
         personalCard.classList.add('show');
       } else {
@@ -1164,7 +1165,7 @@
       c.lineWidth = 5; c.strokeStyle = isSolar ? '#1e3d72' : (isRoyal ? '#ffd700' : '#e8c84a'); c.stroke();
 
       for (let i = 0; i < 12; i++) {
-        const ti = mod(i - ai, 12);
+        const ti = mod(ai - i, 12);
         const tk = TK[ti];
         const a = toR(ang(i));
         const lx = CX + RL * Math.cos(a);
@@ -1174,10 +1175,12 @@
         const badCol = isSolar ? '#c0392b' : '#ff4d4d';
 
         if (ti === 0) {
-          c.font = `900 72px ${FONT}`;
-          c.fillStyle = textCol;
-          c.textAlign = 'center'; c.textBaseline = 'middle';
-          c.fillText('ตนุ', lx, ly);
+          if (SHOW_ALL_TAKSA_LABELS) {
+            c.font = `900 72px ${FONT}`;
+            c.fillStyle = textCol;
+            c.textAlign = 'center'; c.textBaseline = 'middle';
+            c.fillText('ตนุ', lx, ly);
+          }
 
           const r_lor = RL + 65;
           const a_lor = a + 0.08;
@@ -1189,6 +1192,7 @@
           c.fillText('ล', lx_lor, ly_lor);
         } else {
           const isBad = tk.bad;
+          if (!SHOW_ALL_TAKSA_LABELS && !isBad) continue;
           c.font = isBad ? `900 76px ${FONT}` : `900 64px ${FONT}`;
           c.fillStyle = isBad ? badCol : textCol;
           c.textAlign = 'center'; c.textBaseline = 'middle';
@@ -1411,7 +1415,7 @@
         drawFittedText(x, `คนที่ 2 เกิดปี ${second.year} · ปี${second.zodiac.thai} → ทักษา ${second.taksa.name} · ${taksaStatus(second)}`, 800, 1472, 1240, 34, 900, secondColor);
       }
 
-      drawFittedText(x, 'นับจากปีสงกรานต์ไปหาปีเกิด', 800, 1534, 1240, 28, 800, p.text);
+      drawFittedText(x, 'นับจากปีเกิดไปหาปีสงกรานต์', 800, 1534, 1240, 28, 800, p.text);
       drawFittedText(x, 'Credit ❤️ by คนโบราณ', 800, 1572, 1240, 26, 800, p.text);
       return out;
     }
