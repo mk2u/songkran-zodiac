@@ -301,6 +301,10 @@
       gap: 5px;
     }
 
+    .field[hidden] {
+      display: none !important;
+    }
+
     .field label {
       color: var(--muted);
       font-size: 13px;
@@ -1366,7 +1370,8 @@
     }
 
     #birthDay:disabled,
-    #birthMonth:disabled {
+    #targetMonth:disabled,
+    #targetYear:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
@@ -1433,11 +1438,11 @@
           <label for="birthDay">วันที่เกิด</label>
           <select id="birthDay"></select>
         </div>
-        <div class="field annual-only">
+        <div class="field" hidden>
           <label for="birthMonth">เดือนเกิด</label>
           <select id="birthMonth"></select>
         </div>
-        <div class="field month-only">
+        <div class="field">
           <label for="targetMonth">เดือนที่ดู</label>
           <select id="targetMonth"></select>
         </div>
@@ -1457,7 +1462,7 @@
       <div class="lock-row">
         <button id="lockBtn" type="button" class="lock-btn">
           <span id="lockIcon">🔓</span>
-          <span id="lockLabel">ล็อควันเกิด</span>
+          <span id="lockLabel">ล็อควันเดือนปี</span>
         </button>
       </div>
     </section>
@@ -1724,55 +1729,37 @@
     }
 
     function buildMonthly() {
-      const { birthDay, birthMonth, targetMonth, beYear, adYear } = readInputs();
-      const monthDays = daysInMonth(adYear, targetMonth);
+      const { birthDay, targetMonth, beYear, adYear } = readInputs();
 
       if (!beYear) {
         return { error: 'กรุณาระบุปี พ.ศ.' };
       }
 
-      // หาวันเริ่มต้นรอบปีนี้ (วันเกิดในปีที่เลือก)
-      // ถ้าเดือนที่เลือกอยู่ก่อนเดือนเกิด → รอบปีที่แล้ว
-      let annualYear = adYear;
-      if (targetMonth < birthMonth || (targetMonth === birthMonth)) {
-        // รอบปีเริ่มที่ birthMonth ปีนี้
-        annualYear = adYear;
-      }
-      // วันเริ่มรอบปี = วันเกิดในปี annualYear
-      const annualStart = new Date(annualYear, birthMonth, birthDay);
-
-      // หาวันเริ่มต้นและสิ้นสุดของรอบเดือนนี้
-      // รอบเดือน = วันเดียวกับวันเกิดในเดือน targetMonth
+      // วันเริ่มต้น = min(วันเกิด, จำนวนวันในเดือนที่ดู) → เสมอเป็นตนุ
       const maxDayTarget = daysInMonth(adYear, targetMonth);
       const startDay     = Math.min(birthDay, maxDayTarget);
       const start        = new Date(adYear, targetMonth, startDay);
 
-      // ถ้า start อยู่ก่อน annualStart → เลื่อน annualStart ย้อนปี
-      let effectiveAnnualStart = new Date(annualStart);
-      if (start < effectiveAnnualStart) {
-        effectiveAnnualStart = new Date(annualYear - 1, birthMonth, birthDay);
-      }
-
-      // end = วันเดียวกันเดือนถัดไป
-      const nextMonth = targetMonth === 11 ? 0 : targetMonth + 1;
-      const nextYear  = targetMonth === 11 ? adYear + 1 : adYear;
-      const maxDay    = daysInMonth(nextYear, nextMonth);
-      const lastDay   = Math.min(birthDay, maxDay);
-      const endDay    = birthDay > maxDay ? lastDay + 1 : lastDay;
-      const end       = new Date(nextYear, nextMonth, endDay);
+      // end = วันก่อน birthDay ของเดือนถัดไป
+      const nextMonth  = targetMonth === 11 ? 0 : targetMonth + 1;
+      const nextYear   = targetMonth === 11 ? adYear + 1 : adYear;
+      const maxDayNext = daysInMonth(nextYear, nextMonth);
+      // ถ้า birthDay > maxDayNext (เช่น เกิด 29 แต่ ก.พ. มี 28)
+      // รอบจบที่ 28 ก.พ. → end = 29 ก.พ. (ไม่มีจริง = 1 มี.ค.) เพื่อให้ loop รวม 28
+      const end = birthDay > maxDayNext
+        ? new Date(nextYear, nextMonth, maxDayNext + 1)
+        : new Date(nextYear, nextMonth, birthDay);
 
       const items = [];
+      let index = 0;
       for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {
-        // offset จากวันเริ่มรอบปีจริง
-        const diffMs   = cursor - effectiveAnnualStart;
-        const diffDays = Math.round(diffMs / 86400000);
-        const house    = HOUSES[((diffDays % HOUSES.length) + HOUSES.length) % HOUSES.length];
+        const house = HOUSES[index % HOUSES.length];
         const d = new Date(cursor);
-        items.push({ date: d, house, order: diffDays, key: dateKey(d) });
+        items.push({ date: d, house, order: index, key: dateKey(d) });
+        index++;
       }
 
-      const beEnd = end.getFullYear() + 543;
-      const endDisplay = new Date(nextYear, nextMonth, endDay - 1);
+      const endDisplay = new Date(end - 86400000);
       return {
         items,
         summary: `${startDay} ${MONTHS[targetMonth].short} ${beYear} – ${endDisplay.getDate()} ${MONTHS[endDisplay.getMonth()].short} ${endDisplay.getFullYear() + 543}`
@@ -1784,34 +1771,55 @@
       return new Date(adYear + 1, monthIndex, Math.min(day, maxDay));
     }
 
-    function buildAnnual() {
-      const { birthDay, birthMonth, beYear, adYear } = readInputs();
-      const monthDays = daysInMonth(adYear, birthMonth);
+    function cycleStartForMonth(adYear, monthIndex, day) {
+      return new Date(adYear, monthIndex, Math.min(day, daysInMonth(adYear, monthIndex)));
+    }
 
-      if (!beYear || birthDay > monthDays) {
-        return {
-          error: `เดือน${MONTHS[birthMonth].full} พ.ศ. ${beYear || ''} ไม่มีวันที่ ${birthDay}`
-        };
+    function previousMonthParts(adYear, monthIndex) {
+      return monthIndex === 0
+        ? { year: adYear - 1, month: 11 }
+        : { year: adYear, month: monthIndex - 1 };
+    }
+
+    function periodStartForDate(date, birthDay) {
+      let start = cycleStartForMonth(date.getFullYear(), date.getMonth(), birthDay);
+      if (date < start) {
+        const previous = previousMonthParts(date.getFullYear(), date.getMonth());
+        start = cycleStartForMonth(previous.year, previous.month, birthDay);
+      }
+      return start;
+    }
+
+    function buildAnnual() {
+      const { birthDay, targetMonth, beYear, adYear } = readInputs();
+
+      if (!beYear) {
+        return { error: 'กรุณาระบุปี พ.ศ.' };
       }
 
-      const start = new Date(adYear, birthMonth, birthDay);
-      const end = nextAnnualStart(adYear, birthMonth, birthDay);
+      const start = cycleStartForMonth(adYear, targetMonth, birthDay);
+      const endMonth = targetMonth === 0 ? 11 : targetMonth - 1;
+      const endYear = targetMonth === 0 ? adYear : adYear + 1;
+      const end = cycleStartForMonth(endYear, endMonth, birthDay);
       const items = [];
-      let index = 0;
+
       for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {
-        const house = HOUSES[index % HOUSES.length];
+        const itemDate = new Date(cursor);
+        const periodStart = periodStartForDate(itemDate, birthDay);
+        const offset = Math.round((itemDate - periodStart) / 86400000);
+        const house = HOUSES[offset % HOUSES.length];
         items.push({
-          date: new Date(cursor),
+          date: itemDate,
           house,
-          order: index,
+          order: offset,
           key: dateKey(cursor)
         });
-        index += 1;
       }
 
+      const endDisplay = new Date(end - 86400000);
       return {
         items,
-        summary: `${formatDate(start, true)} ถึง ${formatDate(new Date(end.getFullYear(), end.getMonth(), end.getDate() - 1), true)}`
+        summary: `${formatDate(start, true)} ถึง ${formatDate(endDisplay, true)}`
       };
     }
 
@@ -2011,18 +2019,17 @@
       }
 
       if (state.mode === 'year') {
-        const birthDay   = Number($('birthDay').value);
-        const birthMonth = Number($('birthMonth').value);
+        const birthDay = Number($('birthDay').value);
+        let month = today.getMonth();
         let year = today.getFullYear();
 
-        // วันเกิดปีนี้
-        const birthdayThisYear = new Date(year, birthMonth, birthDay);
-
-        // ถ้าวันนี้ยังไม่ถึงวันเกิดปีนี้ → ใช้รอบปีที่แล้ว
-        if (today < birthdayThisYear) {
-          year -= 1;
+        // ใช้เดือนรอบล่าสุดเหมือนรายเดือน แล้วต่อเป็นรอบปีจากเดือนนั้น
+        if (today.getDate() < birthDay) {
+          month -= 1;
+          if (month < 0) { month = 11; year -= 1; }
         }
 
+        $('targetMonth').value = String(month);
         $('targetYear').value = String(year + 543);
         render();
         requestAnimationFrame(() => revealToday(today));
@@ -2112,8 +2119,8 @@
 
       if (state.mode === 'year') {
         return [
-          `วันเกิด: ${birthDay} ${MONTHS[birthMonth].full}`,
-          `ปีที่ดู: พ.ศ. ${beYear} | เดือนที่แสดง: ${resultMonthLabel()}`,
+          `วันที่เกิด: ${birthDay}`,
+          `เริ่มเดือน: ${MONTHS[targetMonth].full} พ.ศ. ${beYear} | เดือนที่แสดง: ${resultMonthLabel()}`,
           `ตัวกรอง: ${filterLabel} | แสดง ${itemCount} วัน`
         ];
       }
@@ -2387,7 +2394,7 @@
       const { birthDay, birthMonth, targetMonth, beYear } = readInputs();
       const day = String(birthDay).padStart(2, '0');
       const mode = state.mode === 'year'
-        ? `annual-birth-${day}-${String(birthMonth + 1).padStart(2, '0')}`
+        ? `annual-start-${String(targetMonth + 1).padStart(2, '0')}-day-${day}`
         : `month-${String(targetMonth + 1).padStart(2, '0')}-start-${day}`;
       const resultMonthPart = state.mode === 'year' && state.resultMonth !== 'all' ? `-${state.resultMonth}` : '';
       const filterPart = state.filter === 'all' ? '' : `-${state.filter}`;
@@ -2679,9 +2686,9 @@
         if (!isLocked) {
           $('birthDay').value   = String(today.getDate());
           $('birthMonth').value = String(today.getMonth());
+          $('targetMonth').value = String(today.getMonth());
+          $('targetYear').value  = String(today.getFullYear() + 543);
         }
-        $('targetMonth').value = String(today.getMonth());
-        $('targetYear').value  = String(today.getFullYear() + 543);
         state.filter           = 'all';
         activateFilterButton();
         render();
@@ -2690,10 +2697,11 @@
       const LOCK_KEY = 'zodiacBirthLock';
       function applyLock(locked) {
         $('birthDay').disabled    = locked;
-        $('birthMonth').disabled  = locked;
+        $('targetMonth').disabled = locked;
+        $('targetYear').disabled  = locked;
         $('lockBtn').classList.toggle('locked', locked);
         $('lockIcon').textContent  = locked ? '🔒' : '🔓';
-        $('lockLabel').textContent = locked ? 'ล็อคอยู่' : 'ล็อควันเกิด';
+        $('lockLabel').textContent = locked ? 'ล็อคอยู่' : 'ล็อควันเดือนปี';
         localStorage.setItem(LOCK_KEY, locked ? '1' : '0');
       }
       applyLock(localStorage.getItem(LOCK_KEY) === '1');

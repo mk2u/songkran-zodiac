@@ -1242,9 +1242,20 @@
     const cv = document.getElementById('wheelCanvas');
     const ctx = cv.getContext('2d');
     const W = cv.width, CX = W / 2, CY = W / 2;
-    const RO = 485, RI = 469, RS = 463, RN = 305, RC = 93, RL = 583, RZ = 384;
+    const WHEEL_SCALE = 1.055;
+    const RO = Math.round(485 * WHEEL_SCALE);
+    const RI = Math.round(469 * WHEEL_SCALE);
+    const RS = Math.round(463 * WHEEL_SCALE);
+    const RN = Math.round(305 * WHEEL_SCALE);
+    const RC = 93;
+    const RL = 575;
+    const RZ = Math.round(384 * WHEEL_SCALE);
     const SHOW_ALL_TAKSA_LABELS = false;
     const SHOW_RASI_NUMBERS = true;
+    const LOR_LABEL_RADIUS = 596;
+    const LOR_FONT_SIZE = 120;
+    const TAKSA_BAD_FONT_SIZE = 76;
+    const VINAS_FONT_SIZE = 66;
     const PROFILE_COLORS = ['#1f9d55', '#2f80ed'];
     let birthProfiles = [];
 
@@ -1573,7 +1584,7 @@
         ctx.save();
         ctx.translate(CX, CY);
         let rot = (a + Math.PI / 2 + Math.PI * 2) % (Math.PI * 2);
-        ctx.font = `900 44px ${FONT}`;
+        ctx.font = `900 42px ${FONT}`;
 
         ctx.fillStyle = theme.text;
         ctx.textAlign = 'center';
@@ -1630,21 +1641,22 @@
             ctx.fillText('ตนุ', lx, ly);
             ctx.shadowBlur = 0;
           }
-          const rl2 = RL + 70, al2 = a + 0.075;
-          ctx.font = `900 125px ${FONT}`;
+          const rl2 = LOR_LABEL_RADIUS, al2 = a + 0.075;
+          ctx.font = `900 ${LOR_FONT_SIZE}px ${FONT}`;
 
           ctx.fillStyle = currentTheme === 'solar' ? '#c0392b' : '#ff4030';
           ctx.fillText('ล', CX + rl2 * Math.cos(al2), CY + rl2 * Math.sin(al2));
           ctx.shadowBlur = 0;
         } else if (tk.bad) {
           danger = true;
-          ctx.font = `900 76px ${FONT}`;
+          const badFontSize = tk.name === 'วินาสน์' ? VINAS_FONT_SIZE : TAKSA_BAD_FONT_SIZE;
+          ctx.font = `900 ${badFontSize}px ${FONT}`;
 
           ctx.fillStyle = currentTheme === 'solar' ? '#c0392b' : '#ff3020';
           ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
           ctx.fillText(tk.name, lx, ly);
         } else if (SHOW_ALL_TAKSA_LABELS) {
-          ctx.font = `900 66px ${FONT}`;
+          ctx.font = `900 64px ${FONT}`;
 
           ctx.fillStyle = theme.text;
           ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
