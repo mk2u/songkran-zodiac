@@ -891,6 +891,20 @@
       { name: "ลาภะ", bad: false },
       { name: "วินาสน์", bad: true }
     ];
+    const RASI = [
+      { name: "เมษ", number: "๓" },
+      { name: "พฤษภ", number: "๖" },
+      { name: "เมถุน", number: "๔" },
+      { name: "กรกฎ", number: "๒" },
+      { name: "สิงห์", number: "๑" },
+      { name: "กันย์", number: "๔" },
+      { name: "ตุลย์", number: "๖" },
+      { name: "พิจิก", number: "๓" },
+      { name: "ธนู", number: "๕" },
+      { name: "มกร", number: "๗" },
+      { name: "กุมภ์", number: "๘" },
+      { name: "มีน", number: "๕" }
+    ];
     const BY = 2569, BI = 6;
     function mod(v, n) { return ((v % n) + n) % n }
     function y2i(y) { return mod(Number(y) - BY + BI, 12) }
@@ -907,6 +921,7 @@
     const W = cv.width, CX = W / 2, CY = W / 2;
     const FONT = "'K2D', sans-serif";
     const SHOW_ALL_TAKSA_LABELS = false;
+    const SHOW_RASI_NUMBERS = true;
     const PROFILE_COLORS = ['#1f9d55', '#2f80ed'];
     let birthProfiles = [];
 
@@ -1027,6 +1042,132 @@
         c.fillText(String(profile.order), markerX, markerY + 1);
         c.restore();
       });
+    }
+
+    function drawRasiNumbers(isSolar, isRoyal) {
+      if (!SHOW_RASI_NUMBERS) return;
+      const badgeR = 201;
+      const badgeSize = 37;
+      for (let i = 0; i < 12; i++) {
+        const rasi = RASI[i];
+        const a = toR(ang(i));
+        const x = CX + badgeR * Math.cos(a);
+        const y = CY + badgeR * Math.sin(a);
+
+        c.save();
+        c.beginPath();
+        c.arc(x, y, badgeSize, 0, Math.PI * 2);
+        const g = c.createRadialGradient(x - 10, y - 12, 4, x, y, badgeSize);
+        if (isSolar) {
+          g.addColorStop(0, '#fffaf0');
+          g.addColorStop(1, '#e5c15d');
+        } else {
+          g.addColorStop(0, isRoyal ? '#fff0a8' : '#f7df8b');
+          g.addColorStop(1, isRoyal ? '#a87d16' : '#5d4211');
+        }
+        c.fillStyle = g;
+        c.shadowBlur = isSolar ? 10 : 18;
+        c.shadowColor = isSolar ? 'rgba(184,134,11,0.26)' : 'rgba(255,215,0,0.38)';
+        c.fill();
+        c.shadowBlur = 0;
+        c.lineWidth = 3;
+        c.strokeStyle = isSolar ? '#b8860b' : '#ffd700';
+        c.stroke();
+        c.font = `900 46px ${FONT}`;
+        c.textAlign = 'center';
+        c.textBaseline = 'middle';
+        if (!isSolar) {
+          c.lineWidth = 7;
+          c.strokeStyle = '#241400';
+          c.shadowBlur = 12;
+          c.shadowColor = 'rgba(0,0,0,0.75)';
+          c.strokeText(rasi.number, x, y + 2);
+          c.shadowBlur = 0;
+        }
+        c.fillStyle = isSolar ? '#1e1a12' : '#ffffff';
+        c.fillText(rasi.number, x, y + 2);
+        c.restore();
+      }
+    }
+
+    function drawAstroSeal(isSolar, isRoyal, isSacred, radius) {
+      const gold = isSolar ? '#b8860b' : (isRoyal ? '#ffd700' : '#e8c84a');
+      const goldSoft = isSolar ? 'rgba(184,134,11,0.34)' : 'rgba(255,215,0,0.44)';
+      const dark = isSolar ? '#fffaf0' : (isRoyal ? '#0e3d25' : '#1e1044');
+      const text = isSolar ? '#8b1a1a' : '#fff4bc';
+
+      c.save();
+      const bg = c.createRadialGradient(CX - 18, CY - 22, 4, CX, CY, radius);
+      bg.addColorStop(0, isSolar ? '#ffffff' : '#2a1b50');
+      bg.addColorStop(0.68, dark);
+      bg.addColorStop(1, isSolar ? '#f7edd2' : '#07030d');
+      c.beginPath();
+      c.arc(CX, CY, radius, 0, Math.PI * 2);
+      c.fillStyle = bg;
+      c.shadowBlur = isSolar ? 14 : 28;
+      c.shadowColor = goldSoft;
+      c.fill();
+      c.shadowBlur = 0;
+
+      [radius - 3, radius - 15, radius - 38].forEach((r, idx) => {
+        c.beginPath();
+        c.arc(CX, CY, r, 0, Math.PI * 2);
+        c.lineWidth = idx === 0 ? 5 : 2;
+        c.strokeStyle = idx === 2 ? goldSoft : gold;
+        c.stroke();
+      });
+
+      for (let i = 0; i < 16; i++) {
+        const a = toR(i * 22.5 - 90);
+        const r = i % 2 === 0 ? radius - 24 : radius - 31;
+        c.beginPath();
+        c.moveTo(CX, CY);
+        c.lineTo(CX + r * Math.cos(a), CY + r * Math.sin(a));
+        c.lineWidth = i % 2 === 0 ? 1.5 : 0.8;
+        c.strokeStyle = i % 2 === 0 ? 'rgba(232,200,74,0.28)' : 'rgba(232,200,74,0.16)';
+        c.stroke();
+      }
+
+      for (let i = 0; i < 12; i++) {
+        const a = toR(i * 30 - 90);
+        const x = CX + (radius - 22) * Math.cos(a);
+        const y = CY + (radius - 22) * Math.sin(a);
+        c.beginPath();
+        c.arc(x, y, i % 3 === 0 ? 4.2 : 3, 0, Math.PI * 2);
+        c.fillStyle = gold;
+        c.shadowBlur = 8;
+        c.shadowColor = goldSoft;
+        c.fill();
+        c.shadowBlur = 0;
+      }
+
+      const star = [];
+      for (let i = 0; i < 16; i++) {
+        const a = toR(i * 22.5 - 90);
+        const r = i % 2 === 0 ? 37 : 15;
+        star.push([CX + r * Math.cos(a), CY + r * Math.sin(a)]);
+      }
+      c.beginPath();
+      star.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y));
+      c.closePath();
+      const sg = c.createRadialGradient(CX - 8, CY - 10, 2, CX, CY, 42);
+      sg.addColorStop(0, '#fff7b8');
+      sg.addColorStop(0.58, gold);
+      sg.addColorStop(1, '#7c5208');
+      c.fillStyle = sg;
+      c.shadowBlur = 18;
+      c.shadowColor = goldSoft;
+      c.fill();
+      c.lineWidth = 2;
+      c.strokeStyle = text;
+      c.stroke();
+      c.shadowBlur = 0;
+
+      c.beginPath();
+      c.arc(CX, CY, 7, 0, Math.PI * 2);
+      c.fillStyle = text;
+      c.fill();
+      c.restore();
     }
 
     function setTheme(t) {
@@ -1155,14 +1296,10 @@
         c.restore();
       }
 
+      drawRasiNumbers(isSolar, isRoyal);
       drawBirthHighlights(ai);
 
-      c.beginPath(); c.arc(CX, CY, RC, 0, Math.PI * 2);
-      let centerCol = '#fff';
-      if (isSacred) centerCol = '#1e1044';
-      if (isRoyal) centerCol = '#0e3d25';
-      c.fillStyle = centerCol; c.fill();
-      c.lineWidth = 5; c.strokeStyle = isSolar ? '#1e3d72' : (isRoyal ? '#ffd700' : '#e8c84a'); c.stroke();
+      drawAstroSeal(isSolar, isRoyal, isSacred, RC);
 
       for (let i = 0; i < 12; i++) {
         const ti = mod(ai - i, 12);

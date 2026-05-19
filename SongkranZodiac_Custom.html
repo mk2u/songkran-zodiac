@@ -464,14 +464,18 @@
 
     .zc-taksa {
       margin-top: 10px;
-      font-size: 13px;
+      font-size: clamp(17px, 4.4vw, 22px);
+      font-weight: 800;
       color: var(--text);
-      opacity: 0.65;
+      opacity: 0.95;
+      line-height: 1.45;
     }
 
     .zc-taksa span.bad {
       color: var(--red);
-      font-weight: 700;
+      font-size: 1.16em;
+      font-weight: 900;
+      text-shadow: 0 0 10px rgba(255, 48, 32, 0.42);
     }
 
     .zc-taksa span.ok {
@@ -1183,6 +1187,20 @@
       { name: "ลาภะ", bad: false },
       { name: "วินาสน์", bad: true }
     ];
+    const RASI = [
+      { name: "เมษ", number: "๓" },
+      { name: "พฤษภ", number: "๖" },
+      { name: "เมถุน", number: "๔" },
+      { name: "กรกฎ", number: "๒" },
+      { name: "สิงห์", number: "๑" },
+      { name: "กันย์", number: "๔" },
+      { name: "ตุลย์", number: "๖" },
+      { name: "พิจิก", number: "๓" },
+      { name: "ธนู", number: "๕" },
+      { name: "มกร", number: "๗" },
+      { name: "กุมภ์", number: "๘" },
+      { name: "มีน", number: "๕" }
+    ];
     const BY = 2569, BI = 6;
     const FONT = "'Noto Serif Thai', serif";
     let currentTheme = 'solar';
@@ -1226,6 +1244,7 @@
     const W = cv.width, CX = W / 2, CY = W / 2;
     const RO = 485, RI = 469, RS = 463, RN = 305, RC = 93, RL = 583, RZ = 384;
     const SHOW_ALL_TAKSA_LABELS = false;
+    const SHOW_RASI_NUMBERS = true;
     const PROFILE_COLORS = ['#1f9d55', '#2f80ed'];
     let birthProfiles = [];
 
@@ -1344,6 +1363,54 @@
         ctx.fillText(String(profile.order), markerX, markerY + 1);
         ctx.restore();
       });
+    }
+
+    function drawRasiNumbers(theme) {
+      if (!SHOW_RASI_NUMBERS) return;
+      const badgeR = 201;
+      const badgeSize = 37;
+      const isSolar = currentTheme === 'solar';
+      const isRoyal = currentTheme === 'royal';
+      for (let i = 0; i < 12; i++) {
+        const rasi = RASI[i];
+        const a = toR(ang(i));
+        const x = CX + badgeR * Math.cos(a);
+        const y = CY + badgeR * Math.sin(a);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(x, y, badgeSize, 0, Math.PI * 2);
+        const g = ctx.createRadialGradient(x - 10, y - 12, 4, x, y, badgeSize);
+        if (isSolar) {
+          g.addColorStop(0, '#fffaf0');
+          g.addColorStop(1, '#e5c15d');
+        } else {
+          g.addColorStop(0, isRoyal ? '#fff0a8' : '#f7df8b');
+          g.addColorStop(1, isRoyal ? '#a87d16' : '#5d4211');
+        }
+        ctx.fillStyle = g;
+        ctx.shadowBlur = isSolar ? 10 : 18;
+        ctx.shadowColor = isSolar ? 'rgba(184,134,11,0.26)' : 'rgba(255,215,0,0.38)';
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = isSolar ? '#b8860b' : theme.gold;
+        ctx.stroke();
+        ctx.font = `900 46px ${FONT}`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        if (!isSolar) {
+          ctx.lineWidth = 7;
+          ctx.strokeStyle = '#241400';
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = 'rgba(0,0,0,0.75)';
+          ctx.strokeText(rasi.number, x, y + 2);
+          ctx.shadowBlur = 0;
+        }
+        ctx.fillStyle = isSolar ? '#1e1a12' : '#ffffff';
+        ctx.fillText(rasi.number, x, y + 2);
+        ctx.restore();
+      }
     }
 
 
@@ -1523,6 +1590,7 @@
         ctx.restore();
       }
 
+      drawRasiNumbers(theme);
       drawBirthHighlights();
 
       /* Center circle */
