@@ -223,7 +223,8 @@
     }
 
     .page-head {
-      padding: 8px 0 8px;
+      position: relative;
+      padding: 8px 44px 8px;
       text-align: center;
     }
 
@@ -232,16 +233,19 @@
       color: var(--title);
       font-family: 'Srisakdi', cursive;
       font-size: clamp(28px, 7.5vw, 54px);
-      line-height: 1.05;
+      line-height: 1.35;
+      padding: 0.04em 0 0.16em;
       text-shadow: 0 0 10px var(--title-shadow);
     }
 
     .range-summary {
-      min-height: 25px;
-      margin-top: 8px;
+      min-height: 28px;
+      margin-top: 2px;
       color: var(--muted);
       font-size: 15px;
       font-weight: 700;
+      line-height: 1.5;
+      padding-bottom: 2px;
     }
 
     .control-panel {
@@ -898,17 +902,62 @@
       }
     }
 
-    /* ── DRAG HANDLE ── */
     .sheet-drag-handle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 4px;
+    }
+
+    .sheet-drag-handle::before {
+      content: '';
       width: 40px;
       height: 5px;
       border-radius: 999px;
       background: var(--ctrl-border);
-      margin: 10px auto 0;
       opacity: 0.55;
+      position: absolute;
     }
 
-    /* ── GRADIENT TITLE for sacred/royal themes ── */
+    #scrollTopBtn {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1.5px solid var(--card-border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 2px 12px var(--shadow);
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.3s ease, bottom 0.3s ease;
+      -webkit-text-fill-color: initial;
+    }
+
+    #scrollTopBtn.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* เมื่อ sheet เปิด ปุ่มขึ้นไปอยู่เหนือ sheet */
+    .sheet-overlay.open ~ #scrollTopBtn,
+    body:has(.sheet-overlay.open) #scrollTopBtn {
+      bottom: calc(60vh + 16px);
+    }
+
+    #scrollTopBtn:hover {
+      background: var(--card-border);
+      color: #fff;
+      -webkit-text-fill-color: initial;
+    }
     body.theme-sacred .page-head h1 {
       background: linear-gradient(135deg, #e8c84a 0%, #fff5c0 45%, #c8951a 100%);
       -webkit-background-clip: text;
@@ -1121,15 +1170,14 @@
     .page-head h1 {
       position: relative;
       overflow: visible;
-      padding-bottom: 6px;
     }
 
     .page-head h1::after {
       content: '';
       position: absolute;
-      top: 0; left: -100%;
+      top: 0.08em; left: -100%;
       width: 60%;
-      height: 100%;
+      height: calc(100% - 0.18em);
       background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
       animation: titleSweep 4s ease-in-out infinite;
       pointer-events: none;
@@ -1238,11 +1286,91 @@
       animation: numPop 0.35s ease;
     }
 
-    @keyframes numPop {
-      0%   { transform: scale(1); }
-      50%  { transform: scale(1.35); }
-      100% { transform: scale(1); }
+    /* ── RESET BUTTON ── */
+    #resetBtn {
+      position: absolute;
+      top: 14px;
+      right: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border: 1.5px solid var(--ctrl-border);
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      box-shadow: 0 4px 14px var(--shadow);
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      border-radius: 50%;
+      opacity: 0.76;
+      transition: opacity 0.2s, transform 0.18s ease, box-shadow 0.18s ease;
+      line-height: 1;
+      -webkit-text-fill-color: initial;
+      filter: none;
+      padding: 0;
+      z-index: 2;
     }
+
+    #resetBtn:hover {
+      opacity: 1;
+      box-shadow: 0 6px 18px var(--shadow);
+    }
+
+    #resetBtn:active {
+      transform: scale(0.94);
+    }
+
+    #resetBtn.spinning {
+      animation: resetSpin 0.45s ease forwards;
+    }
+
+    @keyframes resetSpin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ── LOCK BUTTON ── */
+    .lock-row {
+      display: flex;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .lock-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 18px;
+      border-radius: 999px;
+      border: 1.5px solid var(--ctrl-border);
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      font-size: 14px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .lock-btn:hover {
+      border-color: var(--card-border);
+      box-shadow: 0 3px 12px var(--shadow);
+    }
+
+    .lock-btn.locked {
+      background: var(--good-bg);
+      border-color: var(--good);
+      color: var(--good);
+    }
+
+    #birthDay:disabled,
+    #birthMonth:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
   </style>
 </head>
 
@@ -1289,6 +1417,7 @@
     </nav>
 
     <header class="page-head">
+      <button id="resetBtn" type="button" title="รีเซ็ตเป็นวันนี้" aria-label="รีเซ็ตเป็นวันนี้">↺</button>
       <h1>อายุจรประจำปี</h1>
       <div class="range-summary" id="rangeSummary"></div>
     </header>
@@ -1324,6 +1453,13 @@
         <button id="todayBtn" type="button">⭐ วันนี้ตกอะไร</button>
         <button id="copyBtn" type="button">📋 คัดลอกผลย่อ</button>
       </div>
+
+      <div class="lock-row">
+        <button id="lockBtn" type="button" class="lock-btn">
+          <span id="lockIcon">🔓</span>
+          <span id="lockLabel">ล็อควันเกิด</span>
+        </button>
+      </div>
     </section>
 
     <div class="filter-row" aria-label="กรองผลลัพธ์">
@@ -1358,6 +1494,7 @@
     </article>
   </div>
 
+  <button id="scrollTopBtn" type="button" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">▲</button>
   <script>
     const MONTHS = [
       { short: 'ม.ค.', full: 'มกราคม' },
@@ -1587,42 +1724,58 @@
     }
 
     function buildMonthly() {
-      const { birthDay, targetMonth, beYear, adYear } = readInputs();
+      const { birthDay, birthMonth, targetMonth, beYear, adYear } = readInputs();
       const monthDays = daysInMonth(adYear, targetMonth);
 
-      if (!beYear || birthDay > monthDays) {
-        return {
-          error: `เดือน${MONTHS[targetMonth].full} พ.ศ. ${beYear || ''} ไม่มีวันที่ ${birthDay}`
-        };
+      if (!beYear) {
+        return { error: 'กรุณาระบุปี พ.ศ.' };
       }
 
-      // เริ่มจากวันเกิดในเดือนที่เลือก วิ่งไปข้างหน้า 1 เดือนเต็ม
-      const start = new Date(adYear, targetMonth, birthDay);
-      // สิ้นสุดก่อนวันเดียวกันของเดือนถัดไป
+      // หาวันเริ่มต้นรอบปีนี้ (วันเกิดในปีที่เลือก)
+      // ถ้าเดือนที่เลือกอยู่ก่อนเดือนเกิด → รอบปีที่แล้ว
+      let annualYear = adYear;
+      if (targetMonth < birthMonth || (targetMonth === birthMonth)) {
+        // รอบปีเริ่มที่ birthMonth ปีนี้
+        annualYear = adYear;
+      }
+      // วันเริ่มรอบปี = วันเกิดในปี annualYear
+      const annualStart = new Date(annualYear, birthMonth, birthDay);
+
+      // หาวันเริ่มต้นและสิ้นสุดของรอบเดือนนี้
+      // รอบเดือน = วันเดียวกับวันเกิดในเดือน targetMonth
+      const maxDayTarget = daysInMonth(adYear, targetMonth);
+      const startDay     = Math.min(birthDay, maxDayTarget);
+      const start        = new Date(adYear, targetMonth, startDay);
+
+      // ถ้า start อยู่ก่อน annualStart → เลื่อน annualStart ย้อนปี
+      let effectiveAnnualStart = new Date(annualStart);
+      if (start < effectiveAnnualStart) {
+        effectiveAnnualStart = new Date(annualYear - 1, birthMonth, birthDay);
+      }
+
+      // end = วันเดียวกันเดือนถัดไป
       const nextMonth = targetMonth === 11 ? 0 : targetMonth + 1;
       const nextYear  = targetMonth === 11 ? adYear + 1 : adYear;
       const maxDay    = daysInMonth(nextYear, nextMonth);
-      const end       = new Date(nextYear, nextMonth, Math.min(birthDay, maxDay));
+      const lastDay   = Math.min(birthDay, maxDay);
+      const endDay    = birthDay > maxDay ? lastDay + 1 : lastDay;
+      const end       = new Date(nextYear, nextMonth, endDay);
 
       const items = [];
-      let index = 0;
       for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {
-        const house = HOUSES[index % HOUSES.length];
+        // offset จากวันเริ่มรอบปีจริง
+        const diffMs   = cursor - effectiveAnnualStart;
+        const diffDays = Math.round(diffMs / 86400000);
+        const house    = HOUSES[((diffDays % HOUSES.length) + HOUSES.length) % HOUSES.length];
         const d = new Date(cursor);
-        items.push({
-          date: d,
-          house,
-          order: index,
-          key: dateKey(d)
-        });
-        index++;
+        items.push({ date: d, house, order: diffDays, key: dateKey(d) });
       }
 
       const beEnd = end.getFullYear() + 543;
-      const endLabel = `${end.getDate()} ${MONTHS[end.getMonth()].short} ${beEnd}`;
+      const endDisplay = new Date(nextYear, nextMonth, endDay - 1);
       return {
         items,
-        summary: `${birthDay} ${MONTHS[targetMonth].short} ${beYear} – ${endLabel}`
+        summary: `${startDay} ${MONTHS[targetMonth].short} ${beYear} – ${endDisplay.getDate()} ${MONTHS[endDisplay.getMonth()].short} ${endDisplay.getFullYear() + 543}`
       };
     }
 
@@ -1852,6 +2005,25 @@
 
         $('targetMonth').value = String(month);
         $('targetYear').value  = String(year + 543);
+        render();
+        requestAnimationFrame(() => revealToday(today));
+        return;
+      }
+
+      if (state.mode === 'year') {
+        const birthDay   = Number($('birthDay').value);
+        const birthMonth = Number($('birthMonth').value);
+        let year = today.getFullYear();
+
+        // วันเกิดปีนี้
+        const birthdayThisYear = new Date(year, birthMonth, birthDay);
+
+        // ถ้าวันนี้ยังไม่ถึงวันเกิดปีนี้ → ใช้รอบปีที่แล้ว
+        if (today < birthdayThisYear) {
+          year -= 1;
+        }
+
+        $('targetYear').value = String(year + 543);
         render();
         requestAnimationFrame(() => revealToday(today));
         return;
@@ -2496,7 +2668,39 @@
         $('themeSelector').classList.toggle('open');
       });
 
-      $('audioGroup').addEventListener('click', activateAudioGroup);
+      $('resetBtn')?.addEventListener('click', () => {
+        const today   = new Date();
+        const btn     = $('resetBtn');
+        const isLocked = $('birthDay').disabled;
+        btn.classList.remove('spinning');
+        requestAnimationFrame(() => btn.classList.add('spinning'));
+        btn.addEventListener('animationend', () => btn.classList.remove('spinning'), { once: true });
+
+        if (!isLocked) {
+          $('birthDay').value   = String(today.getDate());
+          $('birthMonth').value = String(today.getMonth());
+        }
+        $('targetMonth').value = String(today.getMonth());
+        $('targetYear').value  = String(today.getFullYear() + 543);
+        state.filter           = 'all';
+        activateFilterButton();
+        render();
+      });
+      // ── LOCK BIRTH DATE ──
+      const LOCK_KEY = 'zodiacBirthLock';
+      function applyLock(locked) {
+        $('birthDay').disabled    = locked;
+        $('birthMonth').disabled  = locked;
+        $('lockBtn').classList.toggle('locked', locked);
+        $('lockIcon').textContent  = locked ? '🔒' : '🔓';
+        $('lockLabel').textContent = locked ? 'ล็อคอยู่' : 'ล็อควันเกิด';
+        localStorage.setItem(LOCK_KEY, locked ? '1' : '0');
+      }
+      applyLock(localStorage.getItem(LOCK_KEY) === '1');
+      $('lockBtn').addEventListener('click', () => {
+        applyLock(!$('birthDay').disabled);
+      });
+
       $('audioGroup').addEventListener('touchstart', activateAudioGroup, { passive: true });
       $('toggleMusic').addEventListener('click', (event) => {
         event.stopPropagation();
@@ -2804,6 +3008,16 @@
       }).observe(strip, { childList: true, subtree: true });
     })();
 
+    // ── SCROLL TO TOP ──
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+    if (scrollTopBtn) {
+      window.addEventListener('scroll', () => {
+        scrollTopBtn.classList.toggle('visible', window.scrollY > 300);
+      }, { passive: true });
+      scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
   </script>
 </body>
 
