@@ -1469,46 +1469,6 @@
       }
     }
 
-    /* ── LOCK BUTTON ── */
-    .lock-row {
-      display: flex;
-      justify-content: center;
-      margin-top: 10px;
-    }
-
-    .lock-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 18px;
-      border-radius: 999px;
-      border: 1.5px solid var(--ctrl-border);
-      background: var(--ctrl-bg);
-      color: var(--ctrl-text);
-      font-size: 14px;
-      font-family: inherit;
-      cursor: pointer;
-      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
-      box-shadow: 0 2px 8px var(--shadow);
-    }
-
-    .lock-btn:hover {
-      border-color: var(--card-border);
-      box-shadow: 0 3px 12px var(--shadow);
-    }
-
-    .lock-btn.locked {
-      background: var(--good-bg);
-      border-color: var(--good);
-      color: var(--good);
-    }
-
-    #birthDay:disabled,
-    #targetMonth:disabled,
-    #targetYear:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
   </style>
 </head>
 
@@ -1589,12 +1549,6 @@
         <button id="copyBtn" type="button">📋 คัดลอกผลย่อ</button>
       </div>
 
-      <div class="lock-row">
-        <button id="lockBtn" type="button" class="lock-btn">
-          <span id="lockIcon">🔓</span>
-          <span id="lockLabel">ล็อควันเดือนปี</span>
-        </button>
-      </div>
     </section>
 
     <div class="filter-row" aria-label="กรองผลลัพธ์">
@@ -2978,35 +2932,17 @@
       $('resetBtn')?.addEventListener('click', () => {
         const today = new Date();
         const btn = $('resetBtn');
-        const isLocked = $('birthDay').disabled;
         btn.classList.remove('spinning');
         requestAnimationFrame(() => btn.classList.add('spinning'));
         btn.addEventListener('animationend', () => btn.classList.remove('spinning'), { once: true });
 
-        if (!isLocked) {
-          $('birthDay').value = String(today.getDate());
-          $('birthMonth').value = String(today.getMonth());
-          $('targetMonth').value = String(today.getMonth());
-          $('targetYear').value = String(today.getFullYear() + 543);
-        }
+        $('birthDay').value = String(today.getDate());
+        $('birthMonth').value = String(today.getMonth());
+        $('targetMonth').value = String(today.getMonth());
+        $('targetYear').value = String(today.getFullYear() + 543);
         state.filter = 'all';
         activateFilterButton();
         render();
-      });
-      // ── LOCK BIRTH DATE ──
-      const LOCK_KEY = 'zodiacBirthLock';
-      function applyLock(locked) {
-        $('birthDay').disabled = locked;
-        $('targetMonth').disabled = locked;
-        $('targetYear').disabled = locked;
-        $('lockBtn').classList.toggle('locked', locked);
-        $('lockIcon').textContent = locked ? '🔒' : '🔓';
-        $('lockLabel').textContent = locked ? 'ล็อคอยู่' : 'ล็อควันเดือนปี';
-        localStorage.setItem(LOCK_KEY, locked ? '1' : '0');
-      }
-      applyLock(localStorage.getItem(LOCK_KEY) === '1');
-      $('lockBtn').addEventListener('click', () => {
-        applyLock(!$('birthDay').disabled);
       });
 
       $('audioGroup').addEventListener('touchstart', activateAudioGroup, { passive: true });
