@@ -187,7 +187,7 @@
 
     .tool-nav {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 6px;
       margin: 68px 0 8px;
       padding: 5px;
@@ -211,6 +211,18 @@
       text-decoration: none;
       line-height: 1.2;
       overflow-wrap: anywhere;
+    }
+
+    .tool-nav a.teacher-only {
+      display: none;
+    }
+
+    .teacher-mode .tool-nav {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .teacher-mode .tool-nav a.teacher-only {
+      display: flex;
     }
 
     .tool-nav a.active {
@@ -1431,6 +1443,7 @@
   <main class="app-shell">
     <nav class="tool-nav" aria-label="เครื่องมือดูดวง">
       <a href="index.html">ปีนักษัตรสงกรานต์</a>
+      <a class="teacher-only" href="songkran-zodiac-daily.html">นักษัตรปะทะ</a>
       <a class="active" href="age-cycle.html">อายุจรประจำปี</a>
     </nav>
 
@@ -1609,6 +1622,7 @@
     const $ = (id) => document.getElementById(id);
     const AGE_SETTINGS_KEY = 'ageCycleSettings';
     const AGE_THEME_KEY = 'ageCycleTheme';
+    const TEACHER_MODE_KEY = 'songkranTeacherMode';
     const MUSIC_PLAYLIST = [
       {
         title: 'โชคชะตาแห่งดวงดาว - Destiny of the Stars',
@@ -1635,6 +1649,32 @@
 
     function currentBEYear() {
       return new Date().getFullYear() + 543;
+    }
+
+    function teacherHref(href) {
+      const [beforeHash, hash = ''] = href.split('#');
+      const [path, query = ''] = beforeHash.split('?');
+      const params = new URLSearchParams(query);
+      params.set('teacher', '1');
+      return `${path}?${params.toString()}${hash ? `#${hash}` : ''}`;
+    }
+
+    function applyTeacherMode() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('teacher') === '1') {
+        localStorage.setItem(TEACHER_MODE_KEY, '1');
+      } else if (params.get('teacher') === '0') {
+        localStorage.removeItem(TEACHER_MODE_KEY);
+      }
+
+      const enabled = localStorage.getItem(TEACHER_MODE_KEY) === '1';
+      document.documentElement.classList.toggle('teacher-mode', enabled);
+      if (!enabled) return;
+
+      document.querySelectorAll('.tool-nav a').forEach((link) => {
+        const href = link.getAttribute('href');
+        if (href) link.setAttribute('href', teacherHref(href));
+      });
     }
 
     function daysInMonth(adYear, monthIndex) {
@@ -2811,6 +2851,7 @@
       });
     }
 
+    applyTeacherMode();
     populateSelects();
     restoreAgeSettings();
     bindEvents();
