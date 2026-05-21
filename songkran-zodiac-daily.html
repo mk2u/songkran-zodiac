@@ -197,7 +197,8 @@
     }
 
     .tool-nav {
-      width: min(96vw, 620px);
+      width: 100%;
+      max-width: 620px;
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 6px;
@@ -293,7 +294,7 @@
       position: sticky;
       top: calc(8px + var(--safe-top));
       z-index: 12;
-      max-width: 960px;
+      max-width: 620px;
       margin: 0 auto;
       padding: 10px;
       backdrop-filter: blur(14px);
@@ -398,39 +399,91 @@
     }
 
     .summary-strip {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      max-width: 960px;
-      margin: 12px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      max-width: 620px;
+      margin: 16px auto 12px;
+      padding: 14px 20px;
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--surface) 96%, var(--surface-2));
+      box-shadow: 0 10px 24px color-mix(in srgb, var(--shadow) 50%, transparent);
+      transition: all 0.25s ease;
+    }
+
+    .summary-row {
+      display: flex !important;
+      flex-flow: row nowrap !important;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .summary-row.row-1 {
+      border-bottom: 1.5px dashed color-mix(in srgb, var(--ctrl-border) 25%, transparent);
+      padding-bottom: 8px;
+    }
+
+    .summary-row.row-2 {
+      gap: 20px;
+      padding-top: 2px;
     }
 
     .summary-item {
-      min-height: 74px;
-      padding: 10px;
-      border: 1.5px solid var(--ctrl-border);
-      border-radius: 8px;
-      background: var(--surface);
+      display: inline-flex !important;
+      flex-flow: row nowrap !important;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      white-space: nowrap !important;
     }
 
     .summary-label {
-      display: block;
+      display: inline-block !important;
       color: var(--muted);
-      font-size: 12px;
-      font-weight: 900;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      margin: 0 !important;
     }
 
     .summary-value {
-      display: block;
-      margin-top: 5px;
+      display: inline-block !important;
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.2;
+      margin: 0 !important;
+    }
+
+    .summary-value.highlight-main {
+      color: var(--accent);
       font-size: 17px;
       font-weight: 900;
-      line-height: 1.25;
+      text-shadow: 0 0 8px color-mix(in srgb, var(--accent) 25%, transparent);
+    }
+
+    .summary-value.highlight-clash {
+      color: var(--danger);
+      font-size: 17px;
+      font-weight: 900;
+      text-shadow: 0 0 8px color-mix(in srgb, var(--danger) 25%, transparent);
+    }
+
+    .summary-divider {
+      color: var(--accent);
+      font-weight: 900;
+      font-size: 16px;
+      display: inline-block !important;
     }
 
     .today-board {
       display: none;
-      max-width: 960px;
+      max-width: 620px;
       margin: 12px auto;
       overflow: hidden;
     }
@@ -535,7 +588,7 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
-      max-width: 960px;
+      max-width: 620px;
       margin: 0 auto;
     }
 
@@ -603,7 +656,7 @@
 
     .info-panel {
       display: none;
-      max-width: 960px;
+      max-width: 620px;
       margin: 12px auto 0;
       padding: 12px;
     }
@@ -939,8 +992,53 @@
     }
 
     @media (max-width: 520px) {
+      .app-shell {
+        padding-right: 6px;
+        padding-left: 6px;
+      }
+
+      .tool-nav {
+        width: 100%;
+        max-width: 620px;
+        gap: 6px;
+        padding: 5px;
+        margin-top: 68px;
+      }
+
+      .tool-nav a {
+        min-height: 42px;
+        padding: 4px 6px;
+        font-size: clamp(14px, 3.8vw, 17px);
+        line-height: 1.2;
+      }
+
+      .summary-strip {
+        padding: 10px 12px;
+        gap: 8px;
+      }
+
+      .summary-row.row-1 {
+        padding-bottom: 6px;
+      }
+
+      .summary-row.row-2 {
+        gap: 12px;
+      }
+
+      .summary-label {
+        font-size: 11px;
+      }
+
+      .summary-value {
+        font-size: 13px;
+      }
+
+      .summary-value.highlight-main,
+      .summary-value.highlight-clash {
+        font-size: 15px;
+      }
+
       .tool-nav,
-      .summary-strip,
       .segmented,
       .form-grid,
       .filter-row,
@@ -1060,7 +1158,7 @@
     /* ── TABLE SECTION ── */
     .table-section {
       width: 100%;
-      max-width: 960px;
+      max-width: 620px;
       margin: 14px auto 0;
     }
 
@@ -1075,15 +1173,39 @@
     .table-wrap {
       border: 2px solid var(--card-border);
       border-radius: 8px;
-      overflow: hidden;
+      overflow-x: auto;
+      overflow-y: hidden;
       background: var(--surface);
       box-shadow: 0 12px 30px var(--shadow);
+      -webkit-overflow-scrolling: touch;
     }
 
     table {
       width: 100%;
+      min-width: 0;
+      table-layout: fixed;
       border-collapse: collapse;
-      font-size: clamp(13px, 3.2vw, 15px);
+      font-size: clamp(12px, 1.4vw, 14px);
+    }
+
+    .col-date {
+      width: 19%;
+    }
+
+    .col-chata {
+      width: 25%;
+    }
+
+    .col-main {
+      width: 21%;
+    }
+
+    .col-sword {
+      width: 8%;
+    }
+
+    .col-clash {
+      width: 27%;
     }
 
     thead th {
@@ -1091,7 +1213,7 @@
       color: var(--ctrl-text);
       font-weight: 800;
       padding: 12px;
-      text-align: left;
+      text-align: center;
       border-bottom: 2px solid var(--ctrl-border);
       position: sticky;
       top: 0;
@@ -1118,12 +1240,249 @@
     }
 
     tbody tr.main-row {
-      background: var(--good-bg);
+      background: #fff1dc;
+      box-shadow: inset 5px 0 #d97706;
+    }
+
+    tbody tr.songkran-start-row {
+      background: #fff1dc;
+      box-shadow: inset 5px 0 #d97706;
+    }
+
+    body.theme-sacred tbody tr.main-row,
+    body.theme-royal tbody tr.main-row,
+    body.theme-sacred tbody tr.songkran-start-row,
+    body.theme-royal tbody tr.songkran-start-row {
+      background: color-mix(in srgb, #d97706 28%, var(--surface));
+      box-shadow: inset 5px 0 #f59e0b;
     }
 
     tbody td {
       padding: 10px 12px;
       vertical-align: middle;
+      text-align: center;
+    }
+
+    tbody td:first-child {
+      text-align: left;
+    }
+
+    .date-cell {
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .date-main {
+      display: block;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .chata-cell {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 128px;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .chata-orb {
+      display: grid;
+      place-items: center;
+      flex: 0 0 58px;
+      width: 58px;
+      height: 58px;
+      overflow: visible;
+    }
+
+    .chata-icon {
+      display: block;
+      width: 58px;
+      height: 58px;
+      max-width: none;
+      object-fit: contain;
+      background: transparent;
+      filter: drop-shadow(0 7px 8px color-mix(in srgb, var(--shadow) 70%, transparent));
+    }
+
+    .chata-label {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .chata-name {
+      color: var(--text);
+    }
+
+    .table-animal-cell {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 900;
+      min-width: 104px;
+    }
+
+    .table-animal-icon {
+      position: relative;
+      isolation: isolate;
+      width: 54px;
+      height: 54px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      overflow: visible;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .table-animal-icon::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      z-index: 0;
+      width: 44px;
+      height: 44px;
+      border: 1.5px solid color-mix(in srgb, var(--accent) 78%, var(--ctrl-border));
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--surface-2) 76%, transparent);
+      transform: translate(-50%, -50%);
+    }
+
+    .table-animal-icon .animal-img {
+      position: relative;
+      z-index: 1;
+      width: 46px;
+      height: 46px;
+      max-width: none;
+      object-fit: contain;
+    }
+
+    .sword-col,
+    .sword-cell {
+      width: 58px;
+      text-align: center;
+    }
+
+    .sword-cell {
+      font-size: 22px;
+      line-height: 1;
+      filter: drop-shadow(0 4px 6px color-mix(in srgb, var(--shadow) 70%, transparent));
+    }
+
+    @media (max-width: 900px) {
+      table {
+        display: block;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100%;
+        table-layout: auto;
+        font-size: 11.5px;
+      }
+
+      thead,
+      tbody {
+        display: block;
+        width: 100%;
+      }
+
+      thead tr,
+      tbody tr {
+        display: grid;
+        grid-template-columns: 18% 23% 21% 9% 29%;
+        align-items: center;
+        width: 100%;
+        min-width: 0;
+      }
+
+      thead th {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 4px;
+        text-align: center;
+        line-height: 1.15;
+        min-width: 0;
+        width: auto !important;
+        overflow-wrap: anywhere;
+      }
+
+      tbody td {
+        display: flex;
+        align-items: center;
+        padding: 8px 4px;
+        min-width: 0;
+        width: auto !important;
+        overflow: hidden;
+        overflow-wrap: anywhere;
+      }
+
+      tbody td:nth-child(2),
+      tbody td:nth-child(3),
+      tbody td:nth-child(4),
+      tbody td:nth-child(5) {
+        justify-content: center;
+      }
+
+      .date-cell {
+        min-width: 0;
+        line-height: 1.25;
+      }
+
+      .chata-cell {
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        min-width: 0;
+        font-size: 10.5px;
+        text-align: center;
+      }
+
+      .chata-orb {
+        flex-basis: 36px;
+        width: 36px;
+        height: 36px;
+      }
+
+      .chata-icon {
+        width: 38px;
+        height: 38px;
+      }
+
+      .table-animal-cell {
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        min-width: 0;
+        font-size: 11px;
+        text-align: center;
+      }
+
+      .table-animal-icon {
+        width: 34px;
+        height: 34px;
+      }
+
+      .table-animal-icon::before {
+        width: 30px;
+        height: 30px;
+      }
+
+      .table-animal-icon .animal-img {
+        width: 32px;
+        height: 32px;
+      }
+
+      .sword-col,
+      .sword-cell {
+        width: auto;
+      }
+
+      .sword-cell {
+        font-size: 18px;
+      }
     }
 
     .td-clash {
@@ -1255,7 +1614,7 @@
       </div>
 
       <!-- Display Mode Switcher -->
-      <div class="view-switch-row" aria-label="รูปแบบการแสดงผล" style="grid-template-columns: 1fr;">
+      <div class="view-switch-row" aria-label="รูปแบบการแสดงผล" style="display: none;">
         <button id="btnCards" type="button" style="display: none;">🃏 การ์ด</button>
         <button id="btnTable" class="active" type="button">📋 ตาราง</button>
       </div>
@@ -1271,11 +1630,20 @@
       <h2>ตารางรวม</h2>
       <div class="table-wrap">
         <table>
+          <colgroup>
+            <col class="col-date">
+            <col class="col-chata">
+            <col class="col-main">
+            <col class="col-sword">
+            <col class="col-clash">
+          </colgroup>
           <thead>
             <tr>
               <th>วันที่</th>
-              <th id="thMain">นักษัตรหลัก</th>
-              <th id="thClash">ปะทะ</th>
+              <th>ตกชะตา</th>
+              <th id="thMain">นักษัตร</th>
+              <th class="sword-col">ปะทะ</th>
+              <th id="thClash">นักษัตร</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -1426,6 +1794,21 @@
       }
     ];
 
+    const CHATA_SIGNS = [
+      { name: 'เจดีย์', image: 'assets/Chata/01_chedi.png' },
+      { name: 'ฉัตรเงิน', image: 'assets/Chata/02_chat-ngoen.png' },
+      { name: 'คนคอขาด', image: 'assets/Chata/03_khon-kho-khat.png' },
+      { name: 'เรือนหลวง', image: 'assets/Chata/04_ruean-luang.png' },
+      { name: 'ปราสาท', image: 'assets/Chata/05_prasat.png' },
+      { name: 'ราหู', image: 'assets/Chata/06_rahu.png' },
+      { name: 'ฉัตรทอง', image: 'assets/Chata/07_chat-thong.png' },
+      { name: 'เทวดาขี่เต่า', image: 'assets/Chata/08_thewada-khi-tao.png' },
+      { name: 'คนต้องขื่อคา', image: 'assets/Chata/09_khon-tong-khue-kha.png' },
+      { name: 'พ่อหมอ', image: 'assets/Chata/10_pho-mo.png' },
+      { name: 'แม่มด', image: 'assets/Chata/11_mae-mod.png' },
+      { name: 'นาคราช', image: 'assets/Chata/12_nakarat.png' }
+    ];
+
     const MUSIC_PLAYLIST = [
       { title: 'โชคชะตาแห่งดวงดาว - Destiny of the Stars', url: 'https://cdn1.suno.ai/b0aadeef-7861-4e8e-b972-f5b1bd76698d.mp3' },
       { title: 'ชะตาแห่งดวงดาว - Destiny of the Stars', url: 'https://cdn1.suno.ai/b1936e1e-2c3e-4c0a-8fe8-e671f31f13bb.mp3' },
@@ -1454,6 +1837,10 @@
 
     function animalImageTag(animal, className = 'animal-img') {
       return `<img class="${className}" src="${animal.image}" alt="ปี${animal.name}" loading="lazy">`;
+    }
+
+    function chataImageTag(chata) {
+      return `<span class="chata-orb"><img class="chata-icon" src="${chata.image}" alt="${chata.name}" loading="lazy"></span>`;
     }
 
     function preloadZodiacImages() {
@@ -1556,6 +1943,10 @@
       return mod(index + 6, 12);
     }
 
+    function chataForZodiacIndex(index) {
+      return CHATA_SIGNS[mod(index - 6, CHATA_SIGNS.length)];
+    }
+
     function statusFor(index, annualIndex) {
       if (index === annualIndex) return 'main';
       if (index === clashIndex(annualIndex)) return 'clash';
@@ -1577,6 +1968,7 @@
         const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + offset);
         const index = mod(annualIndex + offset, 12);
         const animal = ZODIACS[index];
+        const chata = chataForZodiacIndex(index);
         const status = statusFor(index, annualIndex);
         return {
           key: dateKey(date),
@@ -1584,6 +1976,7 @@
           offset,
           index,
           animal,
+          chata,
           status,
           monthKey: monthKey(date)
         };
@@ -1700,17 +2093,20 @@
     function renderSummary() {
       const info = annualInfo();
       $('summaryStrip').innerHTML = `
-        <div class="summary-item">
+        <div class="summary-row row-1">
           <span class="summary-label">รอบสงกรานต์</span>
           <span class="summary-value">${formatDate(info.start, true)} - ${formatDate(info.end, true)}</span>
         </div>
-        <div class="summary-item">
-          <span class="summary-label">ปีหลัก</span>
-          <span class="summary-value">ปี${info.annual.name}</span>
-        </div>
-        <div class="summary-item">
-          <span class="summary-label">ปีปะทะ</span>
-          <span class="summary-value">ปี${info.clash.name}</span>
+        <div class="summary-row row-2">
+          <div class="summary-item">
+            <span class="summary-label">ปีหลัก</span>
+            <span class="summary-value highlight-main">ปี${info.annual.name}</span>
+          </div>
+          <span class="summary-divider">•</span>
+          <div class="summary-item">
+            <span class="summary-label">ปีปะทะ</span>
+            <span class="summary-value highlight-clash">ปี${info.clash.name}</span>
+          </div>
         </div>
       `;
     }
@@ -1807,34 +2203,48 @@
       const tKey = dateKey(new Date());
       const info = annualInfo();
 
-      $('thMain').textContent = `นักษัตร (${info.annual.name})`;
-      $('thClash').textContent = `ปะทะ (${info.clash.name})`;
+      $('thMain').textContent = 'นักษัตร';
+      $('thClash').textContent = 'นักษัตร';
 
       if (!list.length) {
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:24px;color:var(--muted)">ไม่มีข้อมูล</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted)">ไม่มีข้อมูล</td></tr>';
         return;
       }
 
       tbody.innerHTML = list.map(item => {
         const isToday = item.key === tKey;
-        let rowCls = '';
-        if (item.status === 'clash') rowCls = 'clash-row';
-        else if (item.status === 'main') rowCls = 'main-row';
-        else if (isToday) rowCls = 'today-row';
+        const rowClasses = [];
+        if (item.status === 'clash') rowClasses.push('clash-row');
+        else if (item.status === 'main') rowClasses.push('main-row');
+        if (isToday) rowClasses.push('today-row');
+        if (item.offset === 0) rowClasses.push('songkran-start-row');
+        const rowCls = rowClasses.join(' ');
 
-        const clashText = ZODIACS[clashIndex(item.index)].name;
+        const clashAnimal = ZODIACS[clashIndex(item.index)];
         
         return `
           <tr class="${rowCls}" data-key="${item.key}">
-            <td>${formatDate(item.date, true)}${isToday ? '<span class="td-today-badge">วันนี้</span>' : ''}</td>
+            <td class="date-cell">
+              ${formatDate(item.date, true)}${isToday ? '<span class="td-today-badge">วันนี้</span>' : ''}
+            </td>
             <td>
-              <span style="display:inline-flex; align-items:center; gap:6px;">
-                <span class="animal-icon" style="width:24px; height:24px; border-width:1px;">${animalImageTag(item.animal)}</span>
+              <span class="chata-cell">
+                ${chataImageTag(item.chata)}
+                <span class="chata-name">${item.chata.name}</span>
+              </span>
+            </td>
+            <td>
+              <span class="table-animal-cell">
+                <span class="animal-icon table-animal-icon">${animalImageTag(item.animal)}</span>
                 <span class="${item.status === 'main' ? 'td-main-badge' : ''}">${item.animal.name}</span>
               </span>
             </td>
-            <td class="${item.status === 'clash' ? 'td-clash' : ''}">
-              ⚔️ ${clashText}
+            <td class="sword-cell" aria-label="ปะทะ">⚔️</td>
+            <td>
+              <span class="table-animal-cell">
+                <span class="animal-icon table-animal-icon">${animalImageTag(clashAnimal)}</span>
+                <span class="${item.status === 'clash' ? 'td-clash' : ''}">${clashAnimal.name}</span>
+              </span>
             </td>
           </tr>
         `;
