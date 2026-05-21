@@ -981,6 +981,149 @@
         scroll-behavior: auto !important;
       }
     }
+
+    /* ── VIEW SWITCH (DISPLAY MODE) ── */
+    .view-switch-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .view-switch-row button {
+      min-height: 42px;
+      border: 2px solid var(--ctrl-border);
+      border-radius: 8px;
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      font-weight: 900;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+
+    .view-switch-row button.active {
+      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 62%, #ffffff));
+      color: #16130d;
+      box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 34%, transparent);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ── TABLE SECTION ── */
+    .table-section {
+      width: 100%;
+      max-width: 960px;
+      margin: 14px auto 0;
+    }
+
+    .table-section h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .table-wrap {
+      border: 2px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--surface);
+      box-shadow: 0 12px 30px var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: clamp(13px, 3.2vw, 15px);
+    }
+
+    thead th {
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      font-weight: 800;
+      padding: 12px;
+      text-align: left;
+      border-bottom: 2px solid var(--ctrl-border);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: var(--surface-2);
+    }
+
+    tbody tr.today-row {
+      background: var(--neutral-bg);
+      font-weight: 700;
+    }
+
+    tbody tr.clash-row {
+      background: var(--danger-bg);
+    }
+
+    tbody tr.main-row {
+      background: var(--good-bg);
+    }
+
+    tbody td {
+      padding: 10px 12px;
+      vertical-align: middle;
+    }
+
+    .td-clash {
+      color: var(--danger);
+      font-weight: 800;
+    }
+
+    .td-main-badge {
+      color: var(--good);
+      font-weight: 800;
+    }
+
+    .td-today-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #1a0a00;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      margin-left: 6px;
+    }
+
+    /* ── TODAY CARD STYLE ── */
+    .day-card.today-card {
+      border-color: var(--accent) !important;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface) 68%) !important;
+      box-shadow: 0 0 0 2px var(--accent), 0 8px 24px var(--shadow) !important;
+      position: relative;
+    }
+
+    .card-today-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--accent);
+      color: #1a0a00;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      width: fit-content;
+      line-height: 1;
+    }
   </style>
 </head>
 
@@ -1064,6 +1207,12 @@
         <button type="button" data-filter="main">ปีหลัก</button>
         <button type="button" data-filter="clash">ปีปะทะ</button>
       </div>
+
+      <!-- Display Mode Switcher -->
+      <div class="view-switch-row" aria-label="รูปแบบการแสดงผล">
+        <button id="btnCards" class="active" type="button">🃏 การ์ด</button>
+        <button id="btnTable" type="button">📋 ตาราง</button>
+      </div>
     </section>
 
     <section class="summary-strip" id="summaryStrip"></section>
@@ -1071,6 +1220,22 @@
     <section class="info-panel" id="infoPanel"></section>
     <div class="notice" id="notice"></div>
     <section class="results" id="results"></section>
+
+    <section class="table-section hidden" id="tableSection">
+      <h2>ตารางรวม</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>วันที่</th>
+              <th id="thMain">นักษัตรหลัก</th>
+              <th id="thClash">ปะทะ</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </section>
 
     <div class="credit">Developed with ❤️ by คนโบราณ</div>
   </main>
@@ -1227,7 +1392,8 @@
       filter: 'all',
       yearBE: currentSongkranBEYear(new Date()),
       focusAnimal: 'all',
-      monthKey: ''
+      monthKey: '',
+      displayMode: 'cards'
     };
 
     const $ = (id) => document.getElementById(id);
@@ -1412,6 +1578,7 @@
         yearBE: state.yearBE,
         focusAnimal: state.focusAnimal,
         monthKey: state.monthKey,
+        displayMode: state.displayMode,
         theme: currentTheme()
       }));
     }
@@ -1432,6 +1599,7 @@
       state.yearBE = Number(saved.yearBE) || currentSongkranBEYear(new Date());
       state.focusAnimal = saved.focusAnimal || 'all';
       state.monthKey = saved.monthKey || '';
+      state.displayMode = saved.displayMode || 'cards';
       setTheme(saved.theme || localStorage.getItem(THEME_KEY) || 'solar', false);
     }
 
@@ -1442,6 +1610,14 @@
         ...ZODIACS.map((zodiac, index) => `<option value="${index}">${zodiac.name}</option>`)
       ].join('');
       $('focusAnimal').value = state.focusAnimal;
+
+      if (state.displayMode === 'table') {
+        $('btnTable').classList.add('active');
+        $('btnCards').classList.remove('active');
+      } else {
+        $('btnCards').classList.add('active');
+        $('btnTable').classList.remove('active');
+      }
       renderMonthOptions();
     }
 
@@ -1519,24 +1695,30 @@
         return;
       }
       notice.style.display = 'none';
-      $('results').innerHTML = list.map((item) => `
-        <button class="day-card ${item.status}" type="button" data-key="${item.key}">
-          <span class="date-box">
-            <strong>${item.date.getDate()} ${MONTHS[item.date.getMonth()].short}</strong>
-            <span>${item.date.getFullYear() + 543}</span>
-          </span>
-          <span>
-            <span class="animal-card-main">
-              <span class="animal-icon">${animalImageTag(item.animal)}</span>
-              <span>
-                <span class="animal-name">${item.animal.name}</span>
-                <span class="animal-desc">${item.animal.short}</span>
+      const tKey = dateKey(new Date());
+      $('results').innerHTML = list.map((item) => {
+        const isToday = item.key === tKey;
+        const todayCls = isToday ? 'today-card' : '';
+        return `
+          <button class="day-card ${item.status} ${todayCls}" type="button" data-key="${item.key}">
+            <span class="date-box">
+              <strong>${item.date.getDate()} ${MONTHS[item.date.getMonth()].short}</strong>
+              <span>${item.date.getFullYear() + 543}</span>
+            </span>
+            <span>
+              <span class="animal-card-main">
+                <span class="animal-icon">${animalImageTag(item.animal)}</span>
+                <span>
+                  ${isToday ? '<span class="card-today-tag">📍 วันนี้</span>' : ''}
+                  <span class="animal-name">${item.animal.name}</span>
+                  <span class="animal-desc">${item.animal.short}</span>
+                </span>
               </span>
             </span>
-          </span>
-          <span class="status-pill ${item.status}">${statusLabel(item.status)}</span>
-        </button>
-      `).join('');
+            <span class="status-pill ${item.status}">${statusLabel(item.status)}</span>
+          </button>
+        `;
+      }).join('');
     }
 
     function renderInfo() {
@@ -1573,6 +1755,46 @@
       render();
     }
 
+    function renderTable() {
+      const tbody = $('tableBody');
+      const list = visibleItems();
+      const tKey = dateKey(new Date());
+      const info = annualInfo();
+
+      $('thMain').textContent = `นักษัตร (${info.annual.name})`;
+      $('thClash').textContent = `ปะทะ (${info.clash.name})`;
+
+      if (!list.length) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;padding:24px;color:var(--muted)">ไม่มีข้อมูล</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        const isToday = item.key === tKey;
+        let rowCls = '';
+        if (item.status === 'clash') rowCls = 'clash-row';
+        else if (item.status === 'main') rowCls = 'main-row';
+        else if (isToday) rowCls = 'today-row';
+
+        const clashText = ZODIACS[clashIndex(item.index)].name;
+        
+        return `
+          <tr class="${rowCls}" data-key="${item.key}">
+            <td>${formatDate(item.date, true)}${isToday ? '<span class="td-today-badge">วันนี้</span>' : ''}</td>
+            <td>
+              <span style="display:inline-flex; align-items:center; gap:6px;">
+                <span class="animal-icon" style="width:24px; height:24px; border-width:1px;">${animalImageTag(item.animal)}</span>
+                <span class="${item.status === 'main' ? 'td-main-badge' : ''}">${item.animal.name}</span>
+              </span>
+            </td>
+            <td class="${item.status === 'clash' ? 'td-clash' : ''}">
+              ⚔️ ${clashText}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
     function render() {
       buildItems();
       renderMonthOptions();
@@ -1580,7 +1802,17 @@
       renderSummary();
       renderTodayBoard();
       renderCards();
+      renderTable();
       $('infoPanel').innerHTML = '';
+      
+      if (state.displayMode === 'table') {
+        $('results').classList.add('hidden');
+        $('tableSection').classList.remove('hidden');
+      } else {
+        $('results').classList.remove('hidden');
+        $('tableSection').classList.add('hidden');
+      }
+      
       document.body.dataset.view = state.view;
       document.querySelectorAll('.segmented [data-view]').forEach((button) => button.classList.toggle('active', button.dataset.view === state.view));
       document.querySelectorAll('[data-filter]').forEach((button) => button.classList.toggle('active', button.dataset.filter === state.filter));
@@ -2042,6 +2274,33 @@
       });
       $('todayBtn').addEventListener('click', jumpToToday);
       $('copyBtn').addEventListener('click', copySummary);
+
+      $('btnCards').addEventListener('click', () => {
+        state.displayMode = 'cards';
+        $('btnCards').classList.add('active');
+        $('btnTable').classList.remove('active');
+        $('results').classList.remove('hidden');
+        $('tableSection').classList.add('hidden');
+        saveSettings();
+      });
+
+      $('btnTable').addEventListener('click', () => {
+        state.displayMode = 'table';
+        $('btnTable').classList.add('active');
+        $('btnCards').classList.remove('active');
+        $('results').classList.add('hidden');
+        $('tableSection').classList.remove('hidden');
+        renderTable();
+        saveSettings();
+      });
+
+      $('tableBody').addEventListener('click', (event) => {
+        const row = event.target.closest('[data-key]');
+        if (!row) return;
+        const item = items.find((entry) => entry.key === row.dataset.key);
+        if (item) openItem(item);
+      });
+
       $('results').addEventListener('click', (event) => {
         const card = event.target.closest('[data-key]');
         if (!card) return;
