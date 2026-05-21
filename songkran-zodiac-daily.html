@@ -1011,6 +1011,52 @@
       display: none !important;
     }
 
+    /* ── POPUP CLASH VS STYLE ── */
+    .sheet-clash-vs {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0 8px;
+    }
+
+    .sheet-vs-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 10px;
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      background: var(--surface-2);
+      text-align: center;
+      min-height: 120px;
+    }
+
+    .sheet-vs-box.clash-side {
+      border-color: var(--danger);
+      background: var(--danger-bg);
+    }
+
+    .sheet-vs-box strong {
+      display: block;
+      font-size: 18px;
+      font-weight: 900;
+      margin-top: 8px;
+      color: var(--text);
+    }
+
+    .sheet-vs-box.clash-side strong {
+      color: var(--danger);
+    }
+
+    .sheet-vs-divider {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--muted);
+      user-select: none;
+    }
+
     /* ── TABLE SECTION ── */
     .table-section {
       width: 100%;
@@ -1821,26 +1867,30 @@
 
     function openItem(item) {
       const info = annualInfo();
+      const clashAnimal = ZODIACS[clashIndex(item.index)];
+      
       $('sheetTitle').textContent = `${item.animal.name} (${statusLabel(item.status)})`;
       $('sheetBody').innerHTML = `
-        <p class="sheet-line">${formatDate(item.date, true)} | รอบปี${info.annual.name} ปะทะปี${info.clash.name}</p>
-        <div class="sheet-animal">
-          <span class="animal-orb">${animalImageTag(item.animal)}</span>
-          <span>
+        <p class="sheet-line" style="margin-bottom: 12px;">${formatDate(item.date, true)} | รอบปี${info.annual.name} ปะทะปี${info.clash.name}</p>
+        
+        <div class="sheet-clash-vs">
+          <!-- ฝั่งตกนักษัตรวัน -->
+          <div class="sheet-vs-box">
+            <span class="animal-orb" style="width: 72px; height: 72px; border-width: 2px;">
+              ${animalImageTag(item.animal)}
+            </span>
             <strong>ตก${item.animal.name}</strong>
-            <span>${item.animal.short}</span>
-          </span>
-        </div>
-        <p class="sheet-oracle">${item.animal.oracle}</p>
-        <p class="sheet-line">${item.status === 'clash' ? `วันนี้ตรงปีปะทะของปี${info.annual.name} ควรชะลอเรื่องเสี่ยงและอย่าตัดสินใจด้วยอารมณ์` : item.status === 'main' ? `วันนี้ตรงปีหลัก ${info.annual.name} พลังประจำปีชัด ใช้ตั้งหลักหรือเริ่มเรื่องสำคัญได้` : `วันนี้ไม่ใช่ปีหลักและไม่ใช่ปีปะทะ ใช้เป็นวันทำงานตามจังหวะทั่วไปได้`}</p>
-        <div class="sheet-grid">
-          <div class="sheet-box">
-            <strong>ควรทำ</strong>
-            <ul>${item.animal.do.map((text) => `<li>${text}</li>`).join('')}</ul>
           </div>
-          <div class="sheet-box">
-            <strong>ควรระวัง</strong>
-            <ul>${item.animal.watch.map((text) => `<li>${text}</li>`).join('')}</ul>
+          
+          <!-- ตัวเชื่อมปะทะตรงกลาง -->
+          <div class="sheet-vs-divider">⚔️</div>
+          
+          <!-- ฝั่งคู่ปะทะประจำวัน -->
+          <div class="sheet-vs-box clash-side">
+            <span class="animal-orb" style="width: 72px; height: 72px; border-width: 2px; border-color: var(--danger);">
+              ${animalImageTag(clashAnimal)}
+            </span>
+            <strong>ปะทะ${clashAnimal.name}</strong>
           </div>
         </div>
       `;
