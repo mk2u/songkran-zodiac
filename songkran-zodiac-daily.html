@@ -1127,7 +1127,7 @@
   </style>
 </head>
 
-<body data-view="today">
+<body data-view="year">
   <canvas id="starCanvas" aria-hidden="true"></canvas>
 
   <div class="theme-selector" id="themeSelector">
@@ -1171,22 +1171,22 @@
     </header>
 
     <section class="control-panel">
-      <div class="segmented" aria-label="มุมมอง">
-        <button class="active" type="button" data-view="today">วันนี้</button>
-        <button type="button" data-view="month">รายเดือน</button>
-        <button type="button" data-view="year">ครบปี</button>
+      <div class="segmented" aria-label="มุมมอง" style="grid-template-columns: 1fr;">
+        <button type="button" data-view="today" style="display: none;">วันนี้</button>
+        <button type="button" data-view="month" style="display: none;">รายเดือน</button>
+        <button class="active" type="button" data-view="year">ครบปี</button>
       </div>
 
-      <div class="form-grid">
+      <div class="form-grid" style="grid-template-columns: 1fr;">
         <div class="field">
           <label for="targetYear">ปีสงกรานต์ พ.ศ.</label>
           <div class="year-stepper">
             <button id="prevYear" type="button" aria-label="ปีก่อน">−</button>
-            <input id="targetYear" type="number" inputmode="numeric" min="2400" max="2800">
+            <input id="targetYear" type="number" inputmode="numeric" min="2400" max="2800" style="text-align: center;">
             <button id="nextYear" type="button" aria-label="ปีถัดไป">+</button>
           </div>
         </div>
-        <div class="field">
+        <div class="field" style="display: none;">
           <label for="focusAnimal">เลือกนักษัตรที่อยากดู</label>
           <select id="focusAnimal"></select>
         </div>
@@ -1197,31 +1197,31 @@
         <select id="targetMonth"></select>
       </div>
 
-      <div class="action-row">
+      <div class="action-row" style="display: none;">
         <button id="todayBtn" type="button">⭐ วันนี้ตกอะไร</button>
         <button id="copyBtn" type="button">📋 คัดลอกผลย่อ</button>
       </div>
 
-      <div class="filter-row" aria-label="กรองผลลัพธ์">
+      <div class="filter-row" aria-label="กรองผลลัพธ์" style="display: none;">
         <button class="active" type="button" data-filter="all">ทั้งหมด</button>
         <button type="button" data-filter="main">ปีหลัก</button>
         <button type="button" data-filter="clash">ปีปะทะ</button>
       </div>
 
       <!-- Display Mode Switcher -->
-      <div class="view-switch-row" aria-label="รูปแบบการแสดงผล">
-        <button id="btnCards" class="active" type="button">🃏 การ์ด</button>
-        <button id="btnTable" type="button">📋 ตาราง</button>
+      <div class="view-switch-row" aria-label="รูปแบบการแสดงผล" style="grid-template-columns: 1fr;">
+        <button id="btnCards" type="button" style="display: none;">🃏 การ์ด</button>
+        <button id="btnTable" class="active" type="button">📋 ตาราง</button>
       </div>
     </section>
 
     <section class="summary-strip" id="summaryStrip"></section>
     <section class="today-board" id="todayBoard"></section>
     <section class="info-panel" id="infoPanel"></section>
-    <div class="notice" id="notice"></div>
-    <section class="results" id="results"></section>
+    <div id="notice" class="notice"></div>
+    <section class="results hidden" id="results"></section>
 
-    <section class="table-section hidden" id="tableSection">
+    <section class="table-section" id="tableSection">
       <h2>ตารางรวม</h2>
       <div class="table-wrap">
         <table>
@@ -1261,7 +1261,7 @@
     */
     const SONGKRAN_START_MONTH = 3;
     const SONGKRAN_START_DAY = 13;
-    const SETTINGS_KEY = 'songkranZodiacDailySettings';
+    const SETTINGS_KEY = 'songkranZodiacDailySettingsV2';
     const THEME_KEY = 'ageCycleTheme';
     const TEACHER_MODE_KEY = 'songkranTeacherMode';
     const ENABLED_VIEWS = new Set(['today', 'month', 'year']);
@@ -1388,12 +1388,12 @@
     ];
 
     const state = {
-      view: 'today',
+      view: 'year',
       filter: 'all',
       yearBE: currentSongkranBEYear(new Date()),
       focusAnimal: 'all',
       monthKey: '',
-      displayMode: 'cards'
+      displayMode: 'table'
     };
 
     const $ = (id) => document.getElementById(id);
@@ -1594,12 +1594,12 @@
       } catch (error) {
         saved = {};
       }
-      state.view = normalizeView(saved.view);
+      state.view = normalizeView(saved.view || 'year');
       state.filter = saved.filter || 'all';
       state.yearBE = Number(saved.yearBE) || currentSongkranBEYear(new Date());
       state.focusAnimal = saved.focusAnimal || 'all';
       state.monthKey = saved.monthKey || '';
-      state.displayMode = saved.displayMode || 'cards';
+      state.displayMode = saved.displayMode || 'table';
       setTheme(saved.theme || localStorage.getItem(THEME_KEY) || 'solar', false);
     }
 
@@ -1893,14 +1893,13 @@
 
     async function copySummary() {
       const info = annualInfo();
-      const list = visibleItems();
-      const first = list[0];
+      const todayVal = todayItem();
       const lines = [
         `ปีนักษัตรสงกรานต์รายวัน`,
         `รอบ: ${formatDate(info.start, true)} - ${formatDate(info.end, true)}`,
         `ปีหลัก: ${info.annual.name}`,
         `ปีปะทะ: ${info.clash.name}`,
-        first ? `รายการแรก: ${formatDate(first.date, true)} ตก${first.animal.name} (${statusLabel(first.status)})` : '',
+        todayVal ? `วันนี้ (${formatDate(todayVal.date, true)}): ตก${todayVal.animal.name} (${statusLabel(todayVal.status)}) - ${todayVal.animal.short}` : '',
         `Developed with ❤️ by คนโบราณ`
       ].filter(Boolean);
       try {
