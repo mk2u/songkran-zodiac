@@ -526,85 +526,136 @@
 
     .birth-panel {
       width: min(96vw, 620px);
-      display: grid;
-      gap: 10px;
-      margin: 10px 0 8px;
-      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin: 12px 0 8px;
+      padding: 16px;
       border: 2px solid var(--card-border);
-      border-radius: 16px;
+      border-radius: 20px;
       background: var(--card-bg);
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Modern responsive side-by-side view when result is displayed */
+    @media (min-width: 580px) {
+      .birth-panel.has-result {
+        flex-direction: row;
+        align-items: stretch;
+      }
+      .birth-panel.has-result .birth-grid {
+        flex: 1;
+        max-width: 240px;
+        justify-content: center;
+        border-right: 1.5px dashed rgba(200, 149, 26, 0.3);
+        padding-right: 16px;
+      }
+      body.theme-sacred .birth-panel.has-result .birth-grid {
+        border-right-color: rgba(232, 200, 74, 0.3);
+      }
+      body.theme-royal .birth-panel.has-result .birth-grid {
+        border-right-color: rgba(255, 215, 0, 0.3);
+      }
+      .birth-panel.has-result .personal-card {
+        flex: 1.6;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
     }
 
     .birth-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
       max-width: 320px;
       margin: 0 auto;
-      width: 100%;
+      transition: all 0.3s ease;
     }
 
     .birth-field {
-      display: grid;
-      gap: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: center;
     }
 
     .birth-field label {
       color: var(--text);
-      font-size: 17px;
+      font-size: clamp(16px, 4.2vw, 19px);
       font-weight: 800;
+      letter-spacing: 0.5px;
     }
 
     .birth-field input {
       width: 100%;
-      height: 46px;
+      height: 52px;
       border: 2px solid var(--ctrl-border);
-      border-radius: 10px;
+      border-radius: 14px;
       background: var(--ctrl-bg);
       color: var(--text);
       text-align: center;
       font-family: inherit;
-      font-size: 22px;
+      font-size: 26px;
       font-weight: 900;
       outline: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
     }
 
     .birth-field input:focus {
-      box-shadow: 0 0 0 4px rgba(232, 200, 74, 0.25);
+      border-color: var(--card-border);
+      box-shadow: 0 0 16px rgba(232, 200, 74, 0.35);
+      transform: translateY(-1px);
     }
 
     .personal-card {
       display: none;
-      gap: 6px;
-      padding: 12px 14px;
-      border-radius: 14px;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px 20px;
+      border-radius: 16px;
       border: 2px solid var(--card-border);
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.28);
       color: var(--text);
       text-align: center;
+      box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.2), 0 4px 15px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    body.theme-sacred .personal-card,
+    body.theme-royal .personal-card {
+      background: rgba(255, 255, 255, 0.06);
     }
 
     .personal-card.show {
-      display: grid;
+      display: flex;
+      animation: cardFadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .personal-card .card-line {
-      font-size: 18px;
-      font-weight: 800;
+      font-size: clamp(14px, 3.5vw, 17px);
+      font-weight: 700;
+      opacity: 0.9;
     }
 
     .personal-card .card-main {
-      color: var(--title);
       font-family: 'Srisakdi', cursive;
-      font-size: clamp(30px, 8vw, 48px);
+      font-size: clamp(28px, 6.8vw, 42px);
       font-weight: 700;
-      line-height: 1.1;
+      line-height: 1.2;
       text-shadow: 0 0 10px var(--title-shadow);
+      margin: 4px 0;
     }
 
     .personal-card .card-meta {
-      font-size: 17px;
+      font-size: clamp(13px, 3.2vw, 15px);
       font-weight: 700;
       opacity: 0.88;
     }
@@ -975,12 +1026,14 @@
         profileFromInput('birthYearA', 1, ai)
       ].filter(Boolean);
 
+      const panel = document.querySelector('.birth-panel');
       const personalCard = document.getElementById('personalCard');
       const compareCard = document.getElementById('compareCard');
       const first = birthProfiles.find(p => p.order === 1);
       const annual = Z[ai];
 
       if (first) {
+        if (panel) panel.classList.add('has-result');
         const cls = first.isBad ? 'taksa-bad' : 'taksa-good';
         personalCard.innerHTML = `
           <div class="card-line">ปี ${y} · ปี${annual.thai} · คุณเกิดปี${first.zodiac.thai}</div>
@@ -989,6 +1042,7 @@
         `;
         personalCard.classList.add('show');
       } else {
+        if (panel) panel.classList.remove('has-result');
         personalCard.innerHTML = '';
         personalCard.classList.remove('show');
       }
