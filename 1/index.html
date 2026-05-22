@@ -15,6 +15,7 @@
       --bg: #ffffff;
       --text: #1a1a1a;
       --title: #1a1a1a;
+      --muted: #555555;
       --ctrl-bg: #f5f5f5;
       --ctrl-text: #111;
       --ctrl-border: #333;
@@ -29,6 +30,7 @@
       --bg: #03010a;
       --text: #f0e6c8;
       --title: #e8c84a;
+      --muted: #bba979;
       --ctrl-bg: #1e1044;
       --ctrl-text: #e8c84a;
       --ctrl-border: #e8c84a;
@@ -43,6 +45,7 @@
       --bg: #061a10;
       --text: #ffd700;
       --title: #ffd700;
+      --muted: #e3c35a;
       --ctrl-bg: #0e3d25;
       --ctrl-text: #ffd700;
       --ctrl-border: #ffd700;
@@ -213,6 +216,15 @@
       text-shadow: none;
     }
 
+    .page-subtitle {
+      max-width: 620px;
+      margin: 4px auto 12px;
+      color: var(--muted);
+      font-size: clamp(17px, 4.5vw, 22px);
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.5;
+    }
 
     body.dark-mode .main-title,
     body.dark-mode .bottom-text {
@@ -526,8 +538,11 @@
 
     .birth-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr;
       gap: 10px;
+      max-width: 320px;
+      margin: 0 auto;
+      width: 100%;
     }
 
     .birth-field {
@@ -738,6 +753,7 @@
   </nav>
 
   <h1 id="mainTitle" class="main-title">13 เมษา 2569 ปีมะเมีย</h1>
+  <p id="pageSubtitle" class="page-subtitle">ปีมะเมีย ชงปะทะ ปีชวด · 13 เม.ย. 2569 — 12 เม.ย. 2570</p>
 
   <!-- Music System -->
   <audio
@@ -775,12 +791,8 @@
   <section class="birth-panel" aria-label="ปีเกิดและเปรียบดวง">
     <div class="birth-grid">
       <div class="birth-field">
-        <label for="birthYearA">ปีเกิด พ.ศ. คนที่ 1</label>
+        <label for="birthYearA">ปีเกิด พ.ศ.</label>
         <input id="birthYearA" type="number" inputmode="numeric" min="2400" max="2800" placeholder="เช่น 2536">
-      </div>
-      <div class="birth-field">
-        <label for="birthYearB">ปีเกิด พ.ศ. คนที่ 2</label>
-        <input id="birthYearB" type="number" inputmode="numeric" min="2400" max="2800" placeholder="เทียบคู่">
       </div>
     </div>
     <div id="personalCard" class="personal-card" aria-live="polite"></div>
@@ -960,14 +972,12 @@
 
     function updateBirthProfiles(ai, y) {
       birthProfiles = [
-        profileFromInput('birthYearA', 1, ai),
-        profileFromInput('birthYearB', 2, ai)
+        profileFromInput('birthYearA', 1, ai)
       ].filter(Boolean);
 
       const personalCard = document.getElementById('personalCard');
       const compareCard = document.getElementById('compareCard');
       const first = birthProfiles.find(p => p.order === 1);
-      const second = birthProfiles.find(p => p.order === 2);
       const annual = Z[ai];
 
       if (first) {
@@ -983,20 +993,8 @@
         personalCard.classList.remove('show');
       }
 
-      if (first && second) {
-        const firstCls = first.isBad ? 'taksa-bad' : 'taksa-good';
-        const secondCls = second.isBad ? 'taksa-bad' : 'taksa-good';
-        compareCard.innerHTML = `
-          <div class="card-line">เปรียบดวงสองคน</div>
-          <div class="card-meta"><span class="${firstCls}">${profileText(first)}</span></div>
-          <div class="card-meta"><span class="${secondCls}">${profileText(second)}</span></div>
-        `;
-        compareCard.classList.add('show');
-      } else {
-        compareCard.innerHTML = '';
-        compareCard.classList.remove('show');
-      }
-
+      compareCard.innerHTML = '';
+      compareCard.classList.remove('show');
     }
 
     function drawBirthHighlights(ai) {
@@ -1374,6 +1372,8 @@
       const y = selectedYear();
       const ai = y2i(y);
       document.getElementById('mainTitle').textContent = `13 เมษา ${y} ปี${Z[ai].thai}`;
+      const clashIndex = mod(ai + 6, 12);
+      document.getElementById('pageSubtitle').textContent = `ปี${Z[ai].thai} ชงปะทะ ปี${Z[clashIndex].thai} · 13 เม.ย. ${y} — 12 เม.ย. ${y + 1}`;
       updateBirthProfiles(ai, y);
       // draw is handled by animate loop
     }
@@ -1434,7 +1434,7 @@
       });
     }
 
-    ['birthYearA', 'birthYearB'].forEach((id) => {
+    ['birthYearA'].forEach((id) => {
       const input = document.getElementById(id);
       if (!input) return;
       input.addEventListener('input', () => {
@@ -1535,20 +1535,14 @@
       x.restore();
 
       const first = birthProfiles.find(profile => profile.order === 1);
-      const second = birthProfiles.find(profile => profile.order === 2);
       drawFittedText(x, `ปี ${y} · ปี${annual.thai}`, 800, 1292, 1240, 48, 900, p.title);
 
       if (first) {
         const firstColor = first.isBad ? '#d92d20' : '#1f9d55';
-        drawFittedText(x, `คนที่ 1 เกิดปี ${first.year} · ปี${first.zodiac.thai}`, 800, 1354, 1240, 44, 900, p.text);
-        drawFittedText(x, `ตกทักษา ${first.taksa.name} · ${taksaStatus(first)}`, 800, 1415, 1240, 52, 900, firstColor);
+        drawFittedText(x, `คุณเกิดปี ${first.year} · ปี${first.zodiac.thai}`, 800, 1358, 1240, 48, 900, p.text);
+        drawFittedText(x, `ตกทักษา ${first.taksa.name} · ${taksaStatus(first)}`, 800, 1424, 1240, 56, 900, firstColor);
       } else {
         drawFittedText(x, 'กรอกปีเกิด เพื่อสร้างการ์ดดวงส่วนตัว', 800, 1384, 1240, 50, 900, p.text);
-      }
-
-      if (second) {
-        const secondColor = second.isBad ? '#d92d20' : '#2f80ed';
-        drawFittedText(x, `คนที่ 2 เกิดปี ${second.year} · ปี${second.zodiac.thai} → ทักษา ${second.taksa.name} · ${taksaStatus(second)}`, 800, 1472, 1240, 34, 900, secondColor);
       }
 
       drawFittedText(x, 'นับจากปีเกิดไปหาปีสงกรานต์', 800, 1534, 1240, 28, 800, p.text);
