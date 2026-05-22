@@ -197,18 +197,6 @@
       overflow-wrap: anywhere;
     }
 
-    .tool-nav a.teacher-only {
-      display: none;
-    }
-
-    .teacher-mode .tool-nav {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .teacher-mode .tool-nav a.teacher-only {
-      display: flex;
-    }
-
     .tool-nav a.active {
       background: var(--card-border);
       color: var(--bg);
@@ -746,7 +734,6 @@
 
   <nav class="tool-nav" aria-label="เครื่องมือดูดวง">
     <a class="active" href="index.html">ปีนักษัตรสงกรานต์</a>
-    <a class="teacher-only" href="songkran-zodiac-daily.html">นักษัตรปะทะ</a>
     <a href="age-cycle.html">อายุจรประจำปี</a>
   </nav>
 
@@ -807,7 +794,6 @@
   <div class="credit">Developed with ❤️ by คนโบราณ</div>
 
   <script>
-    const TEACHER_MODE_KEY = 'songkranTeacherMode';
     let currentTheme = 'solar';
 
     // ── FX State ──
@@ -1196,33 +1182,6 @@
       render();
     }
 
-    function teacherHref(href) {
-      const [beforeHash, hash = ''] = href.split('#');
-      const [path, query = ''] = beforeHash.split('?');
-      const params = new URLSearchParams(query);
-      params.set('teacher', '1');
-      return `${path}?${params.toString()}${hash ? `#${hash}` : ''}`;
-    }
-
-    function applyTeacherMode() {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('teacher') === '1') {
-        localStorage.setItem(TEACHER_MODE_KEY, '1');
-      } else if (params.get('teacher') === '0') {
-        localStorage.removeItem(TEACHER_MODE_KEY);
-      }
-
-      const enabled = localStorage.getItem(TEACHER_MODE_KEY) === '1';
-      document.documentElement.classList.toggle('teacher-mode', enabled);
-      if (!enabled) return;
-
-      document.querySelectorAll('.tool-nav a').forEach((link) => {
-        const href = link.getAttribute('href');
-        if (href) link.setAttribute('href', teacherHref(href));
-      });
-    }
-
-
     // Close selector when clicking outside
     document.addEventListener('click', (e) => {
       const sel = document.getElementById('themeSelector');
@@ -1419,7 +1378,6 @@
       // draw is handled by animate loop
     }
 
-    applyTeacherMode();
     document.getElementById('yearInput').value = currentBEYear();
     render();
     requestAnimationFrame(animate);
