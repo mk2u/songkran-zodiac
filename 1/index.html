@@ -557,7 +557,7 @@
       body.theme-royal .birth-panel.has-result .birth-grid {
         border-right-color: rgba(255, 215, 0, 0.3);
       }
-      .birth-panel.has-result .personal-card {
+      .birth-panel.has-result .personal-card.show {
         flex: 1.6;
         display: flex;
         flex-direction: column;
@@ -847,7 +847,6 @@
       </div>
     </div>
     <div id="personalCard" class="personal-card" aria-live="polite"></div>
-    <div id="compareCard" class="personal-card" aria-live="polite"></div>
   </section>
 
   <div class="canvas-wrap">
@@ -1028,7 +1027,6 @@
 
       const panel = document.querySelector('.birth-panel');
       const personalCard = document.getElementById('personalCard');
-      const compareCard = document.getElementById('compareCard');
       const first = birthProfiles.find(p => p.order === 1);
       const annual = Z[ai];
 
@@ -1046,9 +1044,6 @@
         personalCard.innerHTML = '';
         personalCard.classList.remove('show');
       }
-
-      compareCard.innerHTML = '';
-      compareCard.classList.remove('show');
     }
 
     function drawBirthHighlights(ai) {
@@ -1454,7 +1449,6 @@
     document.getElementById('resetBtn').onclick = () => {
       document.getElementById('yearInput').value = currentBEYear();
       document.getElementById('birthYearA').value = '';
-      document.getElementById('birthYearB').value = '';
       createSparkles();
       render();
     };
