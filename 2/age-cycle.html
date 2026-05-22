@@ -2073,34 +2073,6 @@
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      // โปรเจกต์วันปัจจุบันเข้าไปในรอบปีที่แสดง (ปีที่ดู) เพื่อให้จุดสีฟ้าแสดงผลได้ทุกปี/เดือนเกิด
-      let todayProjected = new Date(today);
-      if (state.items.length > 0) {
-        const cycleStart = state.items[0].date;
-        let cycleEnd = state.items[state.items.length - 1].endDate || state.items[state.items.length - 1].date;
-        if (!state.items[state.items.length - 1].endDate) {
-          cycleEnd = new Date(cycleEnd.getFullYear(), cycleEnd.getMonth(), cycleEnd.getDate() + 1);
-        }
-        
-        const t1 = new Date(today);
-        t1.setFullYear(cycleStart.getFullYear());
-        if (t1 >= cycleStart && t1 <= cycleEnd) {
-          todayProjected = t1;
-        } else {
-          const t2 = new Date(today);
-          t2.setFullYear(cycleStart.getFullYear() + 1);
-          if (t2 >= cycleStart && t2 <= cycleEnd) {
-            todayProjected = t2;
-          } else {
-            const t3 = new Date(today);
-            t3.setFullYear(cycleStart.getFullYear() - 1);
-            if (t3 >= cycleStart && t3 <= cycleEnd) {
-              todayProjected = t3;
-            }
-          }
-        }
-      }
-
       // สร้าง map periodKey → เดือนที่ (1-12) สำหรับ mode=year
       const periodIndexMap = new Map();
       if (state.mode === 'year') {
@@ -2135,13 +2107,13 @@
 
         if (item.isPeriod) {
           // จรเดือนในปี: แสดงบนการ์ดของเดือนปัจจุบัน
-          if (item.date && item.endDate && todayProjected >= item.date && todayProjected <= item.endDate) {
+          if (item.date && item.endDate && today >= item.date && today <= item.endDate) {
             showDot = true;
             dotTitle = `เดือนที่ ${item.order + 1}`;
           }
         } else {
           // จรวันในเดือน และ จรครบ 1 ปี: แสดงบนการ์ดของวันนี้เท่านั้น (เพื่อความสะอาด ไม่ลายตา)
-          if (item.key === dateKey(todayProjected)) {
+          if (item.key === dateKey(today)) {
             showDot = true;
             dotTitle = 'วันนี้';
           }
