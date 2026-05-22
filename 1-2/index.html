@@ -255,7 +255,7 @@
 
     .segmented {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 6px;
       margin-bottom: 10px;
       padding: 4px;
@@ -329,6 +329,8 @@
     }
 
     body[data-age-mode="month"] .annual-only,
+    body[data-age-mode="monthYear"] .annual-only,
+    body[data-age-mode="monthYear"] .month-only,
     body[data-age-mode="year"] .month-only {
       display: none;
     }
@@ -524,6 +526,63 @@
       color: var(--muted);
       font-size: 12px;
       font-weight: 700;
+    }
+
+    .date-period {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .date-period-start {
+      color: var(--text);
+    }
+
+    .date-period-sep {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .date-period-end {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ── MONTH BADGE (จรเดือน) ── */
+    .month-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--card-border);
+      color: var(--bg);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      align-self: flex-start;
+    }
+
+    /* ── MONTH DOT BADGE (วันจรในปี) ── */
+    .period-dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--focus);
+      flex-shrink: 0;
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--focus) 30%, transparent);
+      margin-left: auto;
+      align-self: flex-start;
+      margin-top: 2px;
     }
 
     .house-line {
@@ -810,9 +869,25 @@
     }
 
     @media (min-width: 680px) {
-      .results {
+      .results:not(.results-period) {
         grid-template-columns: 1fr 1fr;
       }
+    }
+
+    /* ── PERIOD CARD LAYOUT (จรเดือน) ── */
+    .results-period {
+      grid-template-columns: 1fr !important;
+    }
+
+    .results-period .day-card {
+      grid-template-columns: auto 1fr auto;
+      align-items: start;
+      padding-top: 12px;
+      min-height: 80px;
+    }
+
+    .results-period .date-period {
+      padding-top: 2px;
     }
 
     @media (max-width: 420px) {
@@ -1437,8 +1512,9 @@
 
     <section class="control-panel" aria-label="ตั้งค่าอายุจร">
       <div class="segmented" aria-label="โหมดคำนวณ">
-        <button class="active" type="button" data-mode="month">รายเดือน</button>
-        <button type="button" data-mode="year">ครบ 1 ปี</button>
+        <button class="active" type="button" data-mode="month">จรวันในเดือน</button>
+        <button type="button" data-mode="monthYear">จรเดือนในปี</button>
+        <button type="button" data-mode="year">จรครบ 1 ปี</button>
       </div>
 
       <div class="form-grid">
@@ -1446,11 +1522,11 @@
           <label for="birthDay">วันที่เกิด</label>
           <select id="birthDay"></select>
         </div>
-        <div class="field" hidden>
+        <div class="field">
           <label for="birthMonth">เดือนเกิด</label>
           <select id="birthMonth"></select>
         </div>
-        <div class="field">
+        <div class="field month-only">
           <label for="targetMonth">เดือนที่ดู</label>
           <select id="targetMonth"></select>
         </div>
@@ -1711,7 +1787,7 @@
       if (settings.targetMonth) $('targetMonth').value = settings.targetMonth;
       if (settings.targetYear) $('targetYear').value = settings.targetYear;
 
-      state.mode = settings.mode === 'year' ? 'year' : 'month';
+      state.mode = ['month', 'monthYear', 'year'].includes(settings.mode) ? settings.mode : 'month';
       state.filter = ['all', 'good', 'caution'].includes(settings.filter) ? settings.filter : 'all';
       state.resultMonth = settings.resultMonth || 'all';
       document.body.dataset.ageMode = state.mode;
@@ -1732,26 +1808,20 @@
     }
 
     function buildMonthly() {
-      const { birthDay, targetMonth, beYear, adYear } = readInputs();
+      const { birthDay, birthMonth, targetMonth, beYear, adYear } = readInputs();
 
       if (!beYear) {
         return { error: 'กรุณาระบุปี พ.ศ.' };
       }
 
-      // วันเริ่มต้น = min(วันเกิด, จำนวนวันในเดือนที่ดู) → เสมอเป็นตนุ
-      const maxDayTarget = daysInMonth(adYear, targetMonth);
-      const startDay = Math.min(birthDay, maxDayTarget);
-      const start = new Date(adYear, targetMonth, startDay);
+      // เดือนที่ดูถูกวางอยู่ในรอบปีหลักที่เริ่มจากเดือนเกิด
+      const startYear = cycleYearForMonth(adYear, birthMonth, targetMonth);
+      const start = cycleStartForMonth(startYear, targetMonth, birthDay);
 
       // end = วันก่อน birthDay ของเดือนถัดไป
       const nextMonth = targetMonth === 11 ? 0 : targetMonth + 1;
-      const nextYear = targetMonth === 11 ? adYear + 1 : adYear;
-      const maxDayNext = daysInMonth(nextYear, nextMonth);
-      // ถ้า birthDay > maxDayNext (เช่น เกิด 29 แต่ ก.พ. มี 28)
-      // รอบจบที่ 28 ก.พ. → end = 29 ก.พ. (ไม่มีจริง = 1 มี.ค.) เพื่อให้ loop รวม 28
-      const end = birthDay > maxDayNext
-        ? new Date(nextYear, nextMonth, maxDayNext + 1)
-        : new Date(nextYear, nextMonth, birthDay);
+      const nextYear = targetMonth === 11 ? startYear + 1 : startYear;
+      const end = cycleStartForMonth(nextYear, nextMonth, birthDay);
 
       const items = [];
       let index = 0;
@@ -1765,7 +1835,7 @@
       const endDisplay = new Date(end - 86400000);
       return {
         items,
-        summary: `${startDay} ${MONTHS[targetMonth].short} ${beYear} – ${endDisplay.getDate()} ${MONTHS[endDisplay.getMonth()].short} ${endDisplay.getFullYear() + 543}`
+        summary: `${formatDate(start, true)} ถึง ${formatDate(endDisplay, true)}`
       };
     }
 
@@ -1784,6 +1854,28 @@
         : { year: adYear, month: monthIndex - 1 };
     }
 
+    function cycleStartForOffset(adYear, birthMonth, birthDay, offset) {
+      const absoluteMonth = birthMonth + offset;
+      const year = adYear + Math.floor(absoluteMonth / 12);
+      const month = ((absoluteMonth % 12) + 12) % 12;
+      return cycleStartForMonth(year, month, birthDay);
+    }
+
+    function annualPeriodStarts(adYear, birthMonth, birthDay) {
+      return Array.from({ length: 13 }, (_, index) => (
+        cycleStartForOffset(adYear, birthMonth, birthDay, index)
+      ));
+    }
+
+    function cycleYearForMonth(adYear, birthMonth, targetMonth) {
+      return targetMonth < birthMonth ? adYear + 1 : adYear;
+    }
+
+    function annualBaseYearForDate(date, birthMonth, birthDay) {
+      const startThisYear = cycleStartForMonth(date.getFullYear(), birthMonth, birthDay);
+      return date < startThisYear ? date.getFullYear() - 1 : date.getFullYear();
+    }
+
     function periodStartForDate(date, birthDay) {
       let start = cycleStartForMonth(date.getFullYear(), date.getMonth(), birthDay);
       if (date < start) {
@@ -1794,16 +1886,14 @@
     }
 
     function buildAnnual() {
-      const { birthDay, targetMonth, beYear, adYear } = readInputs();
+      const { birthDay, birthMonth, beYear, adYear } = readInputs();
 
       if (!beYear) {
         return { error: 'กรุณาระบุปี พ.ศ.' };
       }
 
-      const start = cycleStartForMonth(adYear, targetMonth, birthDay);
-      const endMonth = targetMonth === 0 ? 11 : targetMonth - 1;
-      const endYear = targetMonth === 0 ? adYear : adYear + 1;
-      const end = cycleStartForMonth(endYear, endMonth, birthDay);
+      const start = cycleStartForMonth(adYear, birthMonth, birthDay);
+      const end = cycleStartForMonth(adYear + 1, birthMonth, birthDay);
       const items = [];
 
       for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {
@@ -1827,6 +1917,35 @@
       };
     }
 
+    function buildAnnualMonths() {
+      const { birthDay, birthMonth, beYear, adYear } = readInputs();
+
+      if (!beYear) {
+        return { error: 'กรุณาระบุปี พ.ศ.' };
+      }
+
+      const starts = annualPeriodStarts(adYear, birthMonth, birthDay);
+      const items = starts.slice(0, 12).map((start, index) => {
+        const nextStart = starts[index + 1];
+        const end = new Date(nextStart.getFullYear(), nextStart.getMonth(), nextStart.getDate() - 1);
+        const house = HOUSES[index % HOUSES.length];
+        return {
+          date: start,
+          endDate: end,
+          house,
+          order: index,
+          key: dateKey(start),
+          periodKey: dateKey(start),
+          isPeriod: true
+        };
+      });
+
+      return {
+        items,
+        summary: `${formatDate(items[0].date, true)} ถึง ${formatDate(items[items.length - 1].endDate, true)}`
+      };
+    }
+
     function periodEndForStart(starts, index, items) {
       if (starts[index + 1]) {
         const nextStart = starts[index + 1].date;
@@ -1836,7 +1955,12 @@
     }
 
     function periodOptionLabel(start, end) {
-      return `รอบ ${formatDate(start, true)} – ${formatDate(end, true)}`;
+      return `${formatDate(start, true)} – ${formatDate(end, true)}`;
+    }
+
+    function itemDateLabel(item, includeYear = false) {
+      if (item.endDate) return periodOptionLabel(item.date, item.endDate);
+      return formatDate(item.date, includeYear);
     }
 
     function buildMonthOptions(items) {
@@ -1873,17 +1997,22 @@
         acc[item.house.level] = (acc[item.house.level] || 0) + 1;
         return acc;
       }, { good: 0, neutral: 0, caution: 0 });
+      const unit = state.mode === 'monthYear' ? 'เดือน' : 'วัน';
 
       $('summaryStrip').innerHTML = `
-        <div class="summary-pill good"><span class="pill-icon">✨</span><strong>${counts.good || 0}</strong><span>วันดี</span></div>
-        <div class="summary-pill"><span class="pill-icon">☁️</span><strong>${counts.neutral || 0}</strong><span>วันกลาง</span></div>
-        <div class="summary-pill caution"><span class="pill-icon">⚠️</span><strong>${counts.caution || 0}</strong><span>วันไม่ดี</span></div>
+        <div class="summary-pill good"><span class="pill-icon">✨</span><strong>${counts.good || 0}</strong><span>${unit}ดี</span></div>
+        <div class="summary-pill"><span class="pill-icon">☁️</span><strong>${counts.neutral || 0}</strong><span>${unit}กลาง</span></div>
+        <div class="summary-pill caution"><span class="pill-icon">⚠️</span><strong>${counts.caution || 0}</strong><span>${unit}ไม่ดี</span></div>
       `;
     }
 
     function render() {
       showSkeletons(6);
-      const result = state.mode === 'month' ? buildMonthly() : buildAnnual();
+      const result = state.mode === 'month'
+        ? buildMonthly()
+        : state.mode === 'monthYear'
+          ? buildAnnualMonths()
+          : buildAnnual();
 
       if (result.error) {
         state.items = [];
@@ -1912,17 +2041,17 @@
       state.items.forEach((item) => {
         counts[item.house.level] = (counts[item.house.level] || 0) + 1;
       });
+      const isPeriodMode = state.mode === 'monthYear';
       document.querySelectorAll('[data-filter]').forEach((button) => {
         const filter = button.dataset.filter;
-        const count = filter === 'all' ? counts.all : (filter === 'good' ? counts.good : counts.caution);
-        const existing = button.querySelector('.filter-count');
-        if (existing) existing.remove();
-        if (count > 0) {
-          const badge = document.createElement('span');
-          badge.className = 'filter-count';
-          badge.textContent = count;
-          button.appendChild(badge);
+        let label = 'ทั้งหมด';
+        if (filter === 'good') {
+          label = isPeriodMode ? 'เดือนดี' : 'วันดี';
+        } else if (filter === 'caution') {
+          label = isPeriodMode ? 'เดือนไม่ดี' : 'วันไม่ดี';
         }
+        const count = filter === 'all' ? counts.all : (filter === 'good' ? counts.good : counts.caution);
+        button.innerHTML = `${label}${count > 0 ? `<span class="filter-count">${count}</span>` : ''}`;
       });
     }
 
@@ -1937,22 +2066,86 @@
         return;
       }
 
-      $('results').innerHTML = items.map((item, index) => {
+      const THAI_MONTHS_SHORT = [
+        'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+        'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+      ];
+
+      // คำนวณช่วงเดือนปัจจุบัน (สำหรับจุดสีฟ้าบอกว่า ตอนนี้อยู่ช่วงเดือนไหน)
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const { birthDay } = readInputs();
+      const currentPeriodStart = periodStartForDate(today, birthDay);
+      const currentPeriodKey = dateKey(currentPeriodStart);
+
+      // สร้าง map periodKey → เดือนที่ (1-12) สำหรับ mode=year
+      const periodIndexMap = new Map();
+      if (state.mode === 'year') {
+        let monthNum = 0;
+        state.items.forEach((it) => {
+          if (it.order === 0) monthNum++;
+          if (!periodIndexMap.has(it.periodKey)) {
+            periodIndexMap.set(it.periodKey, { num: monthNum, date: it.date });
+          }
+        });
+      }
+
+      // ใส่ class ให้ results container เพื่อ override layout
+      const resultsEl = $('results');
+      resultsEl.classList.toggle('results-period', state.mode === 'monthYear');
+
+      resultsEl.innerHTML = items.map((item, index) => {
         const includeYear = state.mode === 'year';
+        const dateLabel = itemDateLabel(item, false);
         const level = item.house.level;
         const levelClass = level === 'neutral' ? '' : level;
         const delay = Math.min(index, 16) * 0.025;
+
+        // badge เดือนที่ X — เฉพาะ mode จรเดือน (isPeriod)
+        const monthBadge = item.isPeriod
+          ? `<span class="month-badge">📅 เดือนที่ ${item.order + 1} &nbsp;·&nbsp; ${THAI_MONTHS_SHORT[item.date.getMonth()]} ${item.date.getFullYear() + 543}</span>`
+          : '';
+
+        // จุดสีฟ้า — วันจรในปี (mode=year) แสดงเฉพาะวันที่อยู่ในช่วงเดือนปัจจุบัน
+        let periodDot = '';
+        if (state.mode === 'year' && item.periodKey && item.periodKey === currentPeriodKey) {
+          const pInfo = periodIndexMap.get(item.periodKey);
+          if (pInfo) {
+            const mName = THAI_MONTHS_SHORT[pInfo.date.getMonth()];
+            periodDot = `<span class="period-dot" title="เดือนที่ ${pInfo.num} · ${mName}"></span>`;
+          }
+        }
+
+        // จุดสีฟ้าสำหรับจรเดือน (isPeriod) — แสดงเฉพาะเดือนที่เป็นช่วงปัจจุบัน
+        const rightCol = item.isPeriod
+          ? `<span style="display:flex;flex-direction:column;align-items:center;gap:6px;padding-top:2px;">
+               <span class="level">${levelLabel(level)}</span>
+               ${item.periodKey === currentPeriodKey ? `<span class="period-dot" title="เดือนที่ ${item.order + 1}"></span>` : ''}
+             </span>`
+          : `<span class="level">${levelLabel(level)}</span>`;
+
+        // แสดงวันที่แบบ 2 บรรทัดถ้าเป็นช่วง (มี endDate)
+        const dateHtml = item.endDate
+          ? `<span class="date-period">
+               ${monthBadge}
+               <span class="date-period-start">${formatDate(item.date, true)}</span>
+               <span class="date-period-sep">– ถึง –</span>
+               <span class="date-period-end">${formatDate(item.endDate, true)}</span>
+             </span>`
+          : `<span class="date-line">
+               ${dateLabel}
+               ${includeYear && !item.endDate ? `<span class="date-year">${item.date.getFullYear() + 543}</span>` : ''}
+             </span>`;
+
         return `
           <button class="day-card ${levelClass}" type="button" data-key="${item.key}" style="animation-delay: ${delay}s">
-            <span class="date-line">
-              ${formatDate(item.date, false)}
-              ${includeYear ? `<span class="date-year">${item.date.getFullYear() + 543}</span>` : ''}
-            </span>
+            ${periodDot}
+            ${dateHtml}
             <span class="house-line">
               <span class="house-name">${item.house.name}</span>
               <span class="house-short">${item.house.short}</span>
             </span>
-            <span class="level">${levelLabel(level)}</span>
+            ${rightCol}
           </button>
         `;
       }).join('');
@@ -1964,7 +2157,7 @@
       const level = item.house.level;
       const badgeClass = level === 'neutral' ? '' : level;
       $('sheetTitle').innerHTML = `${item.house.name}<span class="sheet-level-badge ${badgeClass}">${levelLabel(level)}</span>`;
-      $('sheetDate').textContent = `${formatDate(item.date, true)}`;
+      $('sheetDate').textContent = itemDateLabel(item, true);
       $('sheetMeaning').textContent = item.house.meaning;
       $('sheetOverlay').classList.add('open');
     }
@@ -2000,7 +2193,13 @@
     }
 
     function revealToday(today) {
-      const key = dateKey(today);
+      let key = dateKey(today);
+      if (state.mode === 'monthYear') {
+        const period = state.items.find((item) => (
+          item.endDate && today >= item.date && today <= item.endDate
+        ));
+        if (period) key = period.key;
+      }
       const card = document.querySelector(`.day-card[data-key="${key}"]`);
       if (card) {
         card.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2017,37 +2216,22 @@
       state.filter = 'all';
       activateFilterButton();
 
+      const birthDay = Number($('birthDay').value);
+      const birthMonth = Number($('birthMonth').value);
+      const baseYear = annualBaseYearForDate(today, birthMonth, birthDay);
+
       if (state.mode === 'month') {
-        const birthDay = Number($('birthDay').value);
-        let month = today.getMonth();
-        let year = today.getFullYear();
+        const periodStart = periodStartForDate(today, birthDay);
 
-        // ถ้าวันนี้ยังไม่ถึงวันเกิดในเดือนนี้ → ย้อนไปรอบเดือนที่แล้ว
-        if (today.getDate() < birthDay) {
-          month -= 1;
-          if (month < 0) { month = 11; year -= 1; }
-        }
-
-        $('targetMonth').value = String(month);
-        $('targetYear').value = String(year + 543);
+        $('targetMonth').value = String(periodStart.getMonth());
+        $('targetYear').value = String(baseYear + 543);
         render();
         requestAnimationFrame(() => revealToday(today));
         return;
       }
 
-      if (state.mode === 'year') {
-        const birthDay = Number($('birthDay').value);
-        let month = today.getMonth();
-        let year = today.getFullYear();
-
-        // ใช้เดือนรอบล่าสุดเหมือนรายเดือน แล้วต่อเป็นรอบปีจากเดือนนั้น
-        if (today.getDate() < birthDay) {
-          month -= 1;
-          if (month < 0) { month = 11; year -= 1; }
-        }
-
-        $('targetMonth').value = String(month);
-        $('targetYear').value = String(year + 543);
+      if (state.mode === 'monthYear' || state.mode === 'year') {
+        $('targetYear').value = String(baseYear + 543);
         render();
         requestAnimationFrame(() => revealToday(today));
         return;
@@ -2061,9 +2245,10 @@
       const items = filteredItems().slice(0, 24);
       if (!items.length) return;
       const lines = items.map((item) => (
-        `${formatDate(item.date, true)}: ${item.house.name} (${levelLabel(item.house.level)})`
+        `${itemDateLabel(item, true)}: ${item.house.name} (${levelLabel(item.house.level)})`
       ));
-      const more = filteredItems().length > items.length ? `\n...อีก ${filteredItems().length - items.length} วัน` : '';
+      const unit = state.mode === 'monthYear' ? 'เดือน' : 'วัน';
+      const more = filteredItems().length > items.length ? `\n...อีก ${filteredItems().length - items.length} ${unit}` : '';
       const text = [`อายุจรประจำปี`, $('rangeSummary').textContent, ...lines].join('\n') + more;
       const copyBtn = $('copyBtn');
       try {
@@ -2137,14 +2322,22 @@
 
       if (state.mode === 'year') {
         return [
-          `วันที่เกิด: ${birthDay}`,
-          `เริ่มเดือน: ${MONTHS[targetMonth].full} พ.ศ. ${beYear} | เดือนที่แสดง: ${resultMonthLabel()}`,
+          `วันเกิด: ${birthDay} ${MONTHS[birthMonth].full}`,
+          `รอบปี: พ.ศ. ${beYear} | เดือนที่แสดง: ${resultMonthLabel()}`,
           `ตัวกรอง: ${filterLabel} | แสดง ${itemCount} วัน`
         ];
       }
 
+      if (state.mode === 'monthYear') {
+        return [
+          `วันเกิด: ${birthDay} ${MONTHS[birthMonth].full}`,
+          `รอบปี: พ.ศ. ${beYear}`,
+          `ตัวกรอง: ${filterLabel} | แสดง ${itemCount} เดือน`
+        ];
+      }
+
       return [
-        `วันที่ตั้งต้น: ${birthDay} ${MONTHS[targetMonth].full}`,
+        `วันเกิด: ${birthDay} ${MONTHS[birthMonth].full}`,
         `เดือนที่ดู: ${MONTHS[targetMonth].full} | ปีที่ดู: พ.ศ. ${beYear}`,
         `ตัวกรอง: ${filterLabel} | แสดงครบ ${itemCount} วัน`
       ];
@@ -2357,7 +2550,7 @@
         // วันที่
         ctx.fillStyle = textColor;
         ctx.font = longAnnual ? "800 22px 'K2D', sans-serif" : "800 30px 'K2D', sans-serif";
-        ctx.fillText(formatDate(item.date, state.mode === 'year'), x + barW + 18, y + (longAnnual ? 36 : 46));
+        ctx.fillText(itemDateLabel(item, state.mode === 'year'), x + barW + 18, y + (longAnnual ? 36 : 46));
 
         // ชื่อเรือน
         ctx.font = longAnnual ? "800 23px 'K2D', sans-serif" : "800 31px 'K2D', sans-serif";
@@ -2411,9 +2604,12 @@
     function exportFileName() {
       const { birthDay, birthMonth, targetMonth, beYear } = readInputs();
       const day = String(birthDay).padStart(2, '0');
+      const birthMonthPart = String(birthMonth + 1).padStart(2, '0');
       const mode = state.mode === 'year'
-        ? `annual-start-${String(targetMonth + 1).padStart(2, '0')}-day-${day}`
-        : `month-${String(targetMonth + 1).padStart(2, '0')}-start-${day}`;
+        ? `annual-start-${birthMonthPart}-day-${day}`
+        : state.mode === 'monthYear'
+          ? `annual-months-${birthMonthPart}-day-${day}`
+          : `month-${String(targetMonth + 1).padStart(2, '0')}-start-${day}`;
       const resultMonthPart = state.mode === 'year' && state.resultMonth !== 'all' ? `-${state.resultMonth}` : '';
       const filterPart = state.filter === 'all' ? '' : `-${state.filter}`;
       return `age-cycle-${beYear}-${mode}${resultMonthPart}${filterPart}.png`;
