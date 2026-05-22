@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ปีนักษัตรสงกรานต์</title>
+  <meta name="robots" content="noindex">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #1a1a1a;
+      --muted: #666666;
+      --accent: #c8951a;
+      --border: #333333;
+      --surface: #fffbf0;
+      --shadow: rgba(0, 0, 0, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Noto Sans Thai", Tahoma, system-ui, sans-serif;
+    }
+
+    main {
+      width: min(100%, 440px);
+      padding: 22px;
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      background: var(--surface);
+      box-shadow: 0 16px 42px var(--shadow);
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(26px, 8vw, 40px);
+      line-height: 1.25;
+      color: var(--text);
+    }
+
+    p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.55;
+    }
+
+    a {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #efd085);
+      color: #16130d;
+      font-size: 18px;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .credit {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>ปีนักษัตรสงกรานต์</h1>
+    <p>กำลังเปิดระบบเข้าสู่ระบบ กรุณารอสักครู่</p>
+    <a id="openApp" href="#">เปิดระบบ</a>
+    <div class="credit">Developed with love by คนโบราณ</div>
+  </main>
+
+  <script>
+    const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzipqnXKi7K5YE03eg9KBPdw6_1quDGLUz4KzA-KZF95TTyx7dN4RwtkMuwy-SE_uqhrw/exec';
+
+    function targetUrl() {
+      const target = new URL(APP_SCRIPT_URL);
+      const source = new URL(window.location.href);
+      source.searchParams.forEach((value, key) => {
+        target.searchParams.set(key, value);
+      });
+      target.searchParams.set('openExternalBrowser', target.searchParams.get('openExternalBrowser') || '1');
+      return target.toString();
+    }
+
+    const appUrl = targetUrl();
+    const openApp = document.getElementById('openApp');
+    openApp.href = appUrl;
+    window.location.replace(appUrl);
+  </script>
+</body>
+</html>
