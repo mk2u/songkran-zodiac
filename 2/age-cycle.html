@@ -186,10 +186,11 @@
     }
 
     .tool-nav {
+      width: 100%;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 6px;
-      margin: 68px 0 8px;
+      margin: 68px auto 8px;
       padding: 5px;
       border: 2px solid var(--ctrl-border);
       border-radius: 8px;
@@ -1502,6 +1503,12 @@
   <div id="shareNotice" class="share-notice" role="status" aria-live="polite"></div>
 
   <main class="app-shell">
+    <nav class="tool-nav" aria-label="เครื่องมือดูดวง">
+      <a href="index.html">ปีนักษัตรสงกรานต์</a>
+      <a href="songkran-zodiac-daily.html">นักษัตรปะทะ</a>
+      <a class="active" href="age-cycle.html">อายุจรประจำปี</a>
+    </nav>
+
     <header class="page-head">
       <button id="resetBtn" type="button" title="รีเซ็ตเป็นวันนี้" aria-label="รีเซ็ตเป็นวันนี้">↺</button>
       <h1>อายุจรประจำปี</h1>
@@ -2022,7 +2029,17 @@
       }
 
       state.items = result.items;
-      $('rangeSummary').textContent = result.summary;
+      
+      // ยึด จรครบ 1 ปี เป็นหลัก เสมอ ไม่เปลี่ยนช่วงวันตามโหมดอื่น
+      const inputs = readInputs();
+      if (inputs.beYear) {
+        const annualStart = cycleStartForMonth(inputs.adYear, inputs.birthMonth, inputs.birthDay);
+        const annualEnd = cycleStartForMonth(inputs.adYear + 1, inputs.birthMonth, inputs.birthDay);
+        const annualEndDisplay = new Date(annualEnd - 86400000);
+        $('rangeSummary').textContent = `${formatDate(annualStart, true)} ถึง ${formatDate(annualEndDisplay, true)}`;
+      } else {
+        $('rangeSummary').textContent = result.summary;
+      }
       $('notice').textContent = '';
 
       if (state.mode === 'year') {
