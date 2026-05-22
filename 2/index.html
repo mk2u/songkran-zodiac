@@ -1,0 +1,1878 @@
+<!doctype html>
+<html lang="th">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ดวงปีนักษัตร สงกรานต์</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=K2D:wght@400;600;700;800&family=Srisakdi:wght@400;700&display=swap"
+    rel="stylesheet">
+  <style>
+    /* Solar Light (Default) */
+    :root {
+      --bg: #ffffff;
+      --text: #1a1a1a;
+      --title: #1a1a1a;
+      --muted: #555555;
+      --ctrl-bg: #f5f5f5;
+      --ctrl-text: #111;
+      --ctrl-border: #333;
+      --bottom-text: #c0392b;
+      --card-bg: #fffbf0;
+      --card-border: #c8951a;
+      --title-shadow: transparent;
+    }
+
+    /* Sacred Dark */
+    body.theme-sacred {
+      --bg: #03010a;
+      --text: #f0e6c8;
+      --title: #e8c84a;
+      --muted: #bba979;
+      --ctrl-bg: #1e1044;
+      --ctrl-text: #e8c84a;
+      --ctrl-border: #e8c84a;
+      --bottom-text: #e8c84a;
+      --card-bg: #0e0826;
+      --card-border: #e8c84a;
+      --title-shadow: rgba(232, 200, 74, 0.4);
+    }
+
+    /* Royal Emerald */
+    body.theme-royal {
+      --bg: #061a10;
+      --text: #ffd700;
+      --title: #ffd700;
+      --muted: #e3c35a;
+      --ctrl-bg: #0e3d25;
+      --ctrl-text: #ffd700;
+      --ctrl-border: #ffd700;
+      --bottom-text: #ffd700;
+      --card-bg: #0a2e1c;
+      --card-border: #ffd700;
+      --title-shadow: rgba(255, 215, 0, 0.4);
+    }
+
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html,
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'K2D', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 6px 40px
+    }
+
+    /* ── Theme Selector (Clean Collapsible) ── */
+    .theme-selector {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .theme-main-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid var(--ctrl-border);
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      transition: transform 0.2s;
+    }
+
+    .theme-main-btn:active {
+      transform: scale(0.9);
+    }
+
+    .theme-options {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 10px;
+      border-radius: 30px;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .theme-selector.open .theme-options {
+      display: flex;
+      animation: slideIn 0.25s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .theme-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      cursor: pointer;
+      transition: transform 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .theme-btn.active {
+      border-color: #00ff00;
+      outline: 3px solid rgba(0, 255, 0, 0.4);
+    }
+
+    .btn-sacred {
+      background: linear-gradient(135deg, #03010a, #1e1044);
+    }
+
+    .btn-solar {
+      background: #ffffff;
+    }
+
+    .btn-royal {
+      background: linear-gradient(135deg, #061a10, #ffd700);
+    }
+
+    .tool-nav {
+      width: min(100%, 620px);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin: 68px auto 8px;
+      padding: 5px;
+      border: 2px solid var(--ctrl-border);
+      border-radius: 8px;
+      background: var(--ctrl-bg);
+    }
+
+    .tool-nav a {
+      min-width: 0;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 6px;
+      border-radius: 6px;
+      color: var(--ctrl-text);
+      font-size: clamp(14px, 3.8vw, 17px);
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    .tool-nav a.active {
+      background: var(--card-border);
+      color: var(--bg);
+    }
+
+
+    .main-title {
+      font-family: 'Srisakdi', cursive;
+      font-size: clamp(32px, 8vw, 56px);
+      font-weight: 700;
+      text-align: center;
+      margin: 12px 0 4px;
+      color: var(--title);
+      text-shadow: none;
+    }
+
+    .page-subtitle {
+      max-width: 620px;
+      margin: 4px auto 12px;
+      color: var(--muted);
+      font-size: clamp(17px, 4.5vw, 22px);
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+
+    body.dark-mode .main-title,
+    body.dark-mode .bottom-text {
+      background: linear-gradient(to bottom, #fff7ad 0%, #ffd700 50%, #ffa500 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .controls {
+      position: relative;
+      width: min(96vw, 620px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 6px 0 10px
+    }
+
+    .controls button {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--ctrl-border);
+      border-radius: 6px;
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer
+    }
+
+    .controls button:active {
+      background: #eee
+    }
+
+    .controls .reset-btn {
+      position: absolute;
+      left: min(calc(50% + 106px), calc(100% - 40px));
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      font-size: 22px;
+    }
+
+    .controls input {
+      width: 100px;
+      height: 40px;
+      border: 2px solid var(--ctrl-border);
+      border-radius: 6px;
+      background: var(--ctrl-bg);
+      color: var(--text);
+      text-align: center;
+      font-size: 20px;
+      font-weight: 800;
+      font-family: inherit;
+      outline: none
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: min(96vw, 620px);
+      aspect-ratio: 1;
+      touch-action: pan-y;
+      user-select: none
+    }
+
+    .canvas-wrap canvas {
+      width: 100%;
+      height: 100%
+    }
+
+    .bottom-text {
+      font-family: 'Srisakdi', cursive;
+      font-size: clamp(32px, 9vw, 58px);
+      font-weight: 700;
+      color: var(--bottom-text);
+      text-align: center;
+      margin: 24px 0 16px;
+      text-shadow: 0 0 10px var(--title-shadow);
+    }
+
+    .birth-section {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin: 6px 0;
+      flex-wrap: wrap;
+      justify-content: center
+    }
+
+    .birth-section label {
+      font-size: 15px;
+      font-weight: 700;
+      color: #555
+    }
+
+    .birth-section select {
+      height: 40px;
+      border: 2px solid #333;
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer
+    }
+
+    .result-card {
+      background: var(--card-bg);
+      border: 2px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      max-width: 460px;
+      width: 100%;
+      text-align: center;
+      margin: 8px 0;
+      display: none
+    }
+
+    .result-card .r-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #1a3a6b;
+      margin-bottom: 4px
+    }
+
+    .result-card .r-taksa {
+      font-size: 26px;
+      font-weight: 900
+    }
+
+    .result-card .r-taksa.bad {
+      color: #c0392b
+    }
+
+    .result-card .r-taksa.good {
+      color: #1a7a3a
+    }
+
+    .result-card .r-meaning {
+      font-size: 14px;
+      color: #666;
+      margin-top: 4px
+    }
+
+    .ref-section {
+      margin: 14px 0;
+      max-width: 460px;
+      width: 100%;
+      text-align: center
+    }
+
+    .ref-section h3 {
+      font-size: 18px;
+      margin-bottom: 6px
+    }
+
+    .ref-section img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #ccc
+    }
+
+    .credit {
+      font-family: 'Srisakdi', cursive;
+      font-size: 18px;
+      color: var(--text);
+      opacity: 0.6;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield
+    }
+
+    /* ── Effects ── */
+    @keyframes shimmer {
+      0% {
+        background-position: -200% center;
+      }
+
+      100% {
+        background-position: 200% center;
+      }
+    }
+
+    .shimmer-text {
+      background: linear-gradient(90deg, #ffd700 20%, #fff 50%, #ffd700 80%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 4s infinite linear;
+      display: inline-block;
+    }
+
+    /* ── Premium Music Controls ── */
+    .audio-group {
+      position: fixed;
+      bottom: 30px;
+      left: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px 12px 12px 12px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 0 45px 45px 0;
+      backdrop-filter: blur(12px);
+      border: 1.5px solid #ffd700;
+      border-left: none;
+      box-shadow: 5px 0 25px rgba(255, 215, 0, 0.2);
+      /* ซ่อนทิ้งไว้เหลือแค่ขอบเล็กน้อย — เลื่อนออกซ้ายให้เหลือ ~8px โผล่ */
+      transform: translateX(calc(-100% + 8px));
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .audio-group.active {
+      transform: translateX(0);
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .music-btn,
+    .vol-toggle-btn,
+    .share-btn {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffd700, #b8860b);
+      color: #000000;
+      font-size: 23px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.5);
+      transition: transform 0.18s ease, filter 0.18s ease;
+    }
+
+    .music-btn:hover,
+    .vol-toggle-btn:hover,
+    .share-btn:hover {
+      filter: brightness(1.08);
+    }
+
+    .music-btn:active,
+    .vol-toggle-btn:active,
+    .share-btn:active {
+      transform: scale(0.9);
+    }
+
+    .vol-toggle-btn {
+      font-size: 20px;
+    }
+
+    /* ── Volume Slider ── */
+    .vol-container {
+      position: fixed;
+      bottom: 35px;
+      left: 100px;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 10px 20px;
+      border-radius: 40px;
+      border: 1.5px solid #ffd700;
+      backdrop-filter: blur(15px);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(255, 215, 0, 0.2);
+    }
+
+    .vol-container input[type=range] {
+      width: 110px;
+      height: 6px;
+      border-radius: 3px;
+      appearance: none;
+      background: rgba(255, 215, 0, 0.2);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .vol-container input[type=range]::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ffd700;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.9);
+      border: 2px solid #fff;
+    }
+
+    .birth-panel {
+      width: min(96vw, 620px);
+      display: grid;
+      gap: 10px;
+      margin: 10px 0 8px;
+      padding: 12px;
+      border: 2px solid var(--card-border);
+      border-radius: 16px;
+      background: var(--card-bg);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+    }
+
+    .birth-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .birth-field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .birth-field label {
+      color: var(--text);
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .birth-field input {
+      width: 100%;
+      height: 46px;
+      border: 2px solid var(--ctrl-border);
+      border-radius: 10px;
+      background: var(--ctrl-bg);
+      color: var(--text);
+      text-align: center;
+      font-family: inherit;
+      font-size: 22px;
+      font-weight: 900;
+      outline: none;
+    }
+
+    .birth-field input:focus {
+      box-shadow: 0 0 0 4px rgba(232, 200, 74, 0.25);
+    }
+
+    .personal-card {
+      display: none;
+      gap: 6px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 2px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.16);
+      color: var(--text);
+      text-align: center;
+    }
+
+    .personal-card.show {
+      display: grid;
+    }
+
+    .personal-card .card-line {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .personal-card .card-main {
+      color: var(--title);
+      font-family: 'Srisakdi', cursive;
+      font-size: clamp(30px, 8vw, 48px);
+      font-weight: 700;
+      line-height: 1.1;
+      text-shadow: 0 0 10px var(--title-shadow);
+    }
+
+    .personal-card .card-meta {
+      font-size: 17px;
+      font-weight: 700;
+      opacity: 0.88;
+    }
+
+    .taksa-good {
+      color: #1f9d55;
+    }
+
+    .taksa-bad {
+      color: #d92d20;
+    }
+
+    body.theme-sacred .taksa-good,
+    body.theme-royal .taksa-good {
+      color: #57e389;
+    }
+
+    body.theme-sacred .taksa-bad,
+    body.theme-royal .taksa-bad {
+      color: #ff6b6b;
+    }
+
+    .personal-card .card-main.taksa-good {
+      color: #1f9d55;
+    }
+
+    .personal-card .card-main.taksa-bad {
+      color: #d92d20;
+    }
+
+    body.theme-sacred .personal-card .card-main.taksa-good,
+    body.theme-royal .personal-card .card-main.taksa-good {
+      color: #57e389;
+    }
+
+    body.theme-sacred .personal-card .card-main.taksa-bad,
+    body.theme-royal .personal-card .card-main.taksa-bad {
+      color: #ff6b6b;
+    }
+
+    .taksa-dot {
+      display: inline-block;
+      width: 0.48em;
+      height: 0.48em;
+      margin-left: 0.12em;
+      border-radius: 50%;
+      vertical-align: 0.05em;
+      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5), 0 0 12px currentColor;
+    }
+
+    .taksa-dot.good {
+      background: currentColor;
+    }
+
+    .taksa-dot.bad {
+      background: currentColor;
+    }
+
+    .share-group {
+      position: fixed;
+      right: 0;
+      bottom: 30px;
+      z-index: 9998;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px 12px 12px 12px;
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 45px 0 0 45px;
+      border: 1.5px solid #ffd700;
+      border-right: none;
+      box-shadow: -5px 0 25px rgba(255, 215, 0, 0.2);
+      backdrop-filter: blur(12px);
+      /* ซ่อนทางขวา เหลือ ~8px โผล่ */
+      transform: translateX(calc(100% - 8px));
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .share-group.active {
+      transform: translateX(0);
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .share-notice {
+      position: fixed;
+      left: 50%;
+      bottom: 106px;
+      z-index: 10001;
+      max-width: min(92vw, 520px);
+      padding: 12px 16px;
+      border: 1.5px solid #ffd700;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.88);
+      color: #ffd700;
+      font-size: 15px;
+      font-weight: 800;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 12px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .share-notice.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 560px) {
+      .birth-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .birth-field label {
+        font-size: 16px;
+      }
+
+      .personal-card .card-line,
+      .personal-card .card-meta {
+        font-size: 16px;
+      }
+    }
+
+    @media (max-width: 340px) {
+      .tool-nav {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+
+
+</head>
+
+<body>
+  <div class="theme-selector" id="themeSelector">
+    <button class="theme-main-btn"
+      onclick="event.stopPropagation(); document.getElementById('themeSelector').classList.toggle('open')"
+      title="เลือกธีม">🌗</button>
+    <div class="theme-options">
+      <div class="theme-btn btn-sacred" onclick="setTheme('sacred')" title="มืด"></div>
+      <div class="theme-btn btn-solar" onclick="setTheme('solar')" title="สว่าง"></div>
+      <div class="theme-btn btn-royal" onclick="setTheme('royal')" title="มรกต"></div>
+    </div>
+  </div>
+
+
+  <nav class="tool-nav" aria-label="เครื่องมือดูดวง">
+    <a class="active" href="index.html">ปีนักษัตรสงกรานต์</a>
+    <a href="songkran-zodiac-daily.html">นักษัตรปะทะ</a>
+    <a href="age-cycle.html">อายุจรประจำปี</a>
+  </nav>
+
+  <h1 id="mainTitle" class="main-title">13 เมษา 2569 ปีมะเมีย</h1>
+  <p id="pageSubtitle" class="page-subtitle">ปีมะเมีย ชงปะทะ ปีชวด · 13 เม.ย. 2569 — 12 เม.ย. 2570</p>
+
+  <!-- Music System -->
+  <audio
+    id="bgMusic"
+    src="https://cdn1.suno.ai/b0aadeef-7861-4e8e-b972-f5b1bd76698d.mp3"
+    data-playlist-url="https://suno.com/playlist/1473c3a5-7c1d-48e2-9840-eb0cf32d941e"
+    data-track-title="โชคชะตาแห่งดวงดาว - Destiny of the Stars"></audio>
+
+  <div class="audio-group" id="audioGroup" onclick="activateAudioGroup()">
+    <button id="toggleMusic" class="music-btn" onclick="event.stopPropagation(); toggleMusic()">🎵</button>
+    <button id="volToggle" class="vol-toggle-btn" onclick="event.stopPropagation(); showVolume()">🔊</button>
+  </div>
+
+  <div class="vol-container" id="volContainer" style="opacity: 0; pointer-events: none; transform: translateX(-20px);">
+    <span style="color: #ffd700; font-size: 18px;">🔈</span>
+    <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)">
+    <span style="color: #ffd700; font-size: 18px;">🔊</span>
+  </div>
+
+  <div class="share-group" id="shareGroup" onclick="activateShareGroup()">
+    <button id="shareImageBtn" class="share-btn" type="button" onclick="event.stopPropagation(); shareCurrentImage()" title="แชร์รูป">📤</button>
+    <button id="saveImageFloatBtn" class="share-btn" type="button" onclick="event.stopPropagation(); saveCurrentImage()" title="บันทึกรูป">💾</button>
+  </div>
+  <div id="shareNotice" class="share-notice" role="status" aria-live="polite"></div>
+
+
+
+  <div class="controls">
+    <button id="prevYear" type="button">−</button>
+    <input id="yearInput" type="number" inputmode="numeric" min="2400" max="2800" value="2569">
+    <button id="nextYear" type="button">+</button>
+    <button id="resetBtn" class="reset-btn" type="button" title="รีเซ็ต">↺</button>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="wheelCanvas" width="1400" height="1400"></canvas>
+  </div>
+  <div class="bottom-text">นับจากปีเกิดไปหาปีสงกรานต์</div>
+  <div class="credit">Developed with ❤️ by คนโบราณ</div>
+
+  <script>
+    let currentTheme = 'solar';
+
+    // ── FX State ──
+    const FX = {
+      particles: [],
+      audioCtx: null
+    };
+
+    function initAudio() {
+      if (!FX.audioCtx) {
+        FX.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function playGong() {
+      initAudio();
+      const ctx = FX.audioCtx;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(110, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(55, ctx.currentTime + 1.5);
+      gain.gain.setValueAtTime(0.5, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 2);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 2);
+    }
+
+    function createSparkles() {
+      for (let i = 0; i < 18; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 9 + 2;
+        FX.particles.push({
+          x: CX, y: CY,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1.0,
+          decay: Math.random() * 0.035 + 0.035,
+          size: Math.random() * 3 + 1.5,
+          color: `hsl(${45 + Math.random() * 12}, 100%, ${60 + Math.random() * 18}%)`
+        });
+      }
+    }
+
+    const Z = [
+      { thai: "ชวด", animal: "หนู", en: "Rat", img: "assets/zodiac_rat.png" },
+      { thai: "ฉลู", animal: "วัว", en: "Ox", img: "assets/zodiac_ox.png" },
+      { thai: "ขาล", animal: "เสือ", en: "Tiger", img: "assets/zodiac_tiger.png" },
+      { thai: "เถาะ", animal: "กระต่าย", en: "Rabbit", img: "assets/zodiac_rabbit.png" },
+      { thai: "มะโรง", animal: "มังกร", en: "Dragon", img: "assets/zodiac_dragon.png" },
+      { thai: "มะเส็ง", animal: "งู", en: "Snake", img: "assets/zodiac_snake.png" },
+      { thai: "มะเมีย", animal: "ม้า", en: "Horse", img: "assets/zodiac_horse.png" },
+      { thai: "มะแม", animal: "แพะ", en: "Sheep", img: "assets/zodiac_goat.png" },
+      { thai: "วอก", animal: "ลิง", en: "Monkey", img: "assets/zodiac_monkey.png" },
+      { thai: "ระกา", animal: "ไก่", en: "Rooster", img: "assets/zodiac_rooster.png" },
+      { thai: "จอ", animal: "สุนัข", en: "Dog", img: "assets/zodiac_dog.png" },
+      { thai: "กุน", animal: "หมู", en: "Pig", img: "assets/zodiac_pig.png" }
+    ];
+    const loadedImgs = {};
+    let imgsLoaded = 0;
+    Z.forEach(z => {
+      const img = new Image();
+      img.src = z.img;
+      img.onload = () => {
+        imgsLoaded++;
+        if (imgsLoaded === 12) render();
+      };
+      loadedImgs[z.en] = img;
+    });
+    const TK = [
+      { name: "ตนุ", bad: false },
+      { name: "กดุมภะ", bad: false },
+      { name: "สหัชชะ", bad: false },
+      { name: "พันธุ", bad: false },
+      { name: "ปุตตะ", bad: false },
+      { name: "อริ", bad: true },
+      { name: "ปัตตนิ", bad: false },
+      { name: "มรณะ", bad: true },
+      { name: "ศุภะ", bad: false },
+      { name: "กัมมะ", bad: false },
+      { name: "ลาภะ", bad: false },
+      { name: "วินาสน์", bad: true }
+    ];
+    const RASI = [
+      { name: "เมษ", number: "๓" },
+      { name: "พฤษภ", number: "๖" },
+      { name: "เมถุน", number: "๔" },
+      { name: "กรกฎ", number: "๒" },
+      { name: "สิงห์", number: "๑" },
+      { name: "กันย์", number: "๔" },
+      { name: "ตุลย์", number: "๖" },
+      { name: "พิจิก", number: "๓" },
+      { name: "ธนู", number: "๕" },
+      { name: "มกร", number: "๗" },
+      { name: "กุมภ์", number: "๘" },
+      { name: "มีน", number: "๕" }
+    ];
+    const BY = 2569, BI = 6;
+    function mod(v, n) { return ((v % n) + n) % n }
+    function y2i(y) { return mod(Number(y) - BY + BI, 12) }
+    function toR(d) { return d * Math.PI / 180 }
+    function ang(i) { return -90 - i * 30 }
+    function currentBEYear() {
+      const now = new Date();
+      const be = now.getFullYear() + 543;
+      const songkranStart = new Date(now.getFullYear(), 3, 13);
+      return now >= songkranStart ? be : be - 1;
+    }
+    function selectedYear() {
+      const y = Number(document.getElementById('yearInput').value);
+      return Number.isFinite(y) && y >= 2400 && y <= 2800 ? y : currentBEYear();
+    }
+
+    const cv = document.getElementById('wheelCanvas');
+    const c = cv.getContext('2d');
+    const W = cv.width, CX = W / 2, CY = W / 2;
+    const FONT = "'K2D', sans-serif";
+    const WHEEL_SCALE = 1.055;
+    const SHOW_ALL_TAKSA_LABELS = false;
+    const SHOW_RASI_NUMBERS = true;
+    const ZODIAC_IMAGE_RADIUS = Math.round(384 * WHEEL_SCALE);
+    const TAKSA_LABEL_RADIUS = 575;
+    const LOR_LABEL_RADIUS = 596;
+    const TAKSA_BAD_FONT_SIZE = 76;
+    const VINAS_FONT_SIZE = 66;
+    const PROFILE_COLORS = ['#1f9d55', '#2f80ed'];
+    let birthProfiles = [];
+
+    function profileFromInput(inputId, order, ai) {
+      const el = document.getElementById(inputId);
+      if (!el) return null;
+      const raw = String(el.value || '').trim();
+      if (raw.length < 4) return null;
+      const year = Number(raw);
+      if (!Number.isFinite(year) || year < 2400 || year > 2800) return null;
+      const zi = y2i(year);
+      const ti = mod(ai - zi, 12);
+      const tk = TK[ti];
+      return {
+        order,
+        year,
+        zodiacIndex: zi,
+        zodiac: Z[zi],
+        taksaIndex: ti,
+        taksa: tk,
+        isBad: tk.bad,
+        color: PROFILE_COLORS[order - 1] || '#ffd700'
+      };
+    }
+
+    function taksaStatus(profile) {
+      return profile.isBad ? 'ร้าย' : 'ดี';
+    }
+
+    function taksaDot(profile) {
+      return `<span class="taksa-dot ${profile.isBad ? 'bad' : 'good'}" aria-hidden="true"></span>`;
+    }
+
+    function profileText(profile) {
+      return `คนที่ ${profile.order} เกิดปี ${profile.year} · ปี${profile.zodiac.thai} → ทักษา ${profile.taksa.name} ${taksaDot(profile)} ${taksaStatus(profile)}`;
+    }
+
+    function updateBirthProfiles(ai, y) {
+      birthProfiles = [
+        profileFromInput('birthYearA', 1, ai),
+        profileFromInput('birthYearB', 2, ai)
+      ].filter(Boolean);
+
+      const personalCard = document.getElementById('personalCard');
+      const compareCard = document.getElementById('compareCard');
+      const first = birthProfiles.find(p => p.order === 1);
+      const second = birthProfiles.find(p => p.order === 2);
+      const annual = Z[ai];
+
+      if (personalCard) {
+        if (first) {
+          const cls = first.isBad ? 'taksa-bad' : 'taksa-good';
+          personalCard.innerHTML = `
+            <div class="card-line">ปี ${y} · ปี${annual.thai} · คุณเกิดปี${first.zodiac.thai}</div>
+            <div class="card-main ${cls}">ตกทักษา ${first.taksa.name} ${taksaDot(first)}</div>
+            <div class="card-meta">${taksaStatus(first)} · นับจากปีเกิดไปหาปีสงกรานต์</div>
+          `;
+          personalCard.classList.add('show');
+        } else {
+          personalCard.innerHTML = '';
+          personalCard.classList.remove('show');
+        }
+      }
+
+      if (compareCard) {
+        if (first && second) {
+          const firstCls = first.isBad ? 'taksa-bad' : 'taksa-good';
+          const secondCls = second.isBad ? 'taksa-bad' : 'taksa-good';
+          compareCard.innerHTML = `
+            <div class="card-line">เปรียบดวงสองคน</div>
+            <div class="card-meta"><span class="${firstCls}">${profileText(first)}</span></div>
+            <div class="card-meta"><span class="${secondCls}">${profileText(second)}</span></div>
+          `;
+          compareCard.classList.add('show');
+        } else {
+          compareCard.innerHTML = '';
+          compareCard.classList.remove('show');
+        }
+      }
+    }
+
+    function drawBirthHighlights(ai) {
+      if (!birthProfiles.length) return;
+      const er = ZODIAC_IMAGE_RADIUS;
+      const grouped = {};
+      birthProfiles.forEach(profile => {
+        grouped[profile.zodiacIndex] = grouped[profile.zodiacIndex] || [];
+        grouped[profile.zodiacIndex].push(profile);
+      });
+
+      birthProfiles.forEach(profile => {
+        const same = grouped[profile.zodiacIndex] || [profile];
+        const sameIndex = same.findIndex(p => p.order === profile.order);
+        const spread = same.length > 1 ? (sameIndex - (same.length - 1) / 2) * 42 : 0;
+        const a = toR(ang(profile.zodiacIndex));
+        const x = CX + (er + spread) * Math.cos(a);
+        const y = CY + (er + spread) * Math.sin(a);
+        const markerX = CX + (er + 114 + spread) * Math.cos(a);
+        const markerY = CY + (er + 114 + spread) * Math.sin(a);
+
+        c.save();
+        c.beginPath();
+        c.arc(x, y, 100, 0, Math.PI * 2);
+        c.fillStyle = profile.isBad ? 'rgba(217,45,32,0.16)' : 'rgba(31,157,85,0.16)';
+        c.fill();
+        c.lineWidth = 9;
+        c.strokeStyle = profile.color;
+        c.shadowBlur = 24;
+        c.shadowColor = profile.color;
+        c.stroke();
+        c.beginPath();
+        c.arc(markerX, markerY, 30, 0, Math.PI * 2);
+        c.fillStyle = profile.color;
+        c.shadowBlur = 18;
+        c.fill();
+        c.shadowBlur = 0;
+        c.fillStyle = '#fff';
+        c.font = `900 28px ${FONT}`;
+        c.textAlign = 'center';
+        c.textBaseline = 'middle';
+        c.fillText(String(profile.order), markerX, markerY + 1);
+        c.restore();
+      });
+    }
+
+    function drawRasiNumbers(isSolar, isRoyal) {
+      if (!SHOW_RASI_NUMBERS) return;
+      const badgeR = 201;
+      const badgeSize = 37;
+      for (let i = 0; i < 12; i++) {
+        const rasi = RASI[i];
+        const a = toR(ang(i));
+        const x = CX + badgeR * Math.cos(a);
+        const y = CY + badgeR * Math.sin(a);
+
+        c.save();
+        c.beginPath();
+        c.arc(x, y, badgeSize, 0, Math.PI * 2);
+        const g = c.createRadialGradient(x - 10, y - 12, 4, x, y, badgeSize);
+        if (isSolar) {
+          g.addColorStop(0, '#fffaf0');
+          g.addColorStop(1, '#e5c15d');
+        } else {
+          g.addColorStop(0, isRoyal ? '#fff0a8' : '#f7df8b');
+          g.addColorStop(1, isRoyal ? '#a87d16' : '#5d4211');
+        }
+        c.fillStyle = g;
+        c.shadowBlur = isSolar ? 10 : 18;
+        c.shadowColor = isSolar ? 'rgba(184,134,11,0.26)' : 'rgba(255,215,0,0.38)';
+        c.fill();
+        c.shadowBlur = 0;
+        c.lineWidth = 3;
+        c.strokeStyle = isSolar ? '#b8860b' : '#ffd700';
+        c.stroke();
+        c.font = `900 46px ${FONT}`;
+        c.textAlign = 'center';
+        c.textBaseline = 'middle';
+        if (!isSolar) {
+          c.lineWidth = 7;
+          c.strokeStyle = '#241400';
+          c.shadowBlur = 12;
+          c.shadowColor = 'rgba(0,0,0,0.75)';
+          c.strokeText(rasi.number, x, y + 2);
+          c.shadowBlur = 0;
+        }
+        c.fillStyle = isSolar ? '#1e1a12' : '#ffffff';
+        c.fillText(rasi.number, x, y + 2);
+        c.restore();
+      }
+    }
+
+    function drawAstroSeal(isSolar, isRoyal, isSacred, radius) {
+      const gold = isSolar ? '#b8860b' : (isRoyal ? '#ffd700' : '#e8c84a');
+      const goldSoft = isSolar ? 'rgba(184,134,11,0.34)' : 'rgba(255,215,0,0.44)';
+      const dark = isSolar ? '#fffaf0' : (isRoyal ? '#0e3d25' : '#1e1044');
+      const text = isSolar ? '#8b1a1a' : '#fff4bc';
+
+      c.save();
+      const bg = c.createRadialGradient(CX - 18, CY - 22, 4, CX, CY, radius);
+      bg.addColorStop(0, isSolar ? '#ffffff' : '#2a1b50');
+      bg.addColorStop(0.68, dark);
+      bg.addColorStop(1, isSolar ? '#f7edd2' : '#07030d');
+      c.beginPath();
+      c.arc(CX, CY, radius, 0, Math.PI * 2);
+      c.fillStyle = bg;
+      c.shadowBlur = isSolar ? 14 : 28;
+      c.shadowColor = goldSoft;
+      c.fill();
+      c.shadowBlur = 0;
+
+      [radius - 3, radius - 15, radius - 38].forEach((r, idx) => {
+        c.beginPath();
+        c.arc(CX, CY, r, 0, Math.PI * 2);
+        c.lineWidth = idx === 0 ? 5 : 2;
+        c.strokeStyle = idx === 2 ? goldSoft : gold;
+        c.stroke();
+      });
+
+      for (let i = 0; i < 16; i++) {
+        const a = toR(i * 22.5 - 90);
+        const r = i % 2 === 0 ? radius - 24 : radius - 31;
+        c.beginPath();
+        c.moveTo(CX, CY);
+        c.lineTo(CX + r * Math.cos(a), CY + r * Math.sin(a));
+        c.lineWidth = i % 2 === 0 ? 1.5 : 0.8;
+        c.strokeStyle = i % 2 === 0 ? 'rgba(232,200,74,0.28)' : 'rgba(232,200,74,0.16)';
+        c.stroke();
+      }
+
+      for (let i = 0; i < 12; i++) {
+        const a = toR(i * 30 - 90);
+        const x = CX + (radius - 22) * Math.cos(a);
+        const y = CY + (radius - 22) * Math.sin(a);
+        c.beginPath();
+        c.arc(x, y, i % 3 === 0 ? 4.2 : 3, 0, Math.PI * 2);
+        c.fillStyle = gold;
+        c.shadowBlur = 8;
+        c.shadowColor = goldSoft;
+        c.fill();
+        c.shadowBlur = 0;
+      }
+
+      const star = [];
+      for (let i = 0; i < 16; i++) {
+        const a = toR(i * 22.5 - 90);
+        const r = i % 2 === 0 ? 37 : 15;
+        star.push([CX + r * Math.cos(a), CY + r * Math.sin(a)]);
+      }
+      c.beginPath();
+      star.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y));
+      c.closePath();
+      const sg = c.createRadialGradient(CX - 8, CY - 10, 2, CX, CY, 42);
+      sg.addColorStop(0, '#fff7b8');
+      sg.addColorStop(0.58, gold);
+      sg.addColorStop(1, '#7c5208');
+      c.fillStyle = sg;
+      c.shadowBlur = 18;
+      c.shadowColor = goldSoft;
+      c.fill();
+      c.lineWidth = 2;
+      c.strokeStyle = text;
+      c.stroke();
+      c.shadowBlur = 0;
+
+      c.beginPath();
+      c.arc(CX, CY, 7, 0, Math.PI * 2);
+      c.fillStyle = text;
+      c.fill();
+      c.restore();
+    }
+
+    function setTheme(t) {
+      currentTheme = t;
+      document.body.className = 'theme-' + t;
+
+      // Mark active button
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.classList.contains('btn-' + t));
+      });
+
+      document.getElementById('themeSelector').classList.remove('open');
+      render();
+    }
+
+    // Close selector when clicking outside
+    document.addEventListener('click', (e) => {
+      const sel = document.getElementById('themeSelector');
+      if (!sel.contains(e.target)) sel.classList.remove('open');
+    });
+
+    function draw(ai) {
+      c.clearRect(0, 0, W, W);
+      const isSolar = currentTheme === 'solar';
+      const isRoyal = currentTheme === 'royal';
+      const isSacred = currentTheme === 'sacred';
+
+
+      const RO = Math.round(485 * WHEEL_SCALE);
+      const RI = Math.round(469 * WHEEL_SCALE);
+      const RS = Math.round(463 * WHEEL_SCALE);
+      const RN = Math.round(305 * WHEEL_SCALE);
+      const RC = 93;
+      const RL = TAKSA_LABEL_RADIUS;
+
+
+
+
+      c.beginPath(); c.arc(CX, CY, RO, 0, Math.PI * 2);
+      let outerCol = '#1e3d72';
+      if (isSacred) outerCol = '#e8c84a';
+      if (isRoyal) outerCol = '#ffd700';
+      c.fillStyle = outerCol; c.fill();
+
+      c.beginPath(); c.arc(CX, CY, RI, 0, Math.PI * 2);
+      let innerCol = '#faf6ec';
+      if (isSacred) innerCol = '#04020e';
+      if (isRoyal) innerCol = '#05140b';
+      c.fillStyle = innerCol; c.fill();
+
+      for (let i = 0; i < 12; i++) {
+        const a1 = toR(ang(i) + 15);
+        c.beginPath();
+        c.moveTo(CX + RC * Math.cos(a1), CY + RC * Math.sin(a1));
+        c.lineTo(CX + RS * Math.cos(a1), CY + RS * Math.sin(a1));
+        c.lineWidth = 2;
+        c.strokeStyle = isSolar ? 'rgba(0,0,0,0.15)' : 'rgba(212,175,55,0.6)';
+        c.stroke();
+      }
+
+      c.beginPath(); c.arc(CX, CY, RN, 0, Math.PI * 2);
+      c.lineWidth = 6; c.strokeStyle = isSolar ? '#8b1a1a' : '#ff3131'; c.stroke();
+
+      for (let i = 0; i < 12; i++) {
+        const a = toR(ang(i));
+        const z = Z[i];
+
+        const er = ZODIAC_IMAGE_RADIUS;
+        const img = loadedImgs[z.en];
+        if (img && img.complete) {
+          const iw = 160;
+
+          c.save();
+          if (isSolar) {
+            c.filter = 'saturate(1.5) contrast(1.1)';
+            c.shadowColor = 'rgba(0,0,0,0.3)';
+          } else {
+            c.filter = 'saturate(1.4) contrast(1.05) brightness(1.1)';
+            c.shadowColor = 'rgba(0,0,0,0.6)';
+          }
+          c.shadowBlur = 12;
+          c.shadowOffsetX = 4;
+          c.shadowOffsetY = 4;
+
+          if (i === ai) {
+            // ── Floating & Glowing Effect ──
+            c.save();
+            const time = Date.now();
+            const floatOffset = Math.sin(time / 520) * 6;
+            const scale = 1.06 + Math.sin(time / 520) * 0.025;
+            const glowAmt = 16 + Math.sin(time / 520) * 6;
+
+            c.shadowBlur = glowAmt;
+            c.shadowColor = isSolar ? 'rgba(212, 175, 55, 0.8)' : '#ffd700';
+
+            const dynamicER = er + floatOffset;
+            const size = iw * scale;
+            c.drawImage(img, CX + dynamicER * Math.cos(a) - size / 2, CY + dynamicER * Math.sin(a) - size / 2, size, size);
+            c.restore();
+          } else {
+            c.drawImage(img, CX + er * Math.cos(a) - iw / 2, CY + er * Math.sin(a) - iw / 2, iw, iw);
+          }
+          c.restore();
+
+        }
+
+        c.save();
+        c.translate(CX, CY);
+        let rot = a + Math.PI / 2;
+        rot = (rot % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+
+        c.font = `900 42px ${FONT}`;
+        c.fillStyle = isSolar ? '#1a1a1a' : (isRoyal ? '#ffd700' : '#e8c84a');
+        c.textAlign = 'center';
+
+        if (rot > Math.PI / 2 && rot < Math.PI * 1.5) {
+          c.rotate(rot + Math.PI);
+          c.textBaseline = 'bottom';
+          c.fillText(z.thai, 0, RN - 8);
+        } else {
+          c.rotate(rot);
+          c.textBaseline = 'top';
+          c.fillText(z.thai, 0, -RN + 8);
+        }
+        c.restore();
+      }
+
+      drawRasiNumbers(isSolar, isRoyal);
+      drawBirthHighlights(ai);
+
+      drawAstroSeal(isSolar, isRoyal, isSacred, RC);
+
+      for (let i = 0; i < 12; i++) {
+        const ti = mod(ai - i, 12);
+        const tk = TK[ti];
+        const a = toR(ang(i));
+        const lx = CX + RL * Math.cos(a);
+        const ly = CY + RL * Math.sin(a);
+
+        const textCol = isSolar ? '#1a1a1a' : (isRoyal ? '#ffd700' : '#f0e6c8');
+        const badCol = isSolar ? '#c0392b' : '#ff4d4d';
+
+        if (ti === 0) {
+          if (SHOW_ALL_TAKSA_LABELS) {
+            c.font = `900 72px ${FONT}`;
+            c.fillStyle = textCol;
+            c.textAlign = 'center'; c.textBaseline = 'middle';
+            c.fillText('ตนุ', lx, ly);
+          }
+
+          const r_lor = LOR_LABEL_RADIUS;
+          const a_lor = a + 0.08;
+          const lx_lor = CX + r_lor * Math.cos(a_lor);
+          const ly_lor = CY + r_lor * Math.sin(a_lor);
+
+          c.font = `900 120px ${FONT}`;
+          c.fillStyle = badCol;
+          c.fillText('ล', lx_lor, ly_lor);
+        } else {
+          const isBad = tk.bad;
+          if (!SHOW_ALL_TAKSA_LABELS && !isBad) continue;
+          const badFontSize = tk.name === 'วินาสน์' ? VINAS_FONT_SIZE : TAKSA_BAD_FONT_SIZE;
+          c.font = isBad ? `900 ${badFontSize}px ${FONT}` : `900 64px ${FONT}`;
+          c.fillStyle = isBad ? badCol : textCol;
+          c.textAlign = 'center'; c.textBaseline = 'middle';
+          c.fillText(tk.name, lx, ly);
+        }
+      }
+
+      // ── Draw Sparkles ──
+      c.save();
+      c.globalCompositeOperation = 'lighter';
+      FX.particles.forEach((p) => {
+        c.beginPath();
+        c.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        c.fillStyle = p.color;
+        c.shadowBlur = 6;
+        c.shadowColor = p.color;
+        c.fill();
+      });
+      c.restore();
+    }
+
+    function animate() {
+      // Update Particles
+      for (let i = FX.particles.length - 1; i >= 0; i--) {
+        const p = FX.particles[i];
+        p.x += p.vx; p.y += p.vy;
+        p.vx *= 0.96; p.vy *= 0.96;
+        p.vy += 0.12;
+        p.life -= p.decay;
+        if (p.life <= 0) FX.particles.splice(i, 1);
+      }
+
+      draw(y2i(selectedYear()));
+      requestAnimationFrame(animate);
+    }
+
+    function triggerFX() {
+      createSparkles();
+    }
+
+
+    function render() {
+      const y = selectedYear();
+      const ai = y2i(y);
+      document.getElementById('mainTitle').textContent = `13 เมษา ${y} ปี${Z[ai].thai}`;
+      const clashIndex = mod(ai + 6, 12);
+      document.getElementById('pageSubtitle').textContent = `ปี${Z[ai].thai} ชงปะทะ ปี${Z[clashIndex].thai} · 13 เม.ย. ${y} — 12 เม.ย. ${y + 1}`;
+      updateBirthProfiles(ai, y);
+      // draw is handled by animate loop
+    }
+
+    document.getElementById('yearInput').value = currentBEYear();
+    render();
+    requestAnimationFrame(animate);
+
+
+
+    function changeYear(delta) {
+      const input = document.getElementById('yearInput');
+      input.value = selectedYear() + delta;
+      triggerFX();
+      render();
+    }
+
+    document.getElementById('prevYear').onclick = () => {
+      changeYear(-1);
+    };
+    document.getElementById('nextYear').onclick = () => {
+      changeYear(1);
+    };
+    document.getElementById('resetBtn').onclick = () => {
+      document.getElementById('yearInput').value = currentBEYear();
+      const birthA = document.getElementById('birthYearA');
+      if (birthA) birthA.value = '';
+      const birthB = document.getElementById('birthYearB');
+      if (birthB) birthB.value = '';
+      createSparkles();
+      render();
+    };
+    document.getElementById('yearInput').addEventListener('input', () => {
+      triggerFX();
+      render();
+    });
+
+    const wheelWrap = document.querySelector('.canvas-wrap');
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+    let swipeStartTime = 0;
+    if (wheelWrap) {
+      wheelWrap.addEventListener('pointerdown', (event) => {
+        swipeStartX = event.clientX;
+        swipeStartY = event.clientY;
+        swipeStartTime = Date.now();
+        if (event.pointerType === 'touch' && wheelWrap.setPointerCapture) {
+          wheelWrap.setPointerCapture(event.pointerId);
+        }
+      });
+
+      wheelWrap.addEventListener('pointerup', (event) => {
+        const dx = event.clientX - swipeStartX;
+        const dy = event.clientY - swipeStartY;
+        const elapsed = Date.now() - swipeStartTime;
+        const isHorizontal = Math.abs(dx) > 54 && Math.abs(dx) > Math.abs(dy) * 1.35;
+        if (elapsed < 900 && isHorizontal) {
+          changeYear(dx < 0 ? 1 : -1);
+        }
+      });
+    }
+
+    ['birthYearA', 'birthYearB'].forEach((id) => {
+      const input = document.getElementById(id);
+      if (!input) return;
+      input.addEventListener('input', () => {
+        createSparkles();
+        render();
+      });
+    });
+
+    function exportPalette() {
+      if (currentTheme === 'sacred') {
+        return { bg: '#03010a', card: '#0e0826', border: '#e8c84a', text: '#f0e6c8', title: '#e8c84a' };
+      }
+      if (currentTheme === 'royal') {
+        return { bg: '#061a10', card: '#0a2e1c', border: '#ffd700', text: '#ffd700', title: '#ffd700' };
+      }
+      return { bg: '#ffffff', card: '#fffbf0', border: '#c8951a', text: '#1a1a1a', title: '#1a1a1a' };
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    function drawFittedText(ctx, text, x, y, maxWidth, size, weight, color, align = 'center') {
+      let fontSize = size;
+      ctx.textAlign = align;
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = color;
+      do {
+        ctx.font = `${weight} ${fontSize}px ${FONT}`;
+        if (ctx.measureText(text).width <= maxWidth || fontSize <= 26) break;
+        fontSize -= 2;
+      } while (fontSize > 26);
+      ctx.fillText(text, x, y);
+      return fontSize;
+    }
+
+    function exportFileName() {
+      const y = selectedYear();
+      const first = birthProfiles.find(p => p.order === 1);
+      const second = birthProfiles.find(p => p.order === 2);
+      const suffix = [first, second].filter(Boolean).map(p => `birth-${p.year}`).join('-');
+      return suffix ? `songkran-${y}-${suffix}.png` : `songkran-${y}.png`;
+    }
+
+    function createExportCanvas() {
+      const y = selectedYear();
+      const ai = y2i(y);
+      updateBirthProfiles(ai, y);
+      draw(ai);
+
+      const out = document.createElement('canvas');
+      out.width = 1600;
+      out.height = 1600;
+      const x = out.getContext('2d');
+      const p = exportPalette();
+      const annual = Z[ai];
+
+      x.fillStyle = p.bg;
+      x.fillRect(0, 0, out.width, out.height);
+      x.save();
+      x.globalAlpha = currentTheme === 'solar' ? 0.08 : 0.18;
+      x.strokeStyle = p.border;
+      x.lineWidth = 2;
+      for (let r = 170; r <= 760; r += 118) {
+        x.beginPath();
+        x.arc(800, 790, r, 0, Math.PI * 2);
+        x.stroke();
+      }
+      for (let i = 0; i < 48; i++) {
+        const a = i * Math.PI / 24;
+        x.beginPath();
+        x.arc(800 + Math.cos(a) * 710, 790 + Math.sin(a) * 710, i % 3 === 0 ? 4 : 2, 0, Math.PI * 2);
+        x.fillStyle = p.border;
+        x.fill();
+      }
+      x.restore();
+
+      drawFittedText(x, `13 เมษา ${y} ปี${annual.thai}`, 800, 82, 1420, 72, 900, p.title);
+      x.drawImage(cv, 230, 130, 1140, 1140);
+
+      const cardX = 110, cardY = 1235, cardW = 1380, cardH = 270;
+      x.save();
+      roundRect(x, cardX, cardY, cardW, cardH, 36);
+      x.fillStyle = p.card;
+      x.shadowBlur = 32;
+      x.shadowColor = currentTheme === 'solar' ? 'rgba(0,0,0,0.18)' : 'rgba(255,215,0,0.22)';
+      x.fill();
+      x.shadowBlur = 0;
+      x.lineWidth = 5;
+      x.strokeStyle = p.border;
+      x.stroke();
+      x.restore();
+
+      const first = birthProfiles.find(profile => profile.order === 1);
+      const second = birthProfiles.find(profile => profile.order === 2);
+      drawFittedText(x, `ปี ${y} · ปี${annual.thai}`, 800, 1292, 1240, 48, 900, p.title);
+
+      if (first) {
+        const firstColor = first.isBad ? '#d92d20' : '#1f9d55';
+        drawFittedText(x, `คนที่ 1 เกิดปี ${first.year} · ปี${first.zodiac.thai}`, 800, 1354, 1240, 44, 900, p.text);
+        drawFittedText(x, `ตกทักษา ${first.taksa.name} · ${taksaStatus(first)}`, 800, 1415, 1240, 52, 900, firstColor);
+      } else {
+        drawFittedText(x, 'กรอกปีเกิด เพื่อสร้างการ์ดดวงส่วนตัว', 800, 1384, 1240, 50, 900, p.text);
+      }
+
+      if (second) {
+        const secondColor = second.isBad ? '#d92d20' : '#2f80ed';
+        drawFittedText(x, `คนที่ 2 เกิดปี ${second.year} · ปี${second.zodiac.thai} → ทักษา ${second.taksa.name} · ${taksaStatus(second)}`, 800, 1472, 1240, 34, 900, secondColor);
+      }
+
+      drawFittedText(x, 'นับจากปีเกิดไปหาปีสงกรานต์', 800, 1534, 1240, 28, 800, p.text);
+      drawFittedText(x, 'Credit ❤️ by คนโบราณ', 800, 1572, 1240, 26, 800, p.text);
+      return out;
+    }
+
+    function canvasToBlob(canvas) {
+      return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'));
+    }
+
+    function canvasToPngBlobSync(canvas) {
+      const dataUrl = canvas.toDataURL('image/png');
+      const parts = dataUrl.split(',');
+      const binary = atob(parts[1]);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new Blob([bytes], { type: 'image/png' });
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1200);
+    }
+
+    let shareNoticeTimer = null;
+    function showShareNotice(message) {
+      const notice = document.getElementById('shareNotice');
+      if (!notice) return;
+      notice.textContent = message;
+      notice.classList.add('show');
+      clearTimeout(shareNoticeTimer);
+      shareNoticeTimer = setTimeout(() => notice.classList.remove('show'), 3600);
+    }
+
+    async function saveCurrentImage() {
+      render();
+      const canvas = createExportCanvas();
+      const blob = await canvasToBlob(canvas);
+      if (!blob) return;
+      downloadBlob(blob, exportFileName());
+      activateShareGroup();
+    }
+
+    async function shareCurrentImage() {
+      render();
+      const canvas = createExportCanvas();
+      const filename = exportFileName();
+      const y = selectedYear();
+      const blob = canvasToPngBlobSync(canvas);
+      if (!blob) return;
+      if (typeof File === 'undefined') {
+        showShareNotice('เครื่องนี้ไม่รองรับแชร์ไฟล์ภาพ กำลังบันทึกรูปแทน');
+        downloadBlob(blob, filename);
+        activateShareGroup();
+        return;
+      }
+      const file = new File([blob], filename, { type: 'image/png' });
+      const shareData = {
+        title: `ดวงปีสงกรานต์ ${y}`,
+        text: `ดวงปีสงกรานต์ พ.ศ. ${y}`,
+        files: [file]
+      };
+
+      if (!window.isSecureContext) {
+        showShareNotice('แชร์ตรงต้องเปิดผ่าน HTTPS/localhost ตอนนี้จะบันทึกรูปแทน');
+        downloadBlob(blob, filename);
+        activateShareGroup();
+        return;
+      }
+
+      if (navigator.share && (!navigator.canShare || navigator.canShare(shareData))) {
+        try {
+          await navigator.share(shareData);
+          activateShareGroup();
+          return;
+        } catch (err) {
+          if (err && err.name === 'AbortError') return;
+          showShareNotice('เบราว์เซอร์บล็อกการแชร์ กำลังบันทึกรูปแทน');
+        }
+      } else {
+        showShareNotice('เบราว์เซอร์นี้ไม่รองรับแชร์รูป กำลังบันทึกรูปแทน');
+      }
+      downloadBlob(blob, filename);
+      activateShareGroup();
+    }
+
+    let shareGroupTimer = null;
+    function activateShareGroup() {
+      const group = document.getElementById('shareGroup');
+      if (!group) return;
+      group.classList.add('active');
+      clearTimeout(shareGroupTimer);
+      shareGroupTimer = setTimeout(() => group.classList.remove('active'), 5000);
+    }
+
+    // ── Seamless Music Logic ──
+    const MUSIC_PLAYLIST = [
+      {
+        title: 'โชคชะตาแห่งดวงดาว - Destiny of the Stars',
+        url: 'https://cdn1.suno.ai/b0aadeef-7861-4e8e-b972-f5b1bd76698d.mp3'
+      },
+      {
+        title: 'ชะตาแห่งดวงดาว - Destiny of the Stars',
+        url: 'https://cdn1.suno.ai/b1936e1e-2c3e-4c0a-8fe8-e671f31f13bb.mp3'
+      },
+      {
+        title: 'โชคชะตาแห่งดวงดาว - Destiny of the Stars',
+        url: 'https://cdn1.suno.ai/c95ce48b-cd01-4a99-9209-4dde6b47622a.mp3'
+      },
+      {
+        title: 'ชะตาแห่งดวงดาว - Destiny of the Stars',
+        url: 'https://cdn1.suno.ai/b843c822-bfb4-4873-b3a0-48f3a9a07ed0.mp3'
+      }
+    ];
+    let musicPlaying = false;
+    let volTimer = null;
+
+    function normalizeMusicIndex(index) {
+      return ((Number(index) || 0) % MUSIC_PLAYLIST.length + MUSIC_PLAYLIST.length) % MUSIC_PLAYLIST.length;
+    }
+
+    function getStoredMusicIndex() {
+      return normalizeMusicIndex(localStorage.getItem('zodiacMusicTrackIndex'));
+    }
+
+    function restoredMusicTime() {
+      const saved = Number(localStorage.getItem('zodiacMusicTime')) || 0;
+      const wasPlaying = localStorage.getItem('zodiacMusicPlaying') === 'true';
+      const savedAt = Number(localStorage.getItem('zodiacMusicLastSavedAt')) || 0;
+      if (!wasPlaying || !savedAt) return saved;
+      return saved + Math.max(0, (Date.now() - savedAt) / 1000);
+    }
+
+    function setMusicTrack(index, startTime = 0) {
+      const m = document.getElementById('bgMusic');
+      if (!m) return null;
+      const safeIndex = normalizeMusicIndex(index);
+      const track = MUSIC_PLAYLIST[safeIndex];
+      const changed = !m.src || m.src !== track.url;
+      if (changed) {
+        m.src = track.url;
+        m.load();
+      }
+      m.dataset.trackIndex = String(safeIndex);
+      m.dataset.trackTitle = track.title;
+      localStorage.setItem('zodiacMusicTrackIndex', String(safeIndex));
+
+      const time = Number(startTime) || 0;
+      if (time > 0) {
+        const applyTime = () => {
+          try {
+            const maxTime = Number.isFinite(m.duration) ? Math.max(0, m.duration - 0.5) : time;
+            m.currentTime = Math.min(time, maxTime);
+          } catch (err) {
+            console.warn('Could not restore music time', err);
+          }
+        };
+        if (m.readyState >= 1) applyTime();
+        else m.addEventListener('loadedmetadata', applyTime, { once: true });
+      }
+      return track;
+    }
+
+    function updateMusicButton(playing) {
+      const b = document.getElementById('toggleMusic');
+      if (!b) return;
+      b.textContent = playing ? '🔊' : '🎵';
+      b.style.background = playing ? '#00ff00' : '#ffd700';
+    }
+
+    function playCurrentMusic() {
+      const m = document.getElementById('bgMusic');
+      if (!m) return Promise.resolve();
+      musicPlaying = true;
+      return m.play().then(() => {
+        updateMusicButton(true);
+        localStorage.setItem('zodiacMusicPlaying', 'true');
+        localStorage.setItem('zodiacMusicLastSavedAt', String(Date.now()));
+      }).catch(e => {
+        musicPlaying = false;
+        updateMusicButton(false);
+        console.error("Audio error:", e);
+      });
+    }
+
+    function playNextMusicTrack() {
+      const m = document.getElementById('bgMusic');
+      const current = m ? Number(m.dataset.trackIndex || getStoredMusicIndex()) : getStoredMusicIndex();
+      setMusicTrack(current + 1, 0);
+      localStorage.setItem('zodiacMusicTime', '0');
+      localStorage.setItem('zodiacMusicLastSavedAt', String(Date.now()));
+      playCurrentMusic();
+    }
+
+    function showVolume() {
+      const v = document.getElementById('volContainer');
+      const isHidden = v.style.opacity === '0';
+
+      if (isHidden) {
+        v.style.opacity = '1';
+        v.style.pointerEvents = 'auto';
+        v.style.transform = 'translateX(0)';
+      } else {
+        v.style.opacity = '0';
+        v.style.pointerEvents = 'none';
+        v.style.transform = 'translateX(-20px)';
+      }
+
+      clearTimeout(volTimer);
+      if (!isHidden) return; // If manually closing, don't set timer
+
+      volTimer = setTimeout(() => {
+        if (musicPlaying) {
+          v.style.opacity = '0';
+          v.style.pointerEvents = 'none';
+          v.style.transform = 'translateX(-20px)';
+        }
+      }, 3000); // 3s for mobile comfort
+    }
+
+    function toggleMusic() {
+      const m = document.getElementById('bgMusic');
+      if (m.paused) {
+        setMusicTrack(getStoredMusicIndex(), restoredMusicTime());
+        playCurrentMusic();
+      } else {
+        musicPlaying = false;
+        m.pause();
+        updateMusicButton(false);
+        const v = document.getElementById('volContainer');
+        v.style.opacity = '0';
+        v.style.pointerEvents = 'none';
+        localStorage.setItem('zodiacMusicPlaying', 'false');
+        saveMusicState();
+      }
+    }
+
+    function setVolume(val) {
+      const m = document.getElementById('bgMusic');
+      m.volume = val;
+      localStorage.setItem('zodiacMusicVolume', val);
+      showVolume();
+    }
+
+    window.addEventListener('load', () => {
+      const m = document.getElementById('bgMusic');
+      const savedTime = restoredMusicTime();
+      const savedVol = localStorage.getItem('zodiacMusicVolume');
+      const isPlaying = localStorage.getItem('zodiacMusicPlaying');
+      setMusicTrack(getStoredMusicIndex(), savedTime);
+      m.addEventListener('ended', playNextMusicTrack);
+
+      if (savedVol) {
+        m.volume = savedVol;
+        const vIn = document.querySelector('#volContainer input');
+        if (vIn) vIn.value = savedVol;
+      }
+      if (isPlaying === 'true') {
+        playCurrentMusic().catch(() => console.log("Music interaction required"));
+      }
+    });
+
+    function saveMusicState() {
+      const m = document.getElementById('bgMusic');
+      if (m) {
+        localStorage.setItem('zodiacMusicTime', m.currentTime);
+        localStorage.setItem('zodiacMusicTrackIndex', m.dataset.trackIndex || '0');
+        localStorage.setItem('zodiacMusicPlaying', m.paused ? 'false' : 'true');
+        localStorage.setItem('zodiacMusicLastSavedAt', String(Date.now()));
+      }
+    }
+
+    setInterval(() => {
+      const m = document.getElementById('bgMusic');
+      if (m && !m.paused) {
+        saveMusicState();
+      }
+    }, 1000);
+
+    window.addEventListener('pagehide', saveMusicState);
+    window.addEventListener('beforeunload', saveMusicState);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') saveMusicState();
+    });
+
+    let groupTimer = null;
+    function activateAudioGroup() {
+      const g = document.getElementById('audioGroup');
+      g.classList.add('active');
+      clearTimeout(groupTimer);
+      groupTimer = setTimeout(() => {
+        g.classList.remove('active');
+        // Also hide volume if group retracts
+        const v = document.getElementById('volContainer');
+        v.style.opacity = '0';
+        v.style.pointerEvents = 'none';
+        v.style.transform = 'translateX(-20px)';
+      }, 5000); // 5s to hide
+    }
+  </script>
+
+
+</body>
+
+</html>
