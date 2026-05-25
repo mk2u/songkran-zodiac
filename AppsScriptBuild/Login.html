@@ -602,7 +602,26 @@
         <\/script>
       `;
 
+      // detect mobile ใน Login.html context (ก่อน document.write) — Apps Script CSP อาจบล็อก inline script ใน page ที่ถูก write
+      const _ua = navigator.userAgent || '';
+      const _mobileUA = /Android|iPhone|iPad|iPod|Mobile|EdgA|CriOS|FxiOS|EdgW/i.test(_ua);
+      const _coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+      const _w = Math.min(
+        window.innerWidth || 9999,
+        window.screen && window.screen.width ? window.screen.width : 9999,
+        window.visualViewport && window.visualViewport.width ? window.visualViewport.width : 9999
+      );
+      const _isMobile = _mobileUA || _coarse || _w <= 820;
+
       let output = html;
+      if (_isMobile) {
+        // inject เป็น HTML attribute (ไม่ใช่ script) เพื่อหลีก CSP
+        if (/<html[^>]*class="/i.test(output)) {
+          output = output.replace(/<html([^>]*class=")/i, '<html$1force-mobile ');
+        } else {
+          output = output.replace(/<html([^>]*)>/i, '<html$1 class="force-mobile">');
+        }
+      }
       output = output.replace(/<\/head>/i, mobileCss + '</head>');
       output = output.replace(/<\/body>/i, logoutScript + '</body>');
       return output;
