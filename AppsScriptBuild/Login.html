@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>ปีนักษัตรสงกรานต์</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --surface: #ffffff;
+      --surface-2: #f6f3ea;
+      --text: #1a1a1a;
+      --muted: #656565;
+      --accent: #c8951a;
+      --border: #333333;
+      --danger: #b3261e;
+      --shadow: rgba(0, 0, 0, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Noto Sans Thai", Tahoma, system-ui, sans-serif;
+    }
+
+    .panel {
+      width: min(100%, 420px);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: 0 16px 42px var(--shadow);
+      padding: 18px;
+    }
+
+    .panel.wide {
+      width: min(100%, 980px);
+    }
+
+    body.app-open {
+      display: block;
+      place-items: initial;
+      padding: 0;
+      background: var(--surface);
+    }
+
+    body.app-open .panel.wide {
+      width: 100%;
+      min-height: 100vh;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+    }
+
+    body.app-open #appView > h1,
+    body.app-open #userSummary,
+    body.app-open > .credit,
+    body.app-open .panel > .credit {
+      display: none;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 26px;
+      line-height: 1.25;
+      text-align: center;
+    }
+
+    .sub {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-weight: 800;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    input {
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 12px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface-2);
+      color: var(--text);
+      font: inherit;
+      font-weight: 900;
+    }
+
+    button {
+      width: 100%;
+      min-height: 46px;
+      margin-top: 14px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, #ffffff));
+      color: #16130d;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .message {
+      min-height: 22px;
+      margin-top: 12px;
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .page-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    body.app-open .page-list {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: 0;
+      padding: 8px;
+      border-bottom: 1.5px solid var(--accent);
+      background: var(--surface);
+      box-shadow: 0 3px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    #appView.single-page .page-list {
+      display: none;
+    }
+
+    button.page-tab {
+      margin-top: 0;
+      background: var(--surface);
+    }
+
+    button.page-tab.active {
+      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, #ffffff));
+    }
+
+    .page-status {
+      min-height: 22px;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    body.app-open .page-status {
+      margin: 0;
+      min-height: 0;
+      padding: 0;
+    }
+
+    body.app-open .page-status:empty {
+      display: none;
+    }
+
+    .content-view {
+      margin-top: 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      min-height: 70vh;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    body.app-open .content-view {
+      margin-top: 0;
+      border: 0;
+      border-radius: 0;
+      min-height: 0;
+      background: transparent;
+    }
+
+    .content-frame {
+      width: 100%;
+      height: 78vh;
+      min-height: 640px;
+      border: 0;
+      display: block;
+      background: #ffffff;
+    }
+
+    body.app-open .content-frame {
+      height: calc(100dvh - 64px);
+      min-height: 0;
+    }
+
+    #appView.single-page .content-frame {
+      height: 100dvh;
+    }
+
+    .credit {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    @media (pointer: coarse), (max-width: 640px) {
+      body:not(.app-open) {
+        min-height: 100dvh;
+        place-items: stretch center;
+        padding: max(14px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+      }
+
+      body:not(.app-open) .panel {
+        width: 100%;
+        max-width: 520px;
+        margin: clamp(18px, 8vh, 72px) auto 0;
+        padding: clamp(18px, 5vw, 28px);
+        border-width: 3px;
+        border-radius: 14px;
+      }
+
+      body:not(.app-open) h1 {
+        margin-bottom: 8px;
+        font-size: clamp(34px, 9vw, 46px);
+        line-height: 1.2;
+      }
+
+      body:not(.app-open) .sub {
+        margin-bottom: 22px;
+        font-size: clamp(17px, 4.8vw, 22px);
+      }
+
+      body:not(.app-open) label {
+        margin: 14px 0 8px;
+        font-size: clamp(17px, 4.5vw, 22px);
+      }
+
+      body:not(.app-open) input {
+        min-height: 60px;
+        padding: 10px 14px;
+        border-width: 3px;
+        border-radius: 10px;
+        font-size: clamp(22px, 6vw, 30px);
+      }
+
+      body:not(.app-open) button {
+        min-height: 62px;
+        margin-top: 18px;
+        border-width: 3px;
+        border-radius: 10px;
+        font-size: clamp(21px, 5.6vw, 28px);
+      }
+
+      body:not(.app-open) .message {
+        min-height: 28px;
+        margin-top: 14px;
+        font-size: clamp(15px, 4vw, 19px);
+        line-height: 1.45;
+      }
+
+      body:not(.app-open) .credit {
+        margin-top: 18px;
+        font-size: clamp(13px, 3.7vw, 16px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="panel">
+    <section id="loginView">
+      <h1>ปีนักษัตรสงกรานต์</h1>
+      <p class="sub">เข้าสู่ระบบเพื่อใช้งาน</p>
+
+      <form id="loginForm">
+        <label for="username">ชื่อผู้ใช้</label>
+        <input id="username" autocomplete="username" required>
+
+        <label for="password">รหัสผ่าน</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+
+        <button id="loginBtn" type="submit">เข้าสู่ระบบ</button>
+        <div class="message" id="message"></div>
+      </form>
+    </section>
+
+    <section id="appView" class="hidden">
+      <h1>เข้าสู่ระบบแล้ว</h1>
+      <p class="sub" id="userSummary"></p>
+      <div class="page-list" id="pageList"></div>
+      <div class="page-status" id="pageStatus"></div>
+      <div class="content-view" id="contentView"></div>
+      <button class="secondary" id="logoutBtn" type="button">ออกจากระบบ</button>
+    </section>
+
+    <div class="credit">Developed with ❤️ by คนโบราณ</div>
+  </main>
+
+  <script>
+    const SESSION_KEY = 'songkranAppsScriptSession';
+
+    const panel = document.querySelector('.panel');
+    const loginView = document.getElementById('loginView');
+    const appView = document.getElementById('appView');
+    const loginForm = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const message = document.getElementById('message');
+    const userSummary = document.getElementById('userSummary');
+    const pageList = document.getElementById('pageList');
+    const pageStatus = document.getElementById('pageStatus');
+    const contentView = document.getElementById('contentView');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    let currentSession = '';
+    let currentPages = [];
+    let currentPageId = '';
+
+    function showLogin(text) {
+      document.body.classList.remove('app-open');
+      panel.classList.remove('wide');
+      appView.classList.remove('single-page');
+      appView.classList.add('hidden');
+      loginView.classList.remove('hidden');
+      message.textContent = text || '';
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'เข้าสู่ระบบ';
+      currentSession = '';
+      currentPages = [];
+      currentPageId = '';
+      pageList.innerHTML = '';
+      pageStatus.textContent = '';
+      contentView.innerHTML = '';
+    }
+
+    function showApp(data) {
+      localStorage.setItem(SESSION_KEY, data.session);
+      currentSession = data.session;
+      currentPages = data.pages || [];
+
+      document.body.classList.add('app-open');
+      panel.classList.add('wide');
+      loginView.classList.add('hidden');
+      appView.classList.remove('hidden');
+      userSummary.textContent = `${data.user} · ${data.pack}`;
+      appView.classList.toggle('single-page', currentPages.length <= 1);
+      renderPageButtons();
+
+      if (currentPages.length) {
+        loadPage(currentPages[0].id);
+      } else {
+        pageStatus.textContent = 'บัญชีนี้ยังไม่มีหน้าที่เปิดให้ใช้งาน';
+        contentView.innerHTML = '';
+      }
+    }
+
+    function renderPageButtons() {
+      pageList.innerHTML = '';
+      currentPages.forEach((page) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'page-tab';
+        button.dataset.pageId = page.id;
+        button.textContent = page.label;
+        button.addEventListener('click', () => loadPage(page.id));
+        pageList.appendChild(button);
+      });
+      updateActivePage();
+    }
+
+    function updateActivePage() {
+      pageList.querySelectorAll('.page-tab').forEach((button) => {
+        button.classList.toggle('active', button.dataset.pageId === currentPageId);
+      });
+    }
+
+    function loadPage(pageId) {
+      if (!currentSession) {
+        localStorage.removeItem(SESSION_KEY);
+        showLogin('กรุณาเข้าสู่ระบบใหม่');
+        return;
+      }
+
+      currentPageId = pageId;
+      updateActivePage();
+      pageStatus.textContent = 'กำลังเปิดหน้า...';
+      contentView.innerHTML = '';
+
+      google.script.run
+        .withSuccessHandler((result) => {
+          if (!result || !result.ok) {
+            pageStatus.textContent = result && result.message ? result.message : 'เปิดหน้าไม่สำเร็จ';
+            contentView.innerHTML = '';
+            return;
+          }
+          pageStatus.textContent = '';
+          showPageFrame(result);
+        })
+        .withFailureHandler((err) => {
+          pageStatus.textContent = err && err.message ? err.message : 'เปิดหน้าไม่สำเร็จ';
+          contentView.innerHTML = '';
+        })
+        .getPage(currentSession, pageId);
+    }
+
+    function showPageFrame(result) {
+      const pageId = result && result.page && result.page.id ? result.page.id : '';
+      if (result.html && (currentPages.length <= 1 || pageId === 'PUBLIC_AGE_MONTH')) {
+        document.open();
+        document.write(standalonePageHtml(result.html, pageId));
+        document.close();
+        return;
+      }
+
+      const frame = document.createElement('iframe');
+      frame.className = 'content-frame';
+      frame.title = result.page && result.page.label ? result.page.label : 'หน้าระบบ';
+      frame.loading = 'eager';
+      frame.addEventListener('load', () => forceMobileFrame(frame));
+      frame.srcdoc = result.html || '';
+      contentView.replaceChildren(frame);
+      setTimeout(() => forceMobileFrame(frame), 350);
+    }
+
+    function standalonePageHtml(html, pageId) {
+      if (pageId !== 'PUBLIC_AGE_MONTH') return html;
+
+      const mobileCss = `
+        <style id="appsScriptStandaloneMobileStyle">
+          html.force-mobile .app-shell {
+            max-width: none !important;
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+          }
+          html.force-mobile .page-head { padding: 10px 48px 10px !important; }
+          html.force-mobile .page-head h1 {
+            font-size: clamp(42px, 12vw, 60px) !important;
+            line-height: 1.25 !important;
+          }
+          html.force-mobile .range-summary {
+            min-height: 34px !important;
+            font-size: clamp(18px, 4.6vw, 24px) !important;
+          }
+          html.force-mobile .control-panel {
+            padding: 10px !important;
+            border-width: 3px !important;
+          }
+          html.force-mobile .segmented button,
+          html.force-mobile .filter-row button,
+          html.force-mobile .action-row button {
+            min-height: 58px !important;
+            border-radius: 8px !important;
+            font-size: clamp(19px, 4.8vw, 24px) !important;
+          }
+          html.force-mobile .form-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 10px !important;
+          }
+          html.force-mobile .field label {
+            font-size: clamp(17px, 4.2vw, 22px) !important;
+          }
+          html.force-mobile .field input,
+          html.force-mobile .field select {
+            min-height: 60px !important;
+            border-width: 3px !important;
+            border-radius: 8px !important;
+            font-size: clamp(24px, 6.5vw, 31px) !important;
+          }
+          html.force-mobile .action-row {
+            grid-template-columns: 1fr !important;
+          }
+          html.force-mobile .filter-row,
+          html.force-mobile .summary-strip {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 10px !important;
+          }
+          html.force-mobile .summary-pill {
+            min-height: 106px !important;
+            padding: 12px 8px !important;
+          }
+          html.force-mobile .summary-pill .pill-icon {
+            font-size: clamp(26px, 7vw, 34px) !important;
+          }
+          html.force-mobile .summary-pill strong {
+            font-size: clamp(36px, 10vw, 48px) !important;
+          }
+          html.force-mobile .summary-pill span {
+            font-size: clamp(18px, 4.8vw, 24px) !important;
+          }
+          html.force-mobile .results:not(.results-period) {
+            grid-template-columns: 1fr !important;
+            gap: 14px !important;
+          }
+          html.force-mobile .day-card {
+            min-height: 116px !important;
+            grid-template-columns: minmax(138px, 0.34fr) minmax(0, 1fr) !important;
+            gap: 14px !important;
+            padding: 16px !important;
+            border-width: 3px !important;
+            border-left-width: 9px !important;
+          }
+          html.force-mobile .date-line {
+            font-size: clamp(28px, 7.3vw, 38px) !important;
+          }
+          html.force-mobile .house-name {
+            font-size: clamp(30px, 7.6vw, 40px) !important;
+            line-height: 1.15 !important;
+          }
+          html.force-mobile .house-short {
+            font-size: clamp(18px, 4.8vw, 25px) !important;
+            line-height: 1.25 !important;
+            white-space: normal !important;
+          }
+          html.force-mobile .level {
+            grid-column: 2 !important;
+            justify-self: start !important;
+            min-width: 88px !important;
+            padding: 8px 14px !important;
+            font-size: clamp(17px, 4.3vw, 22px) !important;
+          }
+          html.force-mobile .sheet-overlay {
+            align-items: flex-end !important;
+            padding: 0 !important;
+          }
+          html.force-mobile .sheet {
+            width: 100vw !important;
+            max-width: none !important;
+            min-height: 62dvh !important;
+            max-height: 92dvh !important;
+            margin: 0 !important;
+            border-width: 3px 0 0 !important;
+            border-radius: 18px 18px 0 0 !important;
+          }
+          html.force-mobile .sheet-title {
+            font-size: clamp(34px, 9vw, 46px) !important;
+          }
+          html.force-mobile .sheet-meaning {
+            font-size: clamp(24px, 6.2vw, 32px) !important;
+            line-height: 1.75 !important;
+          }
+          #appsLogoutBtn {
+            position: fixed !important;
+            top: max(10px, env(safe-area-inset-top)) !important;
+            left: max(10px, env(safe-area-inset-left)) !important;
+            z-index: 99999 !important;
+            width: auto !important;
+            min-width: 58px !important;
+            min-height: 44px !important;
+            margin: 0 !important;
+            padding: 0 12px !important;
+            border: 2px solid #ffd700 !important;
+            border-radius: 999px !important;
+            background: rgba(6, 26, 16, 0.88) !important;
+            color: #ffd700 !important;
+            font: 900 18px Tahoma, sans-serif !important;
+            box-shadow: 0 4px 18px rgba(0,0,0,.32) !important;
+          }
+        </style>
+      `;
+
+      const logoutScript = `
+        <button id="appsLogoutBtn" type="button">ออก</button>
+        <script>
+          (function () {
+            var btn = document.getElementById('appsLogoutBtn');
+            if (!btn) return;
+            btn.addEventListener('click', function () {
+              try { localStorage.removeItem('songkranAppsScriptSession'); } catch (error) {}
+              try {
+                google.script.run
+                  .withSuccessHandler(function () { location.href = location.href.split('?')[0]; })
+                  .withFailureHandler(function () { location.reload(); })
+                  .logout(${JSON.stringify(currentSession)});
+              } catch (error) {
+                location.reload();
+              }
+            });
+          })();
+        <\/script>
+      `;
+
+      let output = html;
+      output = output.replace(/<\/head>/i, mobileCss + '</head>');
+      output = output.replace(/<\/body>/i, logoutScript + '</body>');
+      return output;
+    }
+
+    function shouldForceMobileFrame() {
+      const ua = navigator.userAgent || '';
+      const mobileUA = /Android|iPhone|iPad|iPod|Mobile|EdgA|CriOS|FxiOS/i.test(ua);
+      const coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+      const width = Math.min(window.innerWidth || 9999, screen && screen.width ? screen.width : 9999);
+      return currentPages.length <= 1 && (mobileUA || coarse || width <= 820);
+    }
+
+    function forceMobileFrame(frame) {
+      if (!shouldForceMobileFrame()) return;
+      let doc;
+      try {
+        doc = frame.contentDocument || (frame.contentWindow && frame.contentWindow.document);
+      } catch (error) {
+        return;
+      }
+      if (!doc || !doc.documentElement || doc.getElementById('appsScriptMobileForceStyle')) return;
+
+      doc.documentElement.classList.add('force-mobile');
+      const style = doc.createElement('style');
+      style.id = 'appsScriptMobileForceStyle';
+      style.textContent = `
+        html.force-mobile .app-shell {
+          max-width: none !important;
+          padding-left: 8px !important;
+          padding-right: 8px !important;
+        }
+        html.force-mobile .page-head { padding: 10px 48px 10px !important; }
+        html.force-mobile .page-head h1 {
+          font-size: clamp(42px, 12vw, 60px) !important;
+          line-height: 1.25 !important;
+        }
+        html.force-mobile .range-summary {
+          min-height: 34px !important;
+          font-size: clamp(18px, 4.6vw, 24px) !important;
+        }
+        html.force-mobile .control-panel {
+          padding: 10px !important;
+          border-width: 3px !important;
+        }
+        html.force-mobile .segmented button,
+        html.force-mobile .filter-row button,
+        html.force-mobile .action-row button {
+          min-height: 58px !important;
+          border-radius: 8px !important;
+          font-size: clamp(19px, 4.8vw, 24px) !important;
+        }
+        html.force-mobile .form-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 10px !important;
+        }
+        html.force-mobile .field label {
+          font-size: clamp(17px, 4.2vw, 22px) !important;
+        }
+        html.force-mobile .field input,
+        html.force-mobile .field select {
+          min-height: 60px !important;
+          border-width: 3px !important;
+          border-radius: 8px !important;
+          font-size: clamp(24px, 6.5vw, 31px) !important;
+        }
+        html.force-mobile .action-row {
+          grid-template-columns: 1fr !important;
+        }
+        html.force-mobile .filter-row,
+        html.force-mobile .summary-strip {
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+          gap: 10px !important;
+        }
+        html.force-mobile .summary-pill {
+          min-height: 106px !important;
+          padding: 12px 8px !important;
+        }
+        html.force-mobile .summary-pill .pill-icon {
+          font-size: clamp(26px, 7vw, 34px) !important;
+        }
+        html.force-mobile .summary-pill strong {
+          font-size: clamp(36px, 10vw, 48px) !important;
+        }
+        html.force-mobile .summary-pill span {
+          font-size: clamp(18px, 4.8vw, 24px) !important;
+        }
+        html.force-mobile .results:not(.results-period) {
+          grid-template-columns: 1fr !important;
+          gap: 14px !important;
+        }
+        html.force-mobile .day-card {
+          min-height: 116px !important;
+          grid-template-columns: minmax(138px, 0.34fr) minmax(0, 1fr) !important;
+          gap: 14px !important;
+          padding: 16px !important;
+          border-width: 3px !important;
+          border-left-width: 9px !important;
+        }
+        html.force-mobile .date-line {
+          font-size: clamp(28px, 7.3vw, 38px) !important;
+        }
+        html.force-mobile .house-name {
+          font-size: clamp(30px, 7.6vw, 40px) !important;
+          line-height: 1.15 !important;
+        }
+        html.force-mobile .house-short {
+          font-size: clamp(18px, 4.8vw, 25px) !important;
+          line-height: 1.25 !important;
+          white-space: normal !important;
+        }
+        html.force-mobile .level {
+          grid-column: 2 !important;
+          justify-self: start !important;
+          min-width: 88px !important;
+          padding: 8px 14px !important;
+          font-size: clamp(17px, 4.3vw, 22px) !important;
+        }
+        html.force-mobile .sheet-overlay {
+          align-items: flex-end !important;
+          padding: 0 !important;
+        }
+        html.force-mobile .sheet {
+          width: 100vw !important;
+          max-width: none !important;
+          min-height: 62dvh !important;
+          max-height: 92dvh !important;
+          margin: 0 !important;
+          border-width: 3px 0 0 !important;
+          border-radius: 18px 18px 0 0 !important;
+        }
+        html.force-mobile .sheet-title {
+          font-size: clamp(34px, 9vw, 46px) !important;
+        }
+        html.force-mobile .sheet-meaning {
+          font-size: clamp(24px, 6.2vw, 32px) !important;
+          line-height: 1.75 !important;
+        }
+      `;
+      doc.head.appendChild(style);
+    }
+
+    function handleFailure(err) {
+      showLogin(err && err.message ? err.message : 'เกิดข้อผิดพลาด');
+    }
+
+    loginForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      message.textContent = '';
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'กำลังตรวจสอบ...';
+
+      google.script.run
+        .withSuccessHandler((result) => {
+          if (!result || !result.ok) {
+            showLogin(result && result.message ? result.message : 'เข้าสู่ระบบไม่สำเร็จ');
+            return;
+          }
+          showApp(result);
+        })
+        .withFailureHandler(handleFailure)
+        .login(
+          document.getElementById('username').value,
+          document.getElementById('password').value
+        );
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      const session = localStorage.getItem(SESSION_KEY);
+      localStorage.removeItem(SESSION_KEY);
+      if (session) {
+        google.script.run.logout(session);
+      }
+      showLogin('');
+    });
+
+    const savedSession = localStorage.getItem(SESSION_KEY);
+    if (savedSession) {
+      google.script.run
+        .withSuccessHandler((result) => {
+          if (!result || !result.ok) {
+            localStorage.removeItem(SESSION_KEY);
+            showLogin(result && result.message ? result.message : '');
+            return;
+          }
+          showApp(result);
+        })
+        .withFailureHandler(() => {
+          localStorage.removeItem(SESSION_KEY);
+          showLogin('');
+        })
+        .validateSession(savedSession);
+    }
+  </script>
+</body>
+</html>
