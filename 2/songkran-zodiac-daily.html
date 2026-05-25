@@ -2093,7 +2093,16 @@
       state.focusAnimal = saved.focusAnimal || 'all';
       state.monthKey = saved.monthKey || '';
       state.displayMode = saved.displayMode || 'table';
-      setTheme(saved.theme || localStorage.getItem(THEME_KEY) || 'royal', false);
+
+      let theme = saved.theme || localStorage.getItem(THEME_KEY) || 'royal';
+      if (!localStorage.getItem('themeMigratedToRoyalV3')) {
+        theme = 'royal';
+        localStorage.setItem('themeMigratedToRoyalV3', 'true');
+        localStorage.setItem(THEME_KEY, 'royal');
+        saved.theme = 'royal';
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(saved));
+      }
+      setTheme(theme, false);
     }
 
     function populateControls() {

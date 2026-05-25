@@ -1818,7 +1818,14 @@
         settings = {};
       }
 
-      const theme = settings.theme || localStorage.getItem(AGE_THEME_KEY) || 'royal';
+      let theme = settings.theme || localStorage.getItem(AGE_THEME_KEY) || 'royal';
+      if (!localStorage.getItem('themeMigratedToRoyalV3')) {
+        theme = 'royal';
+        localStorage.setItem('themeMigratedToRoyalV3', 'true');
+        localStorage.setItem(AGE_THEME_KEY, 'royal');
+        settings.theme = 'royal';
+        localStorage.setItem(AGE_SETTINGS_KEY, JSON.stringify(settings));
+      }
       setTheme(theme, false);
 
       if (settings.birthDay) $('birthDay').value = settings.birthDay;
