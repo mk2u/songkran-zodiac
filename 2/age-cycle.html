@@ -721,21 +721,6 @@
       line-height: 1.65;
     }
 
-    .clash-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--clash-text, #d92d20);
-      background: var(--clash-bg, rgba(217, 45, 32, 0.08));
-      border: 1px solid var(--clash-border, rgba(217, 45, 32, 0.2));
-      padding: 2px 8px;
-      border-radius: 4px;
-      width: fit-content;
-      margin: 2px 0;
-    }
-
     .sheet-clash-container {
       margin: 12px 0;
     }
@@ -2208,15 +2193,14 @@
         if (state.mode === 'month') {
           const currentHouseIndex = HOUSES.findIndex(h => h.name === item.house.name);
           const oppositeHouse = HOUSES[(currentHouseIndex + 6) % 12];
-          clashHtml = `<span class="clash-badge">${item.house.name} ⚔️ ${oppositeHouse.name}</span>`;
+          clashHtml = ` ➔ ${oppositeHouse.name}`;
         }
 
         return `
           <button class="day-card ${levelClass}" type="button" data-key="${item.key}" style="animation-delay: ${delay}s">
             ${dateHtml}
             <span class="house-line">
-              <span class="house-name">${item.house.name}</span>
-              ${clashHtml}
+              <span class="house-name">${item.house.name}${clashHtml}</span>
               <span class="house-short">${item.house.short}</span>
             </span>
             ${rightCol}
