@@ -36,6 +36,9 @@
       --focus: #2f80ed;
       --shadow: rgba(0, 0, 0, 0.16);
       --title-shadow: transparent;
+      --clash-text: #c0392b;
+      --clash-bg: rgba(192, 57, 43, 0.08);
+      --clash-border: rgba(192, 57, 43, 0.2);
     }
 
     body.theme-sacred {
@@ -59,6 +62,9 @@
       --focus: #7eb6ff;
       --shadow: rgba(0, 0, 0, 0.45);
       --title-shadow: rgba(232, 200, 74, 0.45);
+      --clash-text: #ff6b6b;
+      --clash-bg: rgba(255, 107, 107, 0.1);
+      --clash-border: rgba(255, 107, 107, 0.25);
     }
 
     body.theme-royal {
@@ -82,6 +88,9 @@
       --focus: #8fc7ff;
       --shadow: rgba(0, 0, 0, 0.45);
       --title-shadow: rgba(255, 215, 0, 0.45);
+      --clash-text: #ff8b8b;
+      --clash-bg: rgba(255, 139, 139, 0.1);
+      --clash-border: rgba(255, 139, 139, 0.25);
     }
 
     * {
@@ -710,6 +719,45 @@
       font-size: 18px;
       font-weight: 700;
       line-height: 1.65;
+    }
+
+    .clash-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--clash-text, #d92d20);
+      background: var(--clash-bg, rgba(217, 45, 32, 0.08));
+      border: 1px solid var(--clash-border, rgba(217, 45, 32, 0.2));
+      padding: 2px 8px;
+      border-radius: 4px;
+      width: fit-content;
+      margin: 2px 0;
+    }
+
+    .sheet-clash-container {
+      margin: 12px 0;
+    }
+
+    .sheet-clash-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--clash-bg, rgba(217, 45, 32, 0.06));
+      border: 1.5px solid var(--clash-border, rgba(217, 45, 32, 0.2));
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--clash-text, #d92d20);
+      box-shadow: 0 4px 15px rgba(217, 45, 32, 0.05);
+    }
+
+    .sheet-clash-badge strong {
+      font-size: 18px;
+      letter-spacing: 0.5px;
     }
 
     .credit {
@@ -1578,6 +1626,7 @@
       </header>
       <div class="sheet-body">
         <p class="sheet-date" id="sheetDate"></p>
+        <div id="sheetClash" class="sheet-clash-container"></div>
         <p class="sheet-meaning" id="sheetMeaning"></p>
       </div>
     </article>
@@ -2154,11 +2203,20 @@
                ${includeYear && !item.endDate ? `<span class="date-year">${item.date.getFullYear() + 543}</span>` : ''}
              </span>`;
 
+        // คำนวณคู่ชงเล็ง เฉพาะเมื่อเป็นโหมดจรวันในเดือน (state.mode === 'month')
+        let clashHtml = '';
+        if (state.mode === 'month') {
+          const currentHouseIndex = HOUSES.findIndex(h => h.name === item.house.name);
+          const oppositeHouse = HOUSES[(currentHouseIndex + 6) % 12];
+          clashHtml = `<span class="clash-badge">${item.house.name} ⚔️ ${oppositeHouse.name}</span>`;
+        }
+
         return `
           <button class="day-card ${levelClass}" type="button" data-key="${item.key}" style="animation-delay: ${delay}s">
             ${dateHtml}
             <span class="house-line">
               <span class="house-name">${item.house.name}</span>
+              ${clashHtml}
               <span class="house-short">${item.house.short}</span>
             </span>
             ${rightCol}
@@ -2176,6 +2234,26 @@
       $('sheetTitle').innerHTML = `${item.house.name}<span class="sheet-level-badge ${badgeClass}">${levelLabel(level)}</span>`;
       $('sheetDate').textContent = itemDateLabel(item, true);
       $('sheetMeaning').textContent = item.house.meaning;
+
+      // จัดการการแสดงผลคู่ชงเล็งใน Popup
+      const clashEl = $('sheetClash');
+      if (clashEl) {
+        if (state.mode === 'month') {
+          const currentHouseIndex = HOUSES.findIndex(h => h.name === item.house.name);
+          const oppositeHouse = HOUSES[(currentHouseIndex + 6) % 12];
+          clashEl.innerHTML = `
+            <div class="sheet-clash-badge">
+              <span>เล็ง/ชง:</span>
+              <strong>${item.house.name} ⚔️ ${oppositeHouse.name}</strong>
+            </div>
+          `;
+          clashEl.style.display = 'block';
+        } else {
+          clashEl.innerHTML = '';
+          clashEl.style.display = 'none';
+        }
+      }
+
       $('sheetOverlay').classList.add('open');
     }
 
