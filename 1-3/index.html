@@ -1418,7 +1418,7 @@
   </style>
 </head>
 
-<body data-view="year">
+<body class="theme-royal" data-view="year">
   <canvas id="starCanvas" aria-hidden="true"></canvas>
 
   <div class="theme-selector" id="themeSelector">
@@ -1876,7 +1876,15 @@
       state.focusAnimal = saved.focusAnimal || 'all';
       state.monthKey = saved.monthKey || '';
       state.displayMode = saved.displayMode || 'table';
-      setTheme(saved.theme || localStorage.getItem(THEME_KEY) || 'solar', false);
+      let theme = saved.theme || localStorage.getItem(THEME_KEY) || 'royal';
+      if (!localStorage.getItem('themeMigratedToRoyalV3')) {
+        theme = 'royal';
+        localStorage.setItem('themeMigratedToRoyalV3', 'true');
+        localStorage.setItem(THEME_KEY, 'royal');
+        saved.theme = 'royal';
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(saved));
+      }
+      setTheme(theme, false);
     }
 
     function populateControls() {
