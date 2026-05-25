@@ -1503,7 +1503,7 @@
   </style>
 </head>
 
-<body data-age-mode="month">
+<body class="theme-royal" data-age-mode="month">
   <canvas id="starCanvas" aria-hidden="true"></canvas>
   <div class="theme-selector" id="themeSelector">
     <button class="theme-main-btn" type="button" title="เลือกธีม">🌗</button>
@@ -1818,7 +1818,7 @@
         settings = {};
       }
 
-      const theme = settings.theme || localStorage.getItem(AGE_THEME_KEY) || 'solar';
+      const theme = settings.theme || localStorage.getItem(AGE_THEME_KEY) || 'royal';
       setTheme(theme, false);
 
       if (settings.birthDay) $('birthDay').value = settings.birthDay;

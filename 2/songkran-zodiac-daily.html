@@ -1586,7 +1586,7 @@
   </style>
 </head>
 
-<body data-view="year">
+<body class="theme-royal" data-view="year">
   <canvas id="starCanvas" aria-hidden="true"></canvas>
 
   <div class="theme-selector" id="themeSelector">
@@ -2093,7 +2093,7 @@
       state.focusAnimal = saved.focusAnimal || 'all';
       state.monthKey = saved.monthKey || '';
       state.displayMode = saved.displayMode || 'table';
-      setTheme(saved.theme || localStorage.getItem(THEME_KEY) || 'solar', false);
+      setTheme(saved.theme || localStorage.getItem(THEME_KEY) || 'royal', false);
     }
 
     function populateControls() {
