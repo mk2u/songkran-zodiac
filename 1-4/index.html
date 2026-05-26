@@ -1032,10 +1032,12 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* เมื่อ sheet เปิด ปุ่มขึ้นไปอยู่เหนือ sheet */
+    /* เมื่อ sheet เปิด ให้ซ่อนปุ่มไว้ด้านหลัง sheet */
     .sheet-overlay.open~#scrollTopBtn,
     body:has(.sheet-overlay.open) #scrollTopBtn {
-      bottom: calc(60vh + 16px);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(80px);
     }
 
     #scrollTopBtn:hover {
