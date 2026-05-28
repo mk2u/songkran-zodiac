@@ -1639,6 +1639,8 @@
         const ti = mod(ai - i, 12), tk = TK[ti];
         const a = toR(ang(i));
         
+        const isSolar = currentTheme === 'solar';
+        const isRoyal = currentTheme === 'royal';
         const textCol = isSolar ? '#1a1a1a' : (isRoyal ? '#ffd700' : '#f0e6c8');
         const badCol = isSolar ? '#c0392b' : '#ff4d4d';
 
