@@ -1198,7 +1198,7 @@
       { name: "ตุลย์", number: "๖" },
       { name: "พิจิก", number: "๓" },
       { name: "ธนู", number: "๕" },
-      { name: "มกร", number: "๗" },
+      { name: "มังกร", number: "๗" },
       { name: "กุมภ์", number: "๘" },
       { name: "มีน", number: "๕" }
     ];
@@ -1638,41 +1638,89 @@
       for (let i = 0; i < 12; i++) {
         const ti = mod(ai - i, 12), tk = TK[ti];
         const a = toR(ang(i));
-        const lx = CX + RL * Math.cos(a), ly = CY + RL * Math.sin(a);
+        
+        const textCol = isSolar ? '#1a1a1a' : (isRoyal ? '#ffd700' : '#f0e6c8');
+        const badCol = isSolar ? '#c0392b' : '#ff4d4d';
+
         if (ti === 0) {
           if (SHOW_ALL_TAKSA_LABELS) {
+            ctx.save();
+            ctx.translate(CX, CY);
+            let rot = a + Math.PI / 2;
+            rot = (rot % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
             ctx.font = `900 72px ${FONT}`;
-
             ctx.fillStyle = theme.text;
-            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.fillText('ตนุ', lx, ly);
-            ctx.shadowBlur = 0;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            if (rot > Math.PI / 2 && rot < Math.PI * 1.5) {
+              ctx.rotate(rot + Math.PI);
+              ctx.fillText('ตนุ', 0, RL);
+            } else {
+              ctx.rotate(rot);
+              ctx.fillText('ตนุ', 0, -RL);
+            }
+            ctx.restore();
           }
-          const rl2 = LOR_LABEL_RADIUS, al2 = a + 0.075;
-          ctx.font = `900 ${LOR_FONT_SIZE}px ${FONT}`;
 
+          const rl2 = LOR_LABEL_RADIUS;
+          const al2 = a + 0.075;
+          
+          ctx.save();
+          ctx.translate(CX, CY);
+          let rot_lor = al2 + Math.PI / 2;
+          rot_lor = (rot_lor % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+          ctx.font = `900 ${LOR_FONT_SIZE}px ${FONT}`;
           ctx.fillStyle = currentTheme === 'solar' ? '#c0392b' : '#ff4030';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillText('ล', CX + rl2 * Math.cos(al2), CY + rl2 * Math.sin(al2));
-          ctx.shadowBlur = 0;
+          if (rot_lor > Math.PI / 2 && rot_lor < Math.PI * 1.5) {
+            ctx.rotate(rot_lor + Math.PI);
+            ctx.fillText('ล', 0, rl2);
+          } else {
+            ctx.rotate(rot_lor);
+            ctx.fillText('ล', 0, -rl2);
+          }
+          ctx.restore();
         } else if (tk.bad) {
           danger = true;
           const badFontSize = tk.name === 'วินาสน์' ? VINAS_FONT_SIZE : TAKSA_BAD_FONT_SIZE;
+          
+          ctx.save();
+          ctx.translate(CX, CY);
+          let rot = a + Math.PI / 2;
+          rot = (rot % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
           ctx.font = `900 ${badFontSize}px ${FONT}`;
-
           ctx.fillStyle = currentTheme === 'solar' ? '#c0392b' : '#ff3020';
-          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-          ctx.fillText(tk.name, lx, ly);
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          
+          if (rot > Math.PI / 2 && rot < Math.PI * 1.5) {
+            ctx.rotate(rot + Math.PI);
+            ctx.fillText(tk.name, 0, RL);
+          } else {
+            ctx.rotate(rot);
+            ctx.fillText(tk.name, 0, -RL);
+          }
+          ctx.restore();
         } else if (SHOW_ALL_TAKSA_LABELS) {
+          ctx.save();
+          ctx.translate(CX, CY);
+          let rot = a + Math.PI / 2;
+          rot = (rot % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
           ctx.font = `900 64px ${FONT}`;
-
           ctx.fillStyle = theme.text;
-          ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-          ctx.fillText(tk.name, lx, ly);
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          
+          if (rot > Math.PI / 2 && rot < Math.PI * 1.5) {
+            ctx.rotate(rot + Math.PI);
+            ctx.fillText(tk.name, 0, RL);
+          } else {
+            ctx.rotate(rot);
+            ctx.fillText(tk.name, 0, -RL);
+          }
+          ctx.restore();
         }
-
-
       }
       return danger;
     }

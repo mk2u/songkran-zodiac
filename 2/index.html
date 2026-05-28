@@ -895,7 +895,7 @@
       { name: "ตุลย์", number: "๖" },
       { name: "พิจิก", number: "๓" },
       { name: "ธนู", number: "๕" },
-      { name: "มกร", number: "๗" },
+      { name: "มังกร", number: "๗" },
       { name: "กุมภ์", number: "๘" },
       { name: "มีน", number: "๕" }
     ];
@@ -1317,38 +1317,72 @@
         const ti = mod(ai - i, 12);
         const tk = TK[ti];
         const a = toR(ang(i));
-        const lx = CX + RL * Math.cos(a);
-        const ly = CY + RL * Math.sin(a);
 
         const textCol = isSolar ? '#1a1a1a' : (isRoyal ? '#ffd700' : '#f0e6c8');
         const badCol = isSolar ? '#c0392b' : '#ff4d4d';
 
         if (ti === 0) {
           if (SHOW_ALL_TAKSA_LABELS) {
+            c.save();
+            c.translate(CX, CY);
+            let rot = a + Math.PI / 2;
+            rot = (rot % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
             c.font = `900 72px ${FONT}`;
             c.fillStyle = textCol;
-            c.textAlign = 'center'; c.textBaseline = 'middle';
-            c.fillText('ตนุ', lx, ly);
+            c.textAlign = 'center';
+            c.textBaseline = 'middle';
+            if (rot > Math.PI / 2 && rot < Math.PI * 1.5) {
+              c.rotate(rot + Math.PI);
+              c.fillText('ตนุ', 0, RL);
+            } else {
+              c.rotate(rot);
+              c.fillText('ตนุ', 0, -RL);
+            }
+            c.restore();
           }
 
           const r_lor = LOR_LABEL_RADIUS;
           const a_lor = a + 0.08;
-          const lx_lor = CX + r_lor * Math.cos(a_lor);
-          const ly_lor = CY + r_lor * Math.sin(a_lor);
-
+          
+          c.save();
+          c.translate(CX, CY);
+          let rot_lor = a_lor + Math.PI / 2;
+          rot_lor = (rot_lor % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
           c.font = `900 120px ${FONT}`;
           c.fillStyle = badCol;
           c.textAlign = 'center';
           c.textBaseline = 'middle';
-          c.fillText('ล', lx_lor, ly_lor);
+          if (rot_lor > Math.PI / 2 && rot_lor < Math.PI * 1.5) {
+            c.rotate(rot_lor + Math.PI);
+            c.fillText('ล', 0, r_lor);
+          } else {
+            c.rotate(rot_lor);
+            c.fillText('ล', 0, -r_lor);
+          }
+          c.restore();
         } else {
           const isBad = tk.bad;
           if (!SHOW_ALL_TAKSA_LABELS && !isBad) continue;
+          
+          c.save();
+          c.translate(CX, CY);
+          let rot = a + Math.PI / 2;
+          rot = (rot % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+          
           const badFontSize = tk.name === 'วินาสน์' ? VINAS_FONT_SIZE : TAKSA_BAD_FONT_SIZE;
           c.font = isBad ? `900 ${badFontSize}px ${FONT}` : `900 64px ${FONT}`;
           c.fillStyle = isBad ? badCol : textCol;
-          c.textAlign = 'center'; c.textBaseline = 'middle';
-          c.fillText(tk.name, lx, ly);
+          c.textAlign = 'center';
+          c.textBaseline = 'middle';
+          
+          if (rot > Math.PI / 2 && rot < Math.PI * 1.5) {
+            c.rotate(rot + Math.PI);
+            c.fillText(tk.name, 0, RL);
+          } else {
+            c.rotate(rot);
+            c.fillText(tk.name, 0, -RL);
+          }
+          c.restore();
         }
       }
 
