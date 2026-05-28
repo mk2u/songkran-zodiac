@@ -240,7 +240,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      margin: 6px 0 10px
+      margin: 6px 0 28px
     }
 
     .controls button {
@@ -970,12 +970,12 @@
     const c = cv.getContext('2d');
     const W = cv.width, CX = W / 2, CY = W / 2;
     const FONT = "'K2D', sans-serif";
-    const WHEEL_SCALE = 1.055;
+    const WHEEL_SCALE = 0.88;
     const SHOW_ALL_TAKSA_LABELS = false;
     const SHOW_RASI_NUMBERS = true;
-    const ZODIAC_IMAGE_RADIUS = Math.round(384 * WHEEL_SCALE);
-    const TAKSA_LABEL_RADIUS = 575;
-    const LOR_LABEL_RADIUS = 596;
+    const ZODIAC_IMAGE_RADIUS = Math.round(494 * WHEEL_SCALE);
+    const TAKSA_LABEL_RADIUS = 608;
+    const LOR_LABEL_RADIUS = 622;
     const TAKSA_BAD_FONT_SIZE = 76;
     const VINAS_FONT_SIZE = 66;
     const PROFILE_COLORS = ['#1f9d55', '#2f80ed'];
@@ -1237,10 +1237,10 @@
       const isSacred = currentTheme === 'sacred';
 
 
-      const RO = Math.round(485 * WHEEL_SCALE);
-      const RI = Math.round(469 * WHEEL_SCALE);
-      const RS = Math.round(463 * WHEEL_SCALE);
-      const RN = Math.round(305 * WHEEL_SCALE);
+      const RO = Math.round(607 * WHEEL_SCALE);
+      const RI = Math.round(591 * WHEEL_SCALE);
+      const RS = Math.round(585 * WHEEL_SCALE);
+      const RN = Math.round(345 * WHEEL_SCALE);
       const RC = 93;
       const RL = TAKSA_LABEL_RADIUS;
 
@@ -1279,7 +1279,7 @@
         const er = ZODIAC_IMAGE_RADIUS;
         const img = loadedImgs[z.en];
         if (img && img.complete) {
-          const iw = 160;
+          const iw = 145;
 
           c.save();
           if (isSolar) {
@@ -1324,14 +1324,19 @@
         c.fillStyle = isSolar ? '#1a1a1a' : (isRoyal ? '#ffd700' : '#e8c84a');
         c.textAlign = 'center';
 
+        const rasi = RASI[i];
         if (rot > Math.PI / 2 && rot < Math.PI * 1.5) {
           c.rotate(rot + Math.PI);
           c.textBaseline = 'bottom';
           c.fillText(z.thai, 0, RN - 8);
+          c.textBaseline = 'top';
+          c.fillText(rasi.name, 0, RN + 8);
         } else {
           c.rotate(rot);
           c.textBaseline = 'top';
           c.fillText(z.thai, 0, -RN + 8);
+          c.textBaseline = 'bottom';
+          c.fillText(rasi.name, 0, -RN - 8);
         }
         c.restore();
       }
@@ -1366,6 +1371,8 @@
 
           c.font = `900 120px ${FONT}`;
           c.fillStyle = badCol;
+          c.textAlign = 'center';
+          c.textBaseline = 'middle';
           c.fillText('ล', lx_lor, ly_lor);
         } else {
           const isBad = tk.bad;
