@@ -1249,11 +1249,11 @@
     const RS = Math.round(585 * WHEEL_SCALE);
     const RN = Math.round(345 * WHEEL_SCALE);
     const RC = 93;
-    const RL = 608;
+    const RL = 650;
     const RZ = Math.round(494 * WHEEL_SCALE);
     const SHOW_ALL_TAKSA_LABELS = false;
     const SHOW_RASI_NUMBERS = true;
-    const LOR_LABEL_RADIUS = 622;
+    const LOR_LABEL_RADIUS = 665;
     const LOR_FONT_SIZE = 120;
     const TAKSA_BAD_FONT_SIZE = 76;
     const VINAS_FONT_SIZE = 66;
@@ -1597,13 +1597,13 @@
           ctx.textBaseline = 'bottom';
           ctx.fillText(z.thai, 0, RN - 8);
           ctx.textBaseline = 'top';
-          ctx.fillText(rasi.name, 0, RN + 8);
+          ctx.fillText(rasi.name, 0, RO + 8);
         } else {
           ctx.rotate(rot);
           ctx.textBaseline = 'top';
           ctx.fillText(z.thai, 0, -RN + 8);
           ctx.textBaseline = 'bottom';
-          ctx.fillText(rasi.name, 0, -RN - 8);
+          ctx.fillText(rasi.name, 0, -RO - 8);
         }
         ctx.restore();
       }

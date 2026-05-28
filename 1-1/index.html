@@ -974,8 +974,8 @@
     const SHOW_ALL_TAKSA_LABELS = false;
     const SHOW_RASI_NUMBERS = true;
     const ZODIAC_IMAGE_RADIUS = Math.round(494 * WHEEL_SCALE);
-    const TAKSA_LABEL_RADIUS = 608;
-    const LOR_LABEL_RADIUS = 622;
+    const TAKSA_LABEL_RADIUS = 650;
+    const LOR_LABEL_RADIUS = 665;
     const TAKSA_BAD_FONT_SIZE = 76;
     const VINAS_FONT_SIZE = 66;
     const PROFILE_COLORS = ['#1f9d55', '#2f80ed'];
@@ -1330,13 +1330,13 @@
           c.textBaseline = 'bottom';
           c.fillText(z.thai, 0, RN - 8);
           c.textBaseline = 'top';
-          c.fillText(rasi.name, 0, RN + 8);
+          c.fillText(rasi.name, 0, RO + 8);
         } else {
           c.rotate(rot);
           c.textBaseline = 'top';
           c.fillText(z.thai, 0, -RN + 8);
           c.textBaseline = 'bottom';
-          c.fillText(rasi.name, 0, -RN - 8);
+          c.fillText(rasi.name, 0, -RO - 8);
         }
         c.restore();
       }
