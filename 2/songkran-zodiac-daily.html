@@ -584,7 +584,7 @@
     .day-card,
     .info-card {
       display: grid;
-      grid-template-columns: 86px 1fr auto;
+      grid-template-columns: 96px 1fr auto;
       align-items: center;
       gap: 10px;
       min-height: 86px;
@@ -598,6 +598,23 @@
       box-shadow: 0 8px 20px var(--shadow);
       cursor: pointer;
     }
+    .date-box .date-day {
+      display: block;
+      font-size: 15px;
+      color: var(--text) !important;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .date-day-table {
+      display: block;
+      font-size: inherit;
+      color: var(--muted);
+      font-weight: 900;
+      line-height: 1.25;
+      margin-bottom: 2px;
+    }
+
 
     .day-card.main {
       border-color: color-mix(in srgb, var(--good) 56%, var(--card-border));
@@ -1051,7 +1068,7 @@
       }
 
       .day-card {
-        grid-template-columns: 78px 1fr;
+        grid-template-columns: 96px 1fr;
       }
 
       .day-card .status-pill {
@@ -1482,6 +1499,8 @@
       .date-cell {
         min-width: 0;
         line-height: 1.25;
+        flex-direction: column;
+        align-items: flex-start !important;
       }
 
       .chata-cell {
@@ -2201,12 +2220,15 @@
       }
       notice.style.display = 'none';
       const tKey = dateKey(new Date());
+      const dayNames = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
       $('results').innerHTML = list.map((item) => {
         const isToday = item.key === tKey;
         const todayCls = isToday ? 'today-card' : '';
+        const dayName = dayNames[item.date.getDay()];
         return `
           <button class="day-card ${item.status} ${todayCls}" type="button" data-key="${item.key}">
             <span class="date-box">
+              <span class="date-day">${dayName}</span>
               <strong>${item.date.getDate()} ${MONTHS[item.date.getMonth()].short}</strong>
               <span>${item.date.getFullYear() + 543}</span>
             </span>
@@ -2265,6 +2287,7 @@
       const list = visibleItems();
       const tKey = dateKey(new Date());
       const info = annualInfo();
+      const dayNames = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
 
       $('thMain').textContent = 'นักษัตร';
       $('thClash').textContent = 'นักษัตร';
@@ -2288,7 +2311,9 @@
         return `
           <tr class="${rowCls}" data-key="${item.key}">
             <td class="date-cell">
-              ${formatDate(item.date, true)}${isToday ? '<span class="td-today-badge">วันนี้</span>' : ''}
+              <span class="date-day-table">${dayNames[item.date.getDay()]}</span>
+              <span class="date-main">${formatDate(item.date, true)}</span>
+              ${isToday ? '<span class="td-today-badge" style="margin-left: 0; margin-top: 4px; display: inline-block;">วันนี้</span>' : ''}
             </td>
             <td>
               <span class="chata-cell">
@@ -2342,9 +2367,11 @@
       const info = annualInfo();
       const clashAnimal = ZODIACS[clashIndex(item.index)];
       
+      const dayNames = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
+      const dayName = dayNames[item.date.getDay()];
       $('sheetTitle').textContent = `${item.animal.name} (${statusLabel(item.status)})`;
       $('sheetBody').innerHTML = `
-        <p class="sheet-line" style="margin-bottom: 12px;">${formatDate(item.date, true)} | รอบปี${info.annual.name} ปะทะปี${info.clash.name}</p>
+        <p class="sheet-line" style="margin-bottom: 12px;">${dayName}ที่ ${formatDate(item.date, true)} | รอบปี${info.annual.name} ปะทะปี${info.clash.name}</p>
         
         <div class="sheet-clash-vs">
           <!-- ฝั่งตกนักษัตรวัน -->
@@ -2430,12 +2457,16 @@
     async function copySummary() {
       const info = annualInfo();
       const todayVal = todayItem();
+      const dayNames = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
+      const startDay = dayNames[info.start.getDay()];
+      const endDay = dayNames[info.end.getDay()];
+      const todayDay = todayVal ? dayNames[todayVal.date.getDay()] : '';
       const lines = [
         `ปีนักษัตรสงกรานต์รายวัน`,
-        `รอบ: ${formatDate(info.start, true)} - ${formatDate(info.end, true)}`,
+        `รอบ: ${startDay}ที่ ${formatDate(info.start, true)} - ${endDay}ที่ ${formatDate(info.end, true)}`,
         `ปีหลัก: ${info.annual.name}`,
         `ปีปะทะ: ${info.clash.name}`,
-        todayVal ? `วันนี้ (${formatDate(todayVal.date, true)}): ตก${todayVal.animal.name} (${statusLabel(todayVal.status)}) - ${todayVal.animal.short}` : '',
+        todayVal ? `วันนี้ (${todayDay}ที่ ${formatDate(todayVal.date, true)}): ตก${todayVal.animal.name} (${statusLabel(todayVal.status)}) - ${todayVal.animal.short}` : '',
         `Developed with ❤️ by คนโบราณ`
       ].filter(Boolean);
       try {
@@ -2554,7 +2585,9 @@
         drawZodiacImage(ctx, item.animal, x + 18, y + 18, 68);
         ctx.fillStyle = item.status === 'clash' ? danger : item.status === 'main' ? good : text;
         ctx.font = '800 27px K2D, Tahoma';
-        ctx.fillText(formatDate(item.date, true), x + 100, y + 38);
+        const dayNames = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
+        const dayName = dayNames[item.date.getDay()];
+        ctx.fillText(`${dayName}ที่ ${formatDate(item.date, false)}`, x + 100, y + 38);
         ctx.fillStyle = text;
         drawFittedText(ctx, item.animal.name, x + 100, y + 76, cardW - 230, 32, 20);
         ctx.fillStyle = item.status === 'clash' ? danger : item.status === 'main' ? good : muted;
