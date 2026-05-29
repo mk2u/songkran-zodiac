@@ -1659,7 +1659,7 @@
           <label for="targetYear" style="text-align: center;">ปีสงกรานต์ พ.ศ.</label>
           <div class="year-stepper" style="max-width: 240px; margin: 0 auto;">
             <button id="prevYear" type="button" aria-label="ปีก่อน">−</button>
-            <input id="targetYear" type="number" inputmode="numeric" min="2400" max="2800" style="text-align: center;">
+            <input id="targetYear" type="number" inputmode="numeric" min="1" max="3000" style="text-align: center;">
             <button id="nextYear" type="button" aria-label="ปีถัดไป">+</button>
           </div>
         </div>
@@ -2826,7 +2826,7 @@
       });
       $('targetYear').addEventListener('input', () => {
         const value = Number($('targetYear').value);
-        if (Number.isFinite(value) && value >= 2400 && value <= 2800) {
+        if (Number.isFinite(value) && value >= 1 && value <= 3000) {
           state.yearBE = value;
           render();
         }

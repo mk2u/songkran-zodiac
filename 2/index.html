@@ -788,7 +788,7 @@
 
   <div class="controls">
     <button id="prevYear" type="button">−</button>
-    <input id="yearInput" type="number" inputmode="numeric" min="2400" max="2800" value="2569">
+    <input id="yearInput" type="number" inputmode="numeric" min="1" max="3000" value="2569">
     <button id="nextYear" type="button">+</button>
     <button id="resetBtn" class="reset-btn" type="button" title="รีเซ็ต">↺</button>
   </div>
@@ -912,7 +912,7 @@
     }
     function selectedYear() {
       const y = Number(document.getElementById('yearInput').value);
-      return Number.isFinite(y) && y >= 2400 && y <= 2800 ? y : currentBEYear();
+      return Number.isFinite(y) && y >= 1 && y <= 3000 ? y : currentBEYear();
     }
 
     const cv = document.getElementById('wheelCanvas');
@@ -936,7 +936,7 @@
       const raw = String(el.value || '').trim();
       if (raw.length < 4) return null;
       const year = Number(raw);
-      if (!Number.isFinite(year) || year < 2400 || year > 2800) return null;
+      if (!Number.isFinite(year) || year < 1 || year > 3000) return null;
       const zi = y2i(year);
       const ti = mod(ai - zi, 12);
       const tk = TK[ti];
