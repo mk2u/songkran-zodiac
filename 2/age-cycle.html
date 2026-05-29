@@ -1869,7 +1869,7 @@
       }
 
       // เดือนที่ดูถูกวางอยู่ในรอบปีหลักที่เริ่มจากเดือนเกิด
-      const startYear = cycleYearForMonth(adYear, birthMonth, targetMonth);
+      const startYear = adYear;
       const start = cycleStartForMonth(startYear, targetMonth, birthDay);
 
       // end = วันก่อน birthDay ของเดือนถัดไป
@@ -2084,8 +2084,12 @@
       // ยึด จรครบ 1 ปี เป็นหลัก เสมอ ไม่เปลี่ยนช่วงวันตามโหมดอื่น
       const inputs = readInputs();
       if (inputs.beYear) {
-        const annualStart = cycleStartForMonth(inputs.adYear, inputs.birthMonth, inputs.birthDay);
-        const annualEnd = cycleStartForMonth(inputs.adYear + 1, inputs.birthMonth, inputs.birthDay);
+        let annualStartYear = inputs.adYear;
+        if (state.mode === 'month' && inputs.targetMonth < inputs.birthMonth) {
+          annualStartYear = inputs.adYear - 1;
+        }
+        const annualStart = cycleStartForMonth(annualStartYear, inputs.birthMonth, inputs.birthDay);
+        const annualEnd = cycleStartForMonth(annualStartYear + 1, inputs.birthMonth, inputs.birthDay);
         const annualEndDisplay = new Date(annualEnd - 86400000);
         $('rangeSummary').textContent = `${formatDate(annualStart, true)} ถึง ${formatDate(annualEndDisplay, true)}`;
       } else {
@@ -2326,7 +2330,7 @@
         const periodStart = periodStartForDate(today, birthDay);
 
         $('targetMonth').value = String(periodStart.getMonth());
-        $('targetYear').value = String(baseYear + 543);
+        $('targetYear').value = String(periodStart.getFullYear() + 543);
         render();
         requestAnimationFrame(() => revealToday(today));
         return;

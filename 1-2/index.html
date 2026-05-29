@@ -1830,7 +1830,7 @@
       }
 
       // เดือนที่ดูถูกวางอยู่ในรอบปีหลักที่เริ่มจากเดือนเกิด
-      const startYear = cycleYearForMonth(adYear, birthMonth, targetMonth);
+      const startYear = adYear;
       const start = cycleStartForMonth(startYear, targetMonth, birthDay);
 
       // end = วันก่อน birthDay ของเดือนถัดไป
@@ -2249,7 +2249,7 @@
         const periodStart = periodStartForDate(today, birthDay);
 
         $('targetMonth').value = String(periodStart.getMonth());
-        $('targetYear').value = String(baseYear + 543);
+        $('targetYear').value = String(periodStart.getFullYear() + 543);
         render();
         requestAnimationFrame(() => revealToday(today));
         return;
