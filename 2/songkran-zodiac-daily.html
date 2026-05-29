@@ -2003,7 +2003,10 @@
     }
 
     function formatMonthKey(key) {
-      const [year, month] = key.split('-').map(Number);
+      const parts = key.startsWith('-') ? key.slice(1).split('-') : key.split('-');
+      let year = Number(parts[0]);
+      if (key.startsWith('-')) year = -year;
+      const month = Number(parts[1]);
       return `${MONTHS[month - 1].full} ${year + 543}`;
     }
 
