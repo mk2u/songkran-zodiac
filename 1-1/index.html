@@ -1330,12 +1330,14 @@
           c.textBaseline = 'bottom';
           c.fillText(z.thai, 0, RN - 8);
           c.textBaseline = 'top';
+          c.fillStyle = isSolar ? '#1a1a1a' : (isRoyal ? '#26e673' : '#e8c84a');
           c.fillText(rasi.name, 0, RO + 8);
         } else {
           c.rotate(rot);
           c.textBaseline = 'top';
           c.fillText(z.thai, 0, -RN + 8);
           c.textBaseline = 'bottom';
+          c.fillStyle = isSolar ? '#1a1a1a' : (isRoyal ? '#26e673' : '#e8c84a');
           c.fillText(rasi.name, 0, -RO - 8);
         }
         c.restore();
