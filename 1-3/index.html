@@ -312,6 +312,25 @@
       gap: 6px;
     }
 
+    .year-reset-btn {
+      position: absolute;
+      left: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      background: transparent;
+      border: none;
+      color: var(--accent);
+      cursor: pointer;
+      padding: 4px;
+      display: grid;
+      place-items: center;
+      transition: transform 0.15s;
+    }
+    .year-reset-btn:active {
+      transform: translateY(-50%) scale(0.9);
+    }
+
     .year-stepper button {
       min-height: 46px;
       border: 2px solid var(--ctrl-border);
@@ -1476,19 +1495,45 @@
     </header>
 
     <section class="control-panel">
-      <div class="segmented" aria-label="มุมมอง" style="grid-template-columns: 1fr;">
+      <div class="segmented" aria-label="มุมมอง" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
         <button type="button" data-view="today" style="display: none;">วันนี้</button>
         <button type="button" data-view="month" style="display: none;">รายเดือน</button>
-        <button class="active" type="button" data-view="year">ครบปี</button>
+        <button class="active" type="button" data-view="year" style="min-height: 42px;">ครบปี</button>
+        <button type="button" data-view="birth" style="min-height: 42px;">🔍 ค้นหาวันที่ต้องการ</button>
+      </div>
+
+      <!-- Birth Date Search Panel -->
+      <div class="birth-search-panel hidden" id="birthSearchPanel" style="margin-top: 14px; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,215,0,0.15); border-radius: 8px; box-shadow: inset 0 1px 4px rgba(0,0,0,0.2);">
+        <label style="display: block; font-weight: 700; margin-bottom: 8px; color: var(--accent); font-size: 0.95rem;">🔍 เจาะจงเลือก วัน เดือน ปี ที่ต้องการ เพื่อวิเคราะห์ดวง</label>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: center;">
+          <select id="searchDay" style="padding: 8px; border-radius: 6px; border: 1px solid var(--accent); background: var(--surface); color: var(--text); width: 75px; font-weight: 700;"></select>
+          <select id="searchMonth" style="padding: 8px; border-radius: 6px; border: 1px solid var(--accent); background: var(--surface); color: var(--text); width: 140px; font-weight: 700;"></select>
+          <input id="searchYear" type="number" inputmode="numeric" placeholder="พ.ศ. เช่น 2525" style="padding: 8px; border-radius: 6px; border: 1px solid var(--accent); background: var(--surface); color: var(--text); width: 130px; text-align: center; font-weight: 700;">
+          <button id="btnSearchBirth" type="button" style="padding: 8px 18px; background: linear-gradient(135deg, #c8951a 0%, #f0c040 100%); color: #1a0a00; border: none; border-radius: 6px; font-weight: 800; cursor: pointer; transition: transform 0.1s ease;">วิเคราะห์ดวง</button>
+        </div>
+        <div class="segmented" id="birthScopeSelector" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 12px auto 0; max-width: 320px; padding: 3px;">
+          <button type="button" id="btnBirthScopeDay" style="min-height: 36px; font-size: 12.5px;">แสดงแค่วันเกิด</button>
+          <button type="button" id="btnBirthScopeYear" class="active" style="min-height: 36px; font-size: 12.5px;">แสดงครบปี (365 วัน)</button>
+        </div>
       </div>
 
       <div class="form-grid" style="grid-template-columns: 1fr;">
         <div class="field" style="text-align: center;">
           <label for="targetYear" style="text-align: center;">ปีสงกรานต์ พ.ศ.</label>
-          <div class="year-stepper" style="max-width: 240px; margin: 0 auto;">
-            <button id="prevYear" type="button" aria-label="ปีก่อน">−</button>
-            <input id="targetYear" type="number" inputmode="numeric" min="1" max="3000" style="text-align: center;">
-            <button id="nextYear" type="button" aria-label="ปีถัดไป">+</button>
+          <div class="year-stepper-wrap" style="position: relative; width: 100%; max-width: 240px; margin: 0 auto;">
+            <div class="year-stepper" style="display: grid; grid-template-columns: 46px 1fr 46px; gap: 6px;">
+              <button id="prevYear" type="button" aria-label="ปีก่อน">−</button>
+              <input id="targetYear" type="number" inputmode="numeric" min="1" max="3000" style="text-align: center;">
+              <button id="nextYear" type="button" aria-label="ปีถัดไป">+</button>
+            </div>
+            <button id="resetYearBtn" class="year-reset-btn" type="button" title="รีเซ็ตปี">↺</button>
+          </div>
+        </div>
+        <div class="field" style="margin-top: 14px; text-align: center;">
+          <label style="display: block; text-align: center; color: var(--muted); font-size: 13px; font-weight: 900; margin-bottom: 6px;">เพศผู้รับดวงชะตา (ใช้คำนวณนักษัตรรายวัน)</label>
+          <div class="segmented" id="genderSelector" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 auto; max-width: 240px;">
+            <button type="button" id="btnGenderMale" class="active" style="min-height: 42px;">ชาย</button>
+            <button type="button" id="btnGenderFemale" style="min-height: 42px;">หญิง</button>
           </div>
         </div>
         <div class="field" style="display: none;">
@@ -1576,7 +1621,7 @@
     const SETTINGS_KEY = 'songkranZodiacDailySettingsV2';
     const THEME_KEY = 'ageCycleTheme';
 
-    const ENABLED_VIEWS = new Set(['today', 'month', 'year']);
+    const ENABLED_VIEWS = new Set(['today', 'month', 'year', 'birth']);
 
     const MONTHS = [
       { short: 'ม.ค.', full: 'มกราคม' },
@@ -1707,7 +1752,10 @@
       yearBE: currentSongkranBEYear(new Date()),
       focusAnimal: 'all',
       monthKey: '',
-      displayMode: 'table'
+      displayMode: 'table',
+      gender: 'male',
+      searchTargetKey: '',
+      birthScope: 'year'
     };
 
     const $ = (id) => document.getElementById(id);
@@ -1819,14 +1867,50 @@
       return 'กลาง';
     }
 
+
+    function birthHeroCardHtml(item) {
+      if (!item) return '';
+      const info = annualInfo();
+      return `
+        <div class="today-board" style="display: block; width: 100%; grid-column: 1 / -1; margin-bottom: 12px; border: 2px solid var(--accent); border-radius: 12px; overflow: hidden; background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface));">
+          <div class="today-hero" style="display: grid; grid-template-columns: 112px 1fr; gap: 16px; padding: 18px;">
+            <div class="animal-orb" style="width: 100px; height: 100px; padding: 6px;">${animalImageTag(item.animal)}</div>
+            <div class="today-copy">
+              <span class="card-today-tag" style="background: var(--accent); color: #1a0a00; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; display: inline-block;">📍 วันเริ่มต้น / วันที่ค้นหา</span>
+              <span class="status-pill ${item.status}" style="margin-left: 6px;">${statusLabel(item.status)}</span>
+              <h2 style="font-size: 24px; margin: 4px 0 6px;">วัน${formatDate(item.date, true)} ตก${item.animal.name}</h2>
+              <p style="margin: 0 0 6px; color: var(--muted); font-weight: 800; line-height: 1.4;">ดวงชะตากำเนิด: <strong>ตกปี${item.animal.name} · ${item.animal.short}</strong></p>
+              ${item.chata ? `<p style="margin: 0; color: var(--accent); font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                <img src="${item.chata.image}" style="width: 24px; height: 24px; object-fit: contain;" alt="${item.chata.name}">
+                ตกดวงชะตา: <strong>${item.chata.name}</strong>
+              </p>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function buildItems() {
-      const start = songkranStart(state.yearBE);
-      const end = songkranEnd(state.yearBE);
-      const annualIndex = zodiacIndexForBEYear(state.yearBE);
-      const total = daysBetween(start, end) + 1;
+      let start, total, annualIndex;
+      if (state.view === 'birth' && state.searchTargetKey) {
+        const parts = state.searchTargetKey.split('-');
+        const y = Number(parts[0]);
+        const m = Number(parts[1]);
+        const d = Number(parts[2]);
+        start = new Date(y, m - 1, d);
+        total = 365;
+        const startYearBE = currentSongkranBEYear(start);
+        annualIndex = zodiacIndexForBEYear(startYearBE);
+      } else {
+        start = songkranStart(state.yearBE);
+        const end = songkranEnd(state.yearBE);
+        total = daysBetween(start, end) + 1;
+        annualIndex = zodiacIndexForBEYear(state.yearBE);
+      }
+      const isFemale = state.gender === 'female';
       items = Array.from({ length: total }, (_, offset) => {
         const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + offset);
-        const index = mod(annualIndex + offset, 12);
+        const index = mod(isFemale ? (annualIndex - offset) : (annualIndex + offset), 12);
         const animal = ZODIACS[index];
         const status = statusFor(index, annualIndex);
         return {
@@ -1855,6 +1939,10 @@
     }
 
     function visibleItems() {
+      if (state.view === 'birth') {
+        if (!state.searchTargetKey) return [];
+        return state.birthScope === 'day' ? items.slice(0, 1) : items;
+      }
       let list = state.view === 'today' ? [todayItem()] : items.slice();
       if (state.view === 'month') {
         list = list.filter((item) => item.monthKey === state.monthKey);
@@ -1876,6 +1964,9 @@
         focusAnimal: state.focusAnimal,
         monthKey: state.monthKey,
         displayMode: state.displayMode,
+        gender: state.gender,
+        searchTargetKey: state.searchTargetKey,
+        birthScope: state.birthScope,
         theme: currentTheme()
       }));
     }
@@ -1897,12 +1988,16 @@
       state.focusAnimal = saved.focusAnimal || 'all';
       state.monthKey = saved.monthKey || '';
       state.displayMode = saved.displayMode || 'table';
+      state.gender = saved.gender || 'male';
+      state.searchTargetKey = saved.searchTargetKey || '';
+      state.birthScope = saved.birthScope || 'year';
       let theme = saved.theme || localStorage.getItem(THEME_KEY) || 'royal';
       if (!localStorage.getItem('themeMigratedToRoyalV3')) {
         theme = 'royal';
         localStorage.setItem('themeMigratedToRoyalV3', 'true');
         localStorage.setItem(THEME_KEY, 'royal');
         saved.theme = 'royal';
+        saved.gender = state.gender;
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(saved));
       }
       setTheme(theme, false);
@@ -1922,6 +2017,22 @@
       } else {
         $('btnCards').classList.add('active');
         $('btnTable').classList.remove('active');
+      }
+
+      if (state.gender === 'female') {
+        $('btnGenderFemale').classList.add('active');
+        $('btnGenderMale').classList.remove('active');
+      } else {
+        $('btnGenderMale').classList.add('active');
+        $('btnGenderFemale').classList.remove('active');
+      }
+
+      if (state.birthScope === 'day') {
+        $('btnBirthScopeDay').classList.add('active');
+        $('btnBirthScopeYear').classList.remove('active');
+      } else {
+        $('btnBirthScopeYear').classList.add('active');
+        $('btnBirthScopeDay').classList.remove('active');
       }
       renderMonthOptions();
     }
@@ -1998,16 +2109,27 @@
       const notice = $('notice');
       if (!list.length) {
         notice.style.display = 'block';
-        notice.textContent = 'ไม่พบวันที่ตรงกับตัวกรองนี้';
+        if (state.view === 'birth') {
+          notice.textContent = '🔮 กรุณาป้อนวัน เดือน ปี ที่ต้องการ แล้วกดปุ่มวิเคราะห์ดวงด้านบน';
+        } else {
+          notice.textContent = 'ไม่พบวันที่ตรงกับตัวกรองนี้';
+        }
         $('results').innerHTML = '';
         return;
       }
       notice.style.display = 'none';
       const tKey = dateKey(new Date());
       const dayNames = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
-      $('results').innerHTML = list.map((item) => {
+      
+      let html = '';
+      if (state.view === 'birth' && list.length > 0) {
+        html += birthHeroCardHtml(list[0]);
+      }
+      
+      html += list.map((item, index) => {
         const isToday = item.key === tKey;
-        const todayCls = isToday ? 'today-card' : '';
+        const isBirthDay = state.view === 'birth' && index === 0;
+        const todayCls = isToday ? 'today-card' : isBirthDay ? 'today-card' : '';
         const dayName = dayNames[item.date.getDay()];
         return `
           <button class="day-card ${item.status} ${todayCls}" type="button" data-key="${item.key}">
@@ -2020,7 +2142,7 @@
               <span class="animal-card-main">
                 <span class="animal-icon">${animalImageTag(item.animal)}</span>
                 <span>
-                  ${isToday ? '<span class="card-today-tag">📍 วันนี้</span>' : ''}
+                  ${isToday ? '<span class="card-today-tag">📍 วันนี้</span>' : isBirthDay ? '<span class="card-today-tag" style="background: var(--accent); color: #1a0a00;">📍 วันเริ่มต้น</span>' : ''}
                   <span class="animal-name">${item.animal.name}</span>
                   <span class="animal-desc">${item.animal.short}</span>
                 </span>
@@ -2030,6 +2152,7 @@
           </button>
         `;
       }).join('');
+      $('results').innerHTML = html;
     }
 
     function renderInfo() {
@@ -2055,6 +2178,14 @@
       document.querySelectorAll('.segmented [data-view]').forEach((button) => {
         button.classList.toggle('active', button.dataset.view === normalizedView);
       });
+      
+      const isBirth = normalizedView === 'birth';
+      $('birthSearchPanel').classList.toggle('hidden', !isBirth);
+      document.querySelector('.form-grid').classList.toggle('hidden', isBirth);
+      document.querySelector('.month-filter').classList.toggle('hidden', isBirth);
+      document.querySelector('.action-row').classList.toggle('hidden', isBirth);
+      document.querySelector('.filter-row').classList.toggle('hidden', isBirth);
+      
       render();
     }
 
@@ -2077,17 +2208,36 @@
       $('thClash').textContent = 'นักษัตร';
 
       if (!list.length) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted)">ไม่มีข้อมูล</td></tr>';
+        if (state.view === 'birth') {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--muted);font-weight:700;">🔮 กรุณาป้อนวัน เดือน ปี ที่ต้องการ แล้วกดปุ่มวิเคราะห์ดวงด้านบน</td></tr>';
+        } else {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--muted)">ไม่มีข้อมูล</td></tr>';
+        }
+        const oldHero = $('tableBirthHero');
+        if (oldHero) oldHero.remove();
         return;
       }
 
-      tbody.innerHTML = list.map(item => {
+      const oldHero = $('tableBirthHero');
+      if (oldHero) oldHero.remove();
+      
+      if (state.view === 'birth') {
+        const heroDiv = document.createElement('div');
+        heroDiv.id = 'tableBirthHero';
+        heroDiv.style.marginBottom = '12px';
+        heroDiv.innerHTML = birthHeroCardHtml(list[0]);
+        $('tableSection').insertBefore(heroDiv, $('tableSection').querySelector('.table-wrap'));
+      }
+
+      tbody.innerHTML = list.map((item, index) => {
         const isToday = item.key === tKey;
+        const isBirthDay = state.view === 'birth' && index === 0;
         const rowClasses = [];
         if (item.status === 'clash') rowClasses.push('clash-row');
         else if (item.status === 'main') rowClasses.push('main-row');
         if (isToday) rowClasses.push('today-row');
-        if (item.offset === 0) rowClasses.push('songkran-start-row');
+        if (isBirthDay) rowClasses.push('songkran-start-row');
+        if (item.offset === 0 && state.view !== 'birth') rowClasses.push('songkran-start-row');
         const rowCls = rowClasses.join(' ');
 
         const clashAnimal = ZODIACS[clashIndex(item.index)];
@@ -2097,7 +2247,7 @@
             <td class="date-cell">
               <span class="date-day-table">${dayNames[item.date.getDay()]}</span>
               <span class="date-main">${formatDate(item.date, true)}</span>
-              ${isToday ? '<span class="td-today-badge" style="margin-left: 0; margin-top: 4px; display: inline-block;">วันนี้</span>' : ''}
+              ${isToday ? '<span class="td-today-badge" style="margin-left: 0; margin-top: 4px; display: inline-block;">วันนี้</span>' : isBirthDay ? '<span class="td-today-badge" style="background: var(--accent); color: #1a0a00; margin-left: 0; margin-top: 4px; display: inline-block;">วันเริ่มต้น</span>' : ''}
             </td>
             <td>
               <span class="table-animal-cell">
@@ -2580,6 +2730,43 @@
 
       document.querySelectorAll('.segmented [data-view]').forEach((button) => button.addEventListener('click', () => setView(button.dataset.view)));
       document.querySelectorAll('[data-filter]').forEach((button) => button.addEventListener('click', () => setFilter(button.dataset.filter)));
+      $('resetYearBtn').addEventListener('click', () => {
+        state.yearBE = currentSongkranBEYear(new Date());
+        $('targetYear').value = String(state.yearBE);
+        render();
+      });
+      $('btnGenderMale').addEventListener('click', () => {
+        if (state.gender !== 'male') {
+          state.gender = 'male';
+          saveSettings();
+          populateControls();
+          render();
+        }
+      });
+      $('btnGenderFemale').addEventListener('click', () => {
+        if (state.gender !== 'female') {
+          state.gender = 'female';
+          saveSettings();
+          populateControls();
+          render();
+        }
+      });
+      $('btnBirthScopeDay').addEventListener('click', () => {
+        if (state.birthScope !== 'day') {
+          state.birthScope = 'day';
+          saveSettings();
+          populateControls();
+          render();
+        }
+      });
+      $('btnBirthScopeYear').addEventListener('click', () => {
+        if (state.birthScope !== 'year') {
+          state.birthScope = 'year';
+          saveSettings();
+          populateControls();
+          render();
+        }
+      });
       $('prevYear').addEventListener('click', () => {
         state.yearBE -= 1;
         $('targetYear').value = String(state.yearBE);
@@ -2681,7 +2868,44 @@
 
       const scrollTopBtn = $('scrollTopBtn');
       window.addEventListener('scroll', () => scrollTopBtn.classList.toggle('visible', window.scrollY > 280), { passive: true });
-      scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+      // Populate Birth Search Selectors
+      $('searchDay').innerHTML = Array.from({ length: 31 }, (_, i) => `<option value="${i+1}">${i+1}</option>`).join('');
+      $('searchMonth').innerHTML = ZODIACS.map((_, i) => `<option value="${i}">${MONTHS[i].full}</option>`).join('');
+      
+      const savedSearchDate = state.searchTargetKey ? new Date(state.searchTargetKey) : new Date();
+      $('searchDay').value = String(savedSearchDate.getDate());
+      $('searchMonth').value = String(savedSearchDate.getMonth());
+      $('searchYear').value = String(savedSearchDate.getFullYear() + 543);
+      
+      $('btnSearchBirth').addEventListener('click', () => {
+        const day = Number($('searchDay').value);
+        const month = Number($('searchMonth').value);
+        const beYear = Number($('searchYear').value);
+        
+        if (!beYear || beYear < 1 || beYear > 3000) {
+          $('notice').style.display = 'block';
+          $('notice').textContent = 'กรุณากรอกปี พ.ศ. ให้ถูกต้อง (1 - 3000)';
+          return;
+        }
+        
+        $('btnSearchBirth').style.transform = 'scale(0.95)';
+        setTimeout(() => $('btnSearchBirth').style.transform = 'scale(1)', 100);
+        
+        $('notice').style.display = 'none';
+        
+        const adYear = beYear - 543;
+        const targetDate = new Date(adYear, month, day);
+        const sStart = new Date(adYear, 3, 13);
+        const cycleYearBE = (targetDate >= sStart ? adYear : adYear - 1) + 543;
+        
+        state.searchTargetKey = `${adYear}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        state.yearBE = cycleYearBE;
+        state.view = 'birth';
+        
+        setView('birth');
+      });
     }
 
     function initStarfield() {
@@ -2718,6 +2942,13 @@
 
     preloadZodiacImages();
     restoreSettings();
+    if (state.view === 'birth') {
+      $('birthSearchPanel').classList.remove('hidden');
+      document.querySelector('.form-grid').classList.add('hidden');
+      document.querySelector('.month-filter').classList.add('hidden');
+      document.querySelector('.action-row').classList.add('hidden');
+      document.querySelector('.filter-row').classList.add('hidden');
+    }
     buildItems();
     populateControls();
     bindEvents();
