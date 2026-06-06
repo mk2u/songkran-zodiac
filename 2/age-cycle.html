@@ -142,14 +142,13 @@
     .theme-selector {
       position: fixed;
       top: 12px;
-      right: 12px;
+      right: max(12px, calc(50% - 380px - 68px)) !important;
       z-index: 30;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       gap: 10px;
     }
-
     .theme-main-btn {
       width: 48px;
       height: 48px;
@@ -215,7 +214,7 @@
     .tool-nav {
       width: 100%;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 6px;
       margin: 68px auto 8px;
       padding: 5px;
@@ -260,6 +259,8 @@
       line-height: 1.35;
       padding: 0.04em 0 0.16em;
       text-shadow: 0 0 10px var(--title-shadow);
+      position: relative;
+      display: inline-block;
     }
 
     .range-summary {
@@ -283,7 +284,7 @@
 
     .segmented {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
       gap: 6px;
       margin-bottom: 10px;
       padding: 4px;
@@ -316,6 +317,11 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
       gap: 10px;
+    }
+
+    .birth-form {
+      display: none;
+      margin-top: 10px;
     }
 
     .field {
@@ -359,8 +365,45 @@
     body[data-age-mode="month"] .annual-only,
     body[data-age-mode="monthYear"] .annual-only,
     body[data-age-mode="monthYear"] .month-only,
-    body[data-age-mode="year"] .month-only {
+    body[data-age-mode="year"] .month-only,
+    body[data-age-mode="birth"] .cycle-form,
+    body[data-age-mode="birth"] .filter-row,
+    body[data-age-mode="birth"] .summary-strip,
+    body[data-age-mode="birth"] .month-filter {
       display: none;
+    }
+
+    body[data-age-mode="birth"] .birth-form {
+      display: flex !important;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .birth-age-group {
+      border: 1.5px solid var(--ctrl-border);
+      border-radius: 8px;
+      padding: 12px;
+      background: var(--surface);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .group-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--card-border);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .group-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 10px;
     }
 
     .action-row {
@@ -937,14 +980,20 @@
       grid-template-columns: 1fr !important;
     }
 
-    .results-period .day-card {
+    .results-birth {
+      grid-template-columns: 1fr !important;
+    }
+
+    .results-period .day-card,
+    .results-birth .day-card {
       grid-template-columns: auto 1fr auto;
       align-items: start;
       padding-top: 12px;
       min-height: 80px;
     }
 
-    .results-period .date-period {
+    .results-period .date-period,
+    .results-birth .date-period {
       padding-top: 2px;
     }
 
@@ -1479,13 +1528,14 @@
     /* ── RESET BUTTON ── */
     #resetBtn {
       position: absolute;
-      top: 14px;
-      right: 4px;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%) translateY(-2px);
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border: 1.5px solid var(--ctrl-border);
       background: var(--ctrl-bg);
       color: var(--ctrl-text);
@@ -1494,9 +1544,10 @@
       font-weight: 800;
       cursor: pointer;
       border-radius: 50%;
-      opacity: 0.76;
+      opacity: 0.8;
       transition: opacity 0.2s, transform 0.18s ease, box-shadow 0.18s ease;
       line-height: 1;
+      margin-left: 12px;
       -webkit-text-fill-color: initial;
       filter: none;
       padding: 0;
@@ -1506,10 +1557,11 @@
     #resetBtn:hover {
       opacity: 1;
       box-shadow: 0 6px 18px var(--shadow);
+      transform: scale(1.08) translateY(-50%) translateY(-2px);
     }
 
     #resetBtn:active {
-      transform: scale(0.94);
+      transform: scale(0.92) translateY(-50%) translateY(-2px);
     }
 
     #resetBtn.spinning {
@@ -1518,15 +1570,225 @@
 
     @keyframes resetSpin {
       from {
-        transform: rotate(0deg);
+        transform: scale(1) translateY(-50%) translateY(-2px) rotate(0deg);
       }
 
       to {
-        transform: rotate(360deg);
+        transform: scale(1) translateY(-50%) translateY(-2px) rotate(360deg);
       }
     }
 
+    /* Unified Teacher/Owner tool navigation */
+    .tool-nav {
+      width: min(96vw, var(--owner-daily-layout-max, var(--content-width, 620px))) !important;
+      max-width: min(96vw, var(--owner-daily-layout-max, var(--content-width, 620px))) !important;
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 6px !important;
+      margin: 68px auto 8px !important;
+      padding: 5px !important;
+      border: 1.5px solid var(--ctrl-border, var(--card-border, var(--line, #ffd700))) !important;
+      border-radius: 8px !important;
+      background: color-mix(in srgb, var(--ctrl-bg, var(--surface, #061a10)) 88%, transparent) !important;
+      box-shadow: 0 0 18px color-mix(in srgb, var(--card-border, var(--gold, #ffd700)) 18%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+      backdrop-filter: blur(10px);
+    }
+
+    .tool-nav a {
+      min-width: 0 !important;
+      min-height: 42px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 4px 6px !important;
+      border-radius: 6px !important;
+      color: var(--gold, var(--ctrl-text, var(--text, #ffd700))) !important;
+      font-size: clamp(11px, 3.1vw, 17px) !important;
+      font-weight: 900 !important;
+      line-height: 1.15 !important;
+      text-align: center !important;
+      text-decoration: none !important;
+      overflow-wrap: anywhere !important;
+      word-break: break-word !important;
+    }
+
+    .tool-nav a.active {
+      background: linear-gradient(180deg, var(--gold2, var(--card-border, var(--line, #ffd700))), var(--gold3, var(--accent, var(--ctrl-border, #c8951a)))) !important;
+      color: var(--bg, #061a10) !important;
+      box-shadow: 0 0 16px color-mix(in srgb, var(--gold, var(--card-border, #ffd700)) 28%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+    }
+
+    /* Teacher theme-aware dimensional navigation tabs. */
+    .tool-nav {
+      --teacher-nav-active-top: #f8e7a0;
+      --teacher-nav-active-mid: #d7a949;
+      --teacher-nav-active-bottom: #9b741c;
+      --teacher-nav-active-text: #111111;
+      background: linear-gradient(180deg,
+          color-mix(in srgb, var(--ctrl-bg, #f5f5f5) 94%, #ffffff 6%),
+          color-mix(in srgb, var(--ctrl-bg, #f5f5f5) 88%, #000000 12%)) !important;
+      box-shadow:
+        0 10px 24px rgba(0, 0, 0, 0.22),
+        0 0 20px color-mix(in srgb, var(--card-border, var(--ctrl-border, #c8951a)) 24%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -8px 18px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    body.theme-sacred .tool-nav {
+      --teacher-nav-active-top: #fff6b7;
+      --teacher-nav-active-mid: #e8c84a;
+      --teacher-nav-active-bottom: #9d7112;
+      --teacher-nav-active-text: #100923;
+    }
+
+    body.theme-royal .tool-nav {
+      --teacher-nav-active-top: #fff9a6;
+      --teacher-nav-active-mid: #ffd700;
+      --teacher-nav-active-bottom: #b8860b;
+      --teacher-nav-active-text: #061a10;
+    }
+
+    .tool-nav a {
+      position: relative !important;
+      overflow: hidden !important;
+      border: 1px solid transparent !important;
+      background: linear-gradient(180deg,
+          color-mix(in srgb, var(--ctrl-bg, #f5f5f5) 92%, #ffffff 8%),
+          color-mix(in srgb, var(--ctrl-bg, #f5f5f5) 88%, #000000 10%)) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -7px 14px rgba(0, 0, 0, 0.08) !important;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.12) !important;
+    }
+
+    .tool-nav a.active {
+      background: linear-gradient(180deg,
+          var(--teacher-nav-active-top) 0%,
+          var(--teacher-nav-active-mid) 52%,
+          var(--teacher-nav-active-bottom) 100%) !important;
+      color: var(--teacher-nav-active-text) !important;
+      border-color: color-mix(in srgb, var(--teacher-nav-active-mid) 70%, #ffffff) !important;
+      box-shadow:
+        0 9px 18px rgba(0, 0, 0, 0.26),
+        0 0 22px color-mix(in srgb, var(--teacher-nav-active-mid) 42%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        inset 0 -10px 18px rgba(88, 53, 0, 0.18) !important;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.34) !important;
+    }
+
+    /* Age desktop navigation should match the lower panel width. */
+    @media (min-width: 761px) {
+      .app-shell > .tool-nav {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .tool-nav {
+        width: calc(100vw - 24px) !important;
+        max-width: calc(100vw - 24px) !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 4px !important;
+        padding: 4px !important;
+        margin-top: 64px !important;
+      }
+
+      .tool-nav a {
+        min-height: 42px !important;
+        padding: 3px 2px !important;
+        font-size: clamp(10px, 2.8vw, 13px) !important;
+        line-height: 1.08 !important;
+      }
+
+      .segmented {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+    }
+
+    /* Teacher Age dimensional main buttons. */
+    .segmented button,
+    .filter-row button,
+    .action-row button {
+      border-color: var(--ctrl-border, var(--card-border, #ffd700)) !important;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0) 44%),
+        color-mix(in srgb, var(--ctrl-bg, var(--card-bg, #062815)) 90%, transparent) !important;
+      box-shadow:
+        0 7px 16px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        inset 0 -8px 14px rgba(0, 0, 0, 0.13) !important;
+      text-shadow: 0 0 8px color-mix(in srgb, var(--accent, #ffd700) 20%, transparent);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .segmented button:hover,
+    .filter-row button:hover,
+    .action-row button:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 10px 20px rgba(0, 0, 0, 0.22),
+        0 0 14px color-mix(in srgb, var(--accent, #ffd700) 18%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -8px 14px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    .segmented button:active,
+    .filter-row button:active,
+    .action-row button:active {
+      transform: translateY(1px) scale(0.985);
+      box-shadow:
+        0 3px 9px rgba(0, 0, 0, 0.22),
+        inset 0 2px 7px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .segmented button.active,
+    .filter-row button.active,
+    #todayBtn {
+      background: linear-gradient(180deg, #fff9d0 0%, #ffe44d 48%, #c8951a 100%) !important;
+      color: #061a10 !important;
+      border-color: var(--accent, #ffd700) !important;
+      box-shadow:
+        0 0 18px color-mix(in srgb, var(--accent, #ffd700) 38%, transparent),
+        0 8px 18px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        inset 0 -10px 18px rgba(116, 72, 0, 0.16) !important;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+    }
+
+    .filter-row button[data-filter="good"].active {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--good) 28%, #ffffff) 0%, var(--good) 58%, color-mix(in srgb, var(--good) 70%, #062815) 100%) !important;
+      color: #061a10 !important;
+      border-color: var(--good) !important;
+      box-shadow:
+        0 0 18px var(--good-glow),
+        0 8px 18px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.62),
+        inset 0 -9px 16px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    .filter-row button[data-filter="caution"].active {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--caution) 28%, #ffffff) 0%, var(--caution) 58%, color-mix(in srgb, var(--caution) 76%, #320d0d) 100%) !important;
+      color: #ffffff !important;
+      border-color: var(--caution) !important;
+      box-shadow:
+        0 0 18px var(--caution-glow),
+        0 8px 18px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -9px 16px rgba(0, 0, 0, 0.16) !important;
+    }
+
+    #copyBtn.copied {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--good) 28%, #ffffff) 0%, var(--good) 58%, color-mix(in srgb, var(--good) 70%, #062815) 100%) !important;
+      color: #061a10 !important;
+      border-color: var(--good) !important;
+      box-shadow:
+        0 0 18px var(--good-glow),
+        0 8px 18px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.62) !important;
+    }
   </style>
+  <script src="../offline-runner.js"></script>
 </head>
 
 <body class="theme-royal" data-age-mode="month">
@@ -1565,12 +1827,12 @@
     <nav class="tool-nav" aria-label="เครื่องมือดูดวง">
       <a href="index.html">ปีนักษัตรสงกรานต์</a>
       <a href="songkran-zodiac-daily.html">นักษัตรปะทะ</a>
-      <a class="active" href="age-cycle.html">อายุจรประจำปี</a>
+      <a class="active" href="age-cycle.html">อายุจรเกิด</a>
+          <a href="monthly-zodiac-wheel.html">ลัคนาเดือน</a>
     </nav>
 
     <header class="page-head">
-      <button id="resetBtn" type="button" title="รีเซ็ตเป็นวันนี้" aria-label="รีเซ็ตเป็นวันนี้">↺</button>
-      <h1>อายุจรประจำปี</h1>
+      <h1>อายุจรประจำปี <button id="resetBtn" type="button" title="รีเซ็ตเป็นวันนี้" aria-label="รีเซ็ตเป็นวันนี้">↺</button></h1>
       <div class="range-summary" id="rangeSummary"></div>
     </header>
 
@@ -1579,9 +1841,10 @@
         <button class="active" type="button" data-mode="month">จรวันในเดือน</button>
         <button type="button" data-mode="monthYear">จรเดือนในปี</button>
         <button type="button" data-mode="year">จรครบ 1 ปี</button>
+        <button type="button" data-mode="birth">จรเกิด</button>
       </div>
 
-      <div class="form-grid">
+      <div class="form-grid cycle-form">
         <div class="field">
           <label for="birthDay">วันที่เกิด</label>
           <select id="birthDay"></select>
@@ -1597,6 +1860,44 @@
         <div class="field">
           <label for="targetYear">ปีที่ดู พ.ศ.</label>
           <input id="targetYear" type="number" inputmode="numeric" min="1" max="3000">
+        </div>
+      </div>
+
+      <div class="birth-form" id="birthAgeForm" aria-label="ตั้งค่าอายุจรเกิด">
+        <div class="birth-age-group">
+          <div class="group-title">🎂 ข้อมูลวันเกิดจริง</div>
+          <div class="group-grid">
+            <div class="field">
+              <label for="birthAgeBirthDay">วันเกิด</label>
+              <select id="birthAgeBirthDay"></select>
+            </div>
+            <div class="field">
+              <label for="birthAgeBirthMonth">เดือนเกิด</label>
+              <select id="birthAgeBirthMonth"></select>
+            </div>
+            <div class="field">
+              <label for="birthAgeBirthYear">ปีเกิด พ.ศ.</label>
+              <input id="birthAgeBirthYear" type="number" inputmode="numeric" min="1" max="3000">
+            </div>
+          </div>
+        </div>
+
+        <div class="birth-age-group">
+          <div class="group-title">🔍 วันที่ต้องการส่องดูชะตา</div>
+          <div class="group-grid">
+            <div class="field">
+              <label for="birthAgeTargetDay">วันดู</label>
+              <select id="birthAgeTargetDay"></select>
+            </div>
+            <div class="field">
+              <label for="birthAgeTargetMonth">เดือนดู</label>
+              <select id="birthAgeTargetMonth"></select>
+            </div>
+            <div class="field">
+              <label for="birthAgeTargetYear">ปีดู พ.ศ.</label>
+              <input id="birthAgeTargetYear" type="number" inputmode="numeric" min="1" max="3000">
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1660,86 +1961,12 @@
       { short: 'ธ.ค.', full: 'ธันวาคม' }
     ];
 
-    const HOUSES = [
-      {
-        name: 'ตนุ',
-        short: 'ตัวเราเอง การเริ่มต้น การตัดสินใจ',
-        meaning: 'ตัวเราเองผู้กระทำเอง สั่งการเอง ลงมือเอง ตัดสินใจเอง',
-        level: 'neutral'
-      },
-      {
-        name: 'กดุมภะ',
-        short: 'การเงิน ทรัพย์ รายรับรายจ่าย',
-        meaning: 'การเงิน ข้อนี้มันร้ายนักจะฆ่ากันตายเพราะเรื่องเงิน',
-        level: 'neutral'
-      },
-      {
-        name: 'สหัชชะ',
-        short: 'การเดินทาง ญาติพี่น้อง เพื่อนฝูง',
-        meaning: 'การเดินทางไกล ใกล้ ญาติพี่น้อง เพื่อนฝูง',
-        level: 'neutral'
-      },
-      {
-        name: 'พันธุ',
-        short: 'บ้าน ที่ดิน พ่อแม่ ญาติ',
-        meaning: 'สมบัติ ที่ดิน งานบ้าน งานข้างนอก พ่อ-แม่ ญาติพี่น้อง',
-        level: 'neutral'
-      },
-      {
-        name: 'ปุตตะ',
-        short: 'รายได้ ลูกบริวาร เงินเข้า',
-        meaning: 'รายได้ ลูกบริวาร การใช้จ่าย มีเงินเข้ามา',
-        level: 'neutral'
-      },
-      {
-        name: 'อริ',
-        short: 'อุปสรรค หนี้สิน ป่วย ถูกโกง',
-        meaning: 'อุปสรรค นานา หนี้สิน วิตก ถูกโกง ป่วยไข้ อุบัติเหตุ ถูกจองจำ ตาย',
-        level: 'caution'
-      },
-      {
-        name: 'ปัตตนิ',
-        short: 'คู่ครอง คู่สัญญา หุ้นส่วน',
-        meaning: 'สามี - ภรรยา คู่สัญญา คู่ชู้ หุ้นส่วน คนรู้จักเก่าแก่',
-        level: 'neutral'
-      },
-      {
-        name: 'มรณะ',
-        short: 'สูญเสีย ห่างไกล ขาดทุน',
-        meaning: 'ความตาย สูญเสีย ห่างไกล ว่างเปล่า ขาดทุน เสียหาย ถูกจองจำ ตาย',
-        level: 'caution'
-      },
-      {
-        name: 'ศุภะ',
-        short: 'ความเจริญรุ่งเรือง',
-        meaning: 'ความเจริญรุ่งเรืองส่วนตัว ทั้งในบ้านและที่ทำงาน',
-        level: 'good'
-      },
-      {
-        name: 'กัมมะ',
-        short: 'งาน การติดต่อ การจัดการ',
-        meaning: 'งานที่ติดต่อ บริหารจัดการ ในครัวเรือน และนอกบ้าน',
-        level: 'neutral'
-      },
-      {
-        name: 'ลาภะ',
-        short: 'โชคลาภ ลาภผล',
-        meaning: 'โชคลาภ ลาภผลที่ได้รับมา จะมีจะหมดว่ากันไป',
-        level: 'good'
-      },
-      {
-        name: 'วินาศ',
-        short: 'สูญเสีย เหนื่อยล้า วิตก',
-        meaning: 'ความสูญเสีย เหนื่อยล้า วิตกกังวล ว่างเปล่า ขาดทุน ถูกจองจำ ตาย',
-        level: 'caution'
-      }
-    ];
-
     const state = {
       mode: 'month',
       filter: 'all',
       resultMonth: 'all',
-      items: []
+      items: [],
+      birthAgeResult: null
     };
 
     const $ = (id) => document.getElementById(id);
@@ -1777,6 +2004,15 @@
       return new Date(adYear, monthIndex + 1, 0).getDate();
     }
 
+    function todayParts() {
+      const today = new Date();
+      return {
+        day: today.getDate(),
+        month: today.getMonth(),
+        year: today.getFullYear() + 543
+      };
+    }
+
     function dateKey(date) {
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, '0');
@@ -1800,10 +2036,11 @@
     }
 
     function populateSelects() {
-      $('birthDay').innerHTML = Array.from({ length: 31 }, (_, i) => {
+      const dayOptions = Array.from({ length: 31 }, (_, i) => {
         const day = i + 1;
         return `<option value="${day}">${day}</option>`;
       }).join('');
+      $('birthDay').innerHTML = dayOptions;
 
       const monthOptions = MONTHS.map((month, index) => (
         `<option value="${index}">${month.full}</option>`
@@ -1811,10 +2048,45 @@
 
       $('birthMonth').innerHTML = monthOptions;
       $('targetMonth').innerHTML = monthOptions;
+      $('birthAgeBirthMonth').innerHTML = monthOptions;
+      $('birthAgeTargetMonth').innerHTML = monthOptions;
       $('targetYear').value = currentBEYear();
       $('birthDay').value = '29';
       $('birthMonth').value = '0';
       $('targetMonth').value = '0';
+      setDefaultBirthAgeInputs();
+      syncBirthAgeDayOptions();
+    }
+
+    function fillDaySelect(id, maxDay, selectedDay) {
+      const safeMax = Math.max(1, Math.min(31, Number(maxDay) || 31));
+      const safeSelected = Math.max(1, Math.min(safeMax, Number(selectedDay) || 1));
+      $(id).innerHTML = Array.from({ length: safeMax }, (_, i) => {
+        const day = i + 1;
+        return `<option value="${day}">${day}</option>`;
+      }).join('');
+      $(id).value = String(safeSelected);
+    }
+
+    function setDefaultBirthAgeInputs() {
+      const today = todayParts();
+      $('birthAgeBirthYear').value = '2488';
+      $('birthAgeBirthMonth').value = '6';
+      $('birthAgeBirthDay').value = '29';
+      $('birthAgeTargetYear').value = String(today.year);
+      $('birthAgeTargetMonth').value = String(today.month);
+      $('birthAgeTargetDay').value = String(today.day);
+    }
+
+    function syncBirthAgeDayOptions() {
+      const birthYear = Number($('birthAgeBirthYear').value) || 2488;
+      const birthMonth = Number($('birthAgeBirthMonth').value) || 0;
+      const targetYear = Number($('birthAgeTargetYear').value) || currentBEYear();
+      const targetMonth = Number($('birthAgeTargetMonth').value) || 0;
+      const birthSelected = Number($('birthAgeBirthDay').value) || 29;
+      const targetSelected = Number($('birthAgeTargetDay').value) || todayParts().day;
+      fillDaySelect('birthAgeBirthDay', daysInMonth(birthYear - 543, birthMonth), birthSelected);
+      fillDaySelect('birthAgeTargetDay', daysInMonth(targetYear - 543, targetMonth), targetSelected);
     }
 
     function saveAgeSettings() {
@@ -1826,6 +2098,12 @@
         birthMonth: $('birthMonth')?.value || '0',
         targetMonth: $('targetMonth')?.value || '0',
         targetYear: $('targetYear')?.value || String(currentBEYear()),
+        birthAgeBirthDay: $('birthAgeBirthDay')?.value || '29',
+        birthAgeBirthMonth: $('birthAgeBirthMonth')?.value || '6',
+        birthAgeBirthYear: $('birthAgeBirthYear')?.value || '2488',
+        birthAgeTargetDay: $('birthAgeTargetDay')?.value || String(todayParts().day),
+        birthAgeTargetMonth: $('birthAgeTargetMonth')?.value || String(todayParts().month),
+        birthAgeTargetYear: $('birthAgeTargetYear')?.value || String(todayParts().year),
         theme: document.body.classList.contains('theme-sacred')
           ? 'sacred'
           : document.body.classList.contains('theme-royal')
@@ -1858,8 +2136,16 @@
       if (settings.birthMonth) $('birthMonth').value = settings.birthMonth;
       if (settings.targetMonth) $('targetMonth').value = settings.targetMonth;
       if (settings.targetYear) $('targetYear').value = settings.targetYear;
+      if (settings.birthAgeBirthYear) $('birthAgeBirthYear').value = settings.birthAgeBirthYear;
+      if (settings.birthAgeBirthMonth) $('birthAgeBirthMonth').value = settings.birthAgeBirthMonth;
+      if (settings.birthAgeTargetYear) $('birthAgeTargetYear').value = settings.birthAgeTargetYear;
+      if (settings.birthAgeTargetMonth) $('birthAgeTargetMonth').value = settings.birthAgeTargetMonth;
+      syncBirthAgeDayOptions();
+      if (settings.birthAgeBirthDay) $('birthAgeBirthDay').value = settings.birthAgeBirthDay;
+      if (settings.birthAgeTargetDay) $('birthAgeTargetDay').value = settings.birthAgeTargetDay;
+      syncBirthAgeDayOptions();
 
-      state.mode = ['month', 'monthYear', 'year'].includes(settings.mode) ? settings.mode : 'month';
+      state.mode = ['month', 'monthYear', 'year', 'birth'].includes(settings.mode) ? settings.mode : 'month';
       state.filter = ['all', 'good', 'caution'].includes(settings.filter) ? settings.filter : 'all';
       state.resultMonth = settings.resultMonth || 'all';
       document.body.dataset.ageMode = state.mode;
@@ -1879,143 +2165,151 @@
       };
     }
 
-    function buildMonthly() {
-      const { birthDay, birthMonth, targetMonth, beYear, adYear } = readInputs();
-
-      if (!beYear) {
-        return { error: 'กรุณาระบุปี พ.ศ.' };
-      }
-
-      // เดือนที่ดูถูกวางอยู่ในรอบปีหลักที่เริ่มจากเดือนเกิด
-      const startYear = adYear;
-      const start = cycleStartForMonth(startYear, targetMonth, birthDay);
-
-      // end = วันก่อน birthDay ของเดือนถัดไป
-      const nextMonth = targetMonth === 11 ? 0 : targetMonth + 1;
-      const nextYear = targetMonth === 11 ? startYear + 1 : startYear;
-      const end = cycleStartForMonth(nextYear, nextMonth, birthDay);
-
-      const items = [];
-      let index = 0;
-      for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {
-        const house = HOUSES[index % HOUSES.length];
-        const d = new Date(cursor);
-        items.push({ date: d, house, order: index, key: dateKey(d) });
-        index++;
-      }
-
-      const endDisplay = new Date(end - 86400000);
+    function readBirthAgeInputs() {
+      syncBirthAgeDayOptions();
       return {
-        items,
-        summary: `${formatDate(start, true)} ถึง ${formatDate(endDisplay, true)}`
+        birthDay: Number($('birthAgeBirthDay').value),
+        birthMonth: Number($('birthAgeBirthMonth').value),
+        birthYear: Number($('birthAgeBirthYear').value),
+        targetDay: Number($('birthAgeTargetDay').value),
+        targetMonth: Number($('birthAgeTargetMonth').value),
+        targetYear: Number($('birthAgeTargetYear').value)
       };
     }
 
-    function nextAnnualStart(adYear, monthIndex, day) {
-      const maxDay = daysInMonth(adYear + 1, monthIndex);
-      return new Date(adYear + 1, monthIndex, Math.min(day, maxDay));
-    }
-
-    function cycleStartForMonth(adYear, monthIndex, day) {
-      return new Date(adYear, monthIndex, Math.min(day, daysInMonth(adYear, monthIndex)));
-    }
-
-    function previousMonthParts(adYear, monthIndex) {
-      return monthIndex === 0
-        ? { year: adYear - 1, month: 11 }
-        : { year: adYear, month: monthIndex - 1 };
-    }
-
-    function cycleStartForOffset(adYear, birthMonth, birthDay, offset) {
-      const absoluteMonth = birthMonth + offset;
-      const year = adYear + Math.floor(absoluteMonth / 12);
-      const month = ((absoluteMonth % 12) + 12) % 12;
-      return cycleStartForMonth(year, month, birthDay);
-    }
-
-    function annualPeriodStarts(adYear, birthMonth, birthDay) {
-      return Array.from({ length: 13 }, (_, index) => (
-        cycleStartForOffset(adYear, birthMonth, birthDay, index)
-      ));
-    }
-
-    function cycleYearForMonth(adYear, birthMonth, targetMonth) {
-      return targetMonth < birthMonth ? adYear + 1 : adYear;
-    }
-
-    function annualBaseYearForDate(date, birthMonth, birthDay) {
-      const startThisYear = cycleStartForMonth(date.getFullYear(), birthMonth, birthDay);
-      return date < startThisYear ? date.getFullYear() - 1 : date.getFullYear();
-    }
-
-    function periodStartForDate(date, birthDay) {
-      let start = cycleStartForMonth(date.getFullYear(), date.getMonth(), birthDay);
-      if (date < start) {
-        const previous = previousMonthParts(date.getFullYear(), date.getMonth());
-        start = cycleStartForMonth(previous.year, previous.month, birthDay);
+    function getRunner() {
+      if (window.google && window.google.script && window.google.script.run) {
+        return window.google.script.run;
       }
-      return start;
+      try {
+        if (window.parent && window.parent.google && window.parent.google.script && window.parent.google.script.run) {
+          return window.parent.google.script.run;
+        }
+      } catch (error) {
+        }
+      return window.OFFLINE_RUNNER || null;
     }
 
-    function buildAnnual() {
-      const { birthDay, birthMonth, beYear, adYear } = readInputs();
+    function callServer(functionName, payload) {
+      return new Promise((resolve, reject) => {
+        const runner = getRunner();
+        if (!runner) {
+          reject(new Error('ต้องเปิดผ่านระบบ Apps Script'));
+          return;
+        }
 
-      if (!beYear) {
-        return { error: 'กรุณาระบุปี พ.ศ.' };
-      }
+        try {
+          if (functionName === 'calculateAge') {
+            runner
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .calculateAge(payload);
+            return;
+          }
 
-      const start = cycleStartForMonth(adYear, birthMonth, birthDay);
-      const end = cycleStartForMonth(adYear + 1, birthMonth, birthDay);
-      const items = [];
+          if (functionName === 'calculateAgeToday') {
+            runner
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .calculateAgeToday(payload);
+            return;
+          }
 
-      for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {
-        const itemDate = new Date(cursor);
-        const periodStart = periodStartForDate(itemDate, birthDay);
-        const offset = Math.round((itemDate - periodStart) / 86400000);
-        const house = HOUSES[offset % HOUSES.length];
-        items.push({
-          date: itemDate,
-          house,
-          order: offset,
-          key: dateKey(cursor),
-          periodKey: dateKey(periodStart)
-        });
-      }
+          if (functionName === 'calculateBirthAge') {
+            runner
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .calculateBirthAge(payload);
+            return;
+          }
 
-      const endDisplay = new Date(end - 86400000);
-      return {
-        items,
-        summary: `${formatDate(start, true)} ถึง ${formatDate(endDisplay, true)}`
-      };
-    }
+          if (functionName === 'calculateBirthAgeToday') {
+            runner
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .calculateBirthAgeToday(payload);
+            return;
+          }
 
-    function buildAnnualMonths() {
-      const { birthDay, birthMonth, beYear, adYear } = readInputs();
-
-      if (!beYear) {
-        return { error: 'กรุณาระบุปี พ.ศ.' };
-      }
-
-      const starts = annualPeriodStarts(adYear, birthMonth, birthDay);
-      const items = starts.slice(0, 12).map((start, index) => {
-        const nextStart = starts[index + 1];
-        const end = new Date(nextStart.getFullYear(), nextStart.getMonth(), nextStart.getDate() - 1);
-        const house = HOUSES[index % HOUSES.length];
-        return {
-          date: start,
-          endDate: end,
-          house,
-          order: index,
-          key: dateKey(start),
-          periodKey: dateKey(start),
-          isPeriod: true
-        };
+          reject(new Error('ไม่พบฟังก์ชันฝั่ง server'));
+        } catch (error) {
+          reject(error);
+        }
       });
+    }
 
+    function parseServerDate(value) {
+      if (value instanceof Date && Number.isFinite(value.getTime())) {
+        return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+      }
+
+      const raw = String(value || '').trim();
+      if (raw.includes('T')) {
+        const parsed = new Date(raw);
+        if (Number.isFinite(parsed.getTime())) {
+          return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+        }
+      }
+
+      const isNeg = raw.startsWith('-');
+      const cleanRaw = isNeg ? raw.slice(1) : raw;
+      const parts = cleanRaw.split('-').map(Number);
+      if (parts.length !== 3 || parts.some((part) => !Number.isFinite(part))) return new Date();
+      let year = parts[0];
+      if (isNeg) year = -year;
+      return new Date(year, parts[1] - 1, parts[2]);
+    }
+
+    function serverItemToClient(item) {
+      const date = parseServerDate(item.key);
+      const endDate = item.endDate ? parseServerDate(item.endDate) : null;
       return {
-        items,
-        summary: `${formatDate(items[0].date, true)} ถึง ${formatDate(items[items.length - 1].endDate, true)}`
+        ...item,
+        date,
+        endDate,
+        order: Number(item.order) || 0,
+        key: item.key || dateKey(date),
+        periodKey: item.periodKey || item.key || dateKey(date),
+        house: item.house || { name: '', short: '', meaning: '', level: 'neutral' }
       };
+    }
+
+    function applyServerResult(result) {
+      if (!result || !result.ok) {
+        const message = result && result.message ? result.message : 'คำนวณไม่สำเร็จ';
+        state.items = [];
+        state.birthAgeResult = null;
+        $('rangeSummary').textContent = '';
+        $('summaryStrip').innerHTML = '';
+        $('notice').textContent = message;
+        $('results').innerHTML = '<div class="empty-state">เลือกวันที่ใหม่อีกครั้ง</div>';
+        return false;
+      }
+
+      state.items = (result.items || []).map(serverItemToClient);
+      state.birthAgeResult = result.mode === 'birth' ? result : null;
+      $('rangeSummary').textContent = result.summary || '';
+      $('notice').textContent = '';
+      
+      if (state.mode === 'year') {
+        buildMonthOptions(state.items);
+      }
+      
+      renderSummaryStrip();
+      renderFilterCounts();
+      renderCards();
+      return true;
+    }
+
+    function showServerError(error) {
+      const message = error && error.message ? error.message : 'เกิดข้อผิดพลาด';
+      state.items = [];
+      state.birthAgeResult = null;
+      $('rangeSummary').textContent = '';
+      $('summaryStrip').innerHTML = '';
+      $('notice').textContent = message;
+      $('results').innerHTML = `<div class="empty-state">เรียกข้อมูลไม่สำเร็จ<br>${message}</div>`;
+      console.error('Age server error:', error);
     }
 
     function periodEndForStart(starts, index, items) {
@@ -2060,7 +2354,7 @@
 
     function filteredItems() {
       return state.items.filter((item) => {
-        if (state.filter !== 'all' && item.house.level !== state.filter) return false;
+        if (state.mode !== 'birth' && state.filter !== 'all' && item.house.level !== state.filter) return false;
         if (state.mode === 'year' && state.resultMonth !== 'all' && item.periodKey !== state.resultMonth) return false;
         return true;
       });
@@ -2080,48 +2374,16 @@
       `;
     }
 
-    function render() {
+    async function render() {
       showSkeletons(6);
-      const result = state.mode === 'month'
-        ? buildMonthly()
-        : state.mode === 'monthYear'
-          ? buildAnnualMonths()
-          : buildAnnual();
-
-      if (result.error) {
-        state.items = [];
-        $('rangeSummary').textContent = '';
-        $('summaryStrip').innerHTML = '';
-        $('notice').textContent = result.error;
-        $('results').innerHTML = '<div class="empty-state">เลือกวันที่ใหม่อีกครั้ง</div>';
-        return;
+      try {
+        const result = state.mode === 'birth'
+          ? await callServer('calculateBirthAge', readBirthAgeInputs())
+          : await callServer('calculateAge', { ...readInputs(), mode: state.mode });
+        applyServerResult(result);
+      } catch (error) {
+        showServerError(error);
       }
-
-      state.items = result.items;
-      
-      // ยึด จรครบ 1 ปี เป็นหลัก เสมอ ไม่เปลี่ยนช่วงวันตามโหมดอื่น
-      const inputs = readInputs();
-      if (inputs.beYear) {
-        let annualStartYear = inputs.adYear;
-        if (state.mode === 'month' && inputs.targetMonth < inputs.birthMonth) {
-          annualStartYear = inputs.adYear - 1;
-        }
-        const annualStart = cycleStartForMonth(annualStartYear, inputs.birthMonth, inputs.birthDay);
-        const annualEnd = cycleStartForMonth(annualStartYear + 1, inputs.birthMonth, inputs.birthDay);
-        const annualEndDisplay = new Date(annualEnd - 86400000);
-        $('rangeSummary').textContent = `${formatDate(annualStart, true)} ถึง ${formatDate(annualEndDisplay, true)}`;
-      } else {
-        $('rangeSummary').textContent = result.summary;
-      }
-      $('notice').textContent = '';
-
-      if (state.mode === 'year') {
-        buildMonthOptions(state.items);
-      }
-
-      renderSummaryStrip();
-      renderFilterCounts();
-      renderCards();
     }
 
     function renderFilterCounts() {
@@ -2178,9 +2440,10 @@
       // ใส่ class ให้ results container เพื่อ override layout
       const resultsEl = $('results');
       resultsEl.classList.toggle('results-period', state.mode === 'monthYear');
+      resultsEl.classList.toggle('results-birth', state.mode === 'birth');
 
       resultsEl.innerHTML = items.map((item, index) => {
-        const includeYear = state.mode === 'year';
+        const includeYear = state.mode === 'year' || state.mode === 'birth';
         const dateLabel = itemDateLabel(item, false);
         const level = item.house.level;
         const levelClass = level === 'neutral' ? '' : level;
@@ -2194,7 +2457,9 @@
         // badge เดือนที่ X — เฉพาะ mode จรเดือน (isPeriod)
         const monthBadge = item.isPeriod
           ? `<span class="month-badge">📅 เดือนที่ ${item.order + 1} &nbsp;·&nbsp; ${THAI_MONTHS_SHORT[item.date.getMonth()]} ${item.date.getFullYear() + 543}</span>`
-          : '';
+          : item.isBirthAge
+            ? `<span class="month-badge">📅 นับได้ ${item.elapsedDays || 0} วัน</span>`
+            : '';
 
         // แสดงจุดสีฟ้าที่มุมการ์ด
         let showDot = false;
@@ -2220,7 +2485,13 @@
         const rightCol = `<span class="level">${levelLabel(level)}</span>`;
 
         // แสดงวันที่แบบ 2 บรรทัดถ้าเป็นช่วง (มี endDate)
-        const dateHtml = item.endDate
+        const dateHtml = item.isBirthAge
+          ? `<span class="date-period">
+               ${monthBadge}
+               <span class="date-period-start">วันที่ดู ${item.targetDateLabel || formatDate(item.date, true)}</span>
+               <span class="date-period-sep">เกิด ${item.birthDateLabel || ''}</span>
+             </span>`
+          : item.endDate
           ? `<span class="date-period">
                ${monthBadge}
                <span class="date-period-start">${formatDate(item.date, true)}</span>
@@ -2235,10 +2506,9 @@
 
         // คำนวณคู่ชงเล็ง เฉพาะเมื่อเป็นโหมดจรวันในเดือน (state.mode === 'month')
         let clashHtml = '';
-        if (state.mode === 'month') {
-          const currentHouseIndex = HOUSES.findIndex(h => h.name === item.house.name);
-          const oppositeHouse = HOUSES[(currentHouseIndex + 6) % 12];
-          clashHtml = ` ➔ ${oppositeHouse.name}`;
+        if (state.mode === 'month' || state.mode === 'birth') {
+          const oppositeName = item.house.oppositeName || '';
+          if (oppositeName) clashHtml = ` ➔ ${oppositeName}`;
         }
 
         return `
@@ -2267,16 +2537,17 @@
       // จัดการการแสดงผลคู่ชงเล็งใน Popup
       const clashEl = $('sheetClash');
       if (clashEl) {
-        if (state.mode === 'month') {
-          const currentHouseIndex = HOUSES.findIndex(h => h.name === item.house.name);
-          const oppositeHouse = HOUSES[(currentHouseIndex + 6) % 12];
-          clashEl.innerHTML = `
-            <div class="sheet-clash-badge">
-              <span>เล็ง/ชง:</span>
-              <strong>${item.house.name} ⚔️ ${oppositeHouse.name}</strong>
-            </div>
-          `;
-          clashEl.style.display = 'block';
+        if (state.mode === 'month' || state.mode === 'birth') {
+          const oppositeName = item.house.oppositeName || '';
+          if (oppositeName) {
+            clashEl.innerHTML = `
+              <div class="sheet-clash-badge">
+                <span>เล็ง/ชง:</span>
+                <strong>${item.house.name} ⚔️ ${oppositeName}</strong>
+              </div>
+            `;
+            clashEl.style.display = 'block';
+          }
         } else {
           clashEl.innerHTML = '';
           clashEl.style.display = 'none';
@@ -2293,10 +2564,12 @@
     function setMode(mode) {
       state.mode = mode;
       state.resultMonth = 'all';
+      state.filter = 'all';
       document.body.dataset.ageMode = mode;
       document.querySelectorAll('[data-mode]').forEach((button) => {
         button.classList.toggle('active', button.dataset.mode === mode);
       });
+      activateFilterButton();
       render();
       saveAgeSettings();
     }
@@ -2335,34 +2608,44 @@
       }
     }
 
-    function jumpToToday() {
-      const today = new Date();
+    async function jumpToToday() {
       state.filter = 'all';
       activateFilterButton();
+      showSkeletons(6);
+      try {
+        if (state.mode === 'birth') {
+          const result = await callServer('calculateBirthAgeToday', readBirthAgeInputs());
+          if (result.today) {
+            $('birthAgeTargetYear').value = String(result.today.targetYear);
+            $('birthAgeTargetMonth').value = String(result.today.targetMonth);
+            $('birthAgeTargetDay').value = String(result.today.targetDay);
+            syncBirthAgeDayOptions();
+          }
+          if (applyServerResult(result)) {
+            saveAgeSettings();
+            const today = result.today && result.today.key ? parseServerDate(result.today.key) : new Date();
+            requestAnimationFrame(() => revealToday(today));
+          }
+          return;
+        }
 
-      const birthDay = Number($('birthDay').value);
-      const birthMonth = Number($('birthMonth').value);
-      const baseYear = annualBaseYearForDate(today, birthMonth, birthDay);
-
-      if (state.mode === 'month') {
-        const periodStart = periodStartForDate(today, birthDay);
-
-        $('targetMonth').value = String(periodStart.getMonth());
-        $('targetYear').value = String(periodStart.getFullYear() + 543);
-        render();
-        requestAnimationFrame(() => revealToday(today));
-        return;
+        const payload = readInputs();
+        payload.mode = state.mode;
+        const result = await callServer('calculateAgeToday', payload);
+        if (result.today) {
+          if (state.mode === 'month') {
+            $('targetMonth').value = String(result.today.targetMonth);
+          }
+          $('targetYear').value = String(result.today.beYear);
+        }
+        if (applyServerResult(result)) {
+          saveAgeSettings();
+          const today = result.today && result.today.key ? parseServerDate(result.today.key) : new Date();
+          requestAnimationFrame(() => revealToday(today));
+        }
+      } catch (error) {
+        showServerError(error);
       }
-
-      if (state.mode === 'monthYear' || state.mode === 'year') {
-        $('targetYear').value = String(baseYear + 543);
-        render();
-        requestAnimationFrame(() => revealToday(today));
-        return;
-      }
-
-      renderCards();
-      requestAnimationFrame(() => revealToday(today));
     }
 
     async function copySummary() {
@@ -2371,9 +2654,9 @@
       const lines = items.map((item) => (
         `${itemDateLabel(item, true)}: ${item.house.name} (${levelLabel(item.house.level)})`
       ));
-      const unit = state.mode === 'monthYear' ? 'เดือน' : 'วัน';
+      const unit = state.mode === 'monthYear' ? 'เดือน' : state.mode === 'birth' ? 'ผล' : 'วัน';
       const more = filteredItems().length > items.length ? `\n...อีก ${filteredItems().length - items.length} ${unit}` : '';
-      const text = [`อายุจรประจำปี`, $('rangeSummary').textContent, ...lines].join('\n') + more;
+      const text = [state.mode === 'birth' ? 'อายุจรเกิด' : 'อายุจรประจำปี', $('rangeSummary').textContent, ...lines].join('\n') + more;
       const copyBtn = $('copyBtn');
       try {
         await navigator.clipboard.writeText(text);
@@ -2437,6 +2720,15 @@
     }
 
     function exportContextLines(itemCount) {
+      if (state.mode === 'birth') {
+        const data = readBirthAgeInputs();
+        return [
+          `เกิดจริง: ${data.birthDay} ${MONTHS[data.birthMonth].full} ${data.birthYear}`,
+          `วันที่ดู: ${data.targetDay} ${MONTHS[data.targetMonth].full} ${data.targetYear}`,
+          `ผลลัพธ์: ${state.birthAgeResult?.pairLabel || 'รอผลคำนวณ'} | แสดง ${itemCount} ผล`
+        ];
+      }
+
       const { birthDay, birthMonth, targetMonth, beYear } = readInputs();
       const filterLabel = state.filter === 'good'
         ? 'เฉพาะวันดี'
@@ -2563,7 +2855,7 @@
       titleGrad.addColorStop(1, gold);
       ctx.fillStyle = titleGrad;
       ctx.font = "800 76px 'K2D', sans-serif";
-      ctx.fillText('อายุจรประจำปี', W / 2, 100);
+      ctx.fillText(state.mode === 'birth' ? 'อายุจรเกิด' : 'อายุจรประจำปี', W / 2, 100);
 
       // กรอบใต้ชื่อ
       ctx.strokeStyle = gold;
@@ -2680,7 +2972,10 @@
         ctx.font = longAnnual ? "800 23px 'K2D', sans-serif" : "800 31px 'K2D', sans-serif";
         ctx.fillStyle = accent;
         const nameX = longAnnual ? x + 200 : x + 240;
-        ctx.fillText(item.house.name, nameX, y + (longAnnual ? 30 : 36));
+        const houseTitle = state.mode === 'birth' && item.house.oppositeName
+          ? `${item.house.name} -> ${item.house.oppositeName}`
+          : item.house.name;
+        ctx.fillText(houseTitle, nameX, y + (longAnnual ? 30 : 36));
 
         // คำอธิบายสั้น
         ctx.font = longAnnual ? "600 16px 'K2D', sans-serif" : "600 22px 'K2D', sans-serif";
@@ -2717,7 +3012,7 @@
       footerGrad.addColorStop(1, gold);
       ctx.fillStyle = footerGrad;
       ctx.font = "700 26px 'K2D', sans-serif";
-      ctx.fillText('✨ อายุจรประจำปี — โหราศาสตร์ไทย ✨', W / 2, H - footerHeight + 48);
+      ctx.fillText(state.mode === 'birth' ? '✨ อายุจรเกิด — โหราศาสตร์ไทย ✨' : '✨ อายุจรประจำปี — โหราศาสตร์ไทย ✨', W / 2, H - footerHeight + 48);
       ctx.fillStyle = muted;
       ctx.font = "600 22px 'K2D', sans-serif";
       ctx.fillText('Developed with ❤️ by คนโบราณ', W / 2, H - footerHeight + 80);
@@ -2726,6 +3021,12 @@
     }
 
     function exportFileName() {
+      if (state.mode === 'birth') {
+        const data = readBirthAgeInputs();
+        const target = `${data.targetYear}-${String(data.targetMonth + 1).padStart(2, '0')}-${String(data.targetDay).padStart(2, '0')}`;
+        return `age-birth-${target}.png`;
+      }
+
       const { birthDay, birthMonth, targetMonth, beYear } = readInputs();
       const day = String(birthDay).padStart(2, '0');
       const birthMonthPart = String(birthMonth + 1).padStart(2, '0');
@@ -2796,8 +3097,8 @@
 
       const file = new File([blob], filename, { type: 'image/png' });
       const shareData = {
-        title: 'อายุจรประจำปี',
-        text: $('rangeSummary').textContent || 'อายุจรประจำปี',
+        title: state.mode === 'birth' ? 'อายุจรเกิด' : 'อายุจรประจำปี',
+        text: $('rangeSummary').textContent || (state.mode === 'birth' ? 'อายุจรเกิด' : 'อายุจรประจำปี'),
         files: [file]
       };
 
@@ -3024,6 +3325,8 @@
         $('birthMonth').value = String(today.getMonth());
         $('targetMonth').value = String(today.getMonth());
         $('targetYear').value = String(today.getFullYear() + 543);
+        setDefaultBirthAgeInputs();
+        syncBirthAgeDayOptions();
         state.filter = 'all';
         activateFilterButton();
         render();
@@ -3081,6 +3384,14 @@
         });
       });
 
+      ['birthAgeBirthDay', 'birthAgeBirthMonth', 'birthAgeBirthYear', 'birthAgeTargetDay', 'birthAgeTargetMonth', 'birthAgeTargetYear'].forEach((id) => {
+        $(id).addEventListener('input', () => {
+          syncBirthAgeDayOptions();
+          if (state.mode === 'birth') render();
+          saveAgeSettings();
+        });
+      });
+
       $('resultMonth').addEventListener('input', () => {
         state.resultMonth = $('resultMonth').value;
         renderCards();
@@ -3104,9 +3415,27 @@
       });
 
       document.querySelectorAll('a').forEach((link) => {
-        link.addEventListener('click', () => {
-          saveMusicState();
-          saveAgeSettings();
+        link.addEventListener('click', (event) => {
+          const href = link.getAttribute('href') || '';
+          if (window.parent && typeof window.parent.loadPage === 'function' && link.closest('.tool-nav')) {
+            event.preventDefault();
+            let targetPageId = '';
+            if (href.includes('index.html')) {
+              targetPageId = 'TEACHER_ZODIAC';
+            } else if (href.includes('songkran-zodiac-daily.html')) {
+              targetPageId = 'TEACHER_DAILY';
+            } else if (href.includes('age-cycle.html')) {
+              targetPageId = 'TEACHER_AGE';
+            }
+            if (targetPageId) {
+              saveMusicState();
+              saveAgeSettings();
+              window.parent.loadPage(targetPageId);
+            }
+          } else {
+            saveMusicState();
+            saveAgeSettings();
+          }
         });
       });
 

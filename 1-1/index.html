@@ -101,14 +101,13 @@
     .theme-selector {
       position: fixed;
       top: 12px;
-      right: 12px;
+      right: max(12px, calc(50% - 310px - 68px)) !important;
       z-index: 1000;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       gap: 10px;
     }
-
     .theme-main-btn {
       width: 48px;
       height: 48px;
@@ -311,6 +310,68 @@
     .canvas-wrap canvas {
       width: 100%;
       height: 100%
+    }
+
+    /* Public Zodiac dimensional controls and public-pack navigation */
+    .tool-nav {
+      box-shadow:
+        0 0 22px color-mix(in srgb, var(--card-border) 24%, transparent),
+        0 10px 28px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      background: linear-gradient(180deg, color-mix(in srgb, var(--ctrl-bg) 94%, #ffffff 6%), color-mix(in srgb, var(--ctrl-bg) 86%, #000000 14%));
+    }
+
+    .tool-nav a {
+      border: 1px solid transparent;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--ctrl-bg) 72%, #ffffff 10%), color-mix(in srgb, var(--ctrl-bg) 82%, #000000 12%));
+      text-shadow: 0 0 8px color-mix(in srgb, var(--card-border) 22%, transparent);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -8px 14px rgba(0, 0, 0, 0.16);
+      transition: transform 0.16s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    }
+
+    .tool-nav a:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .tool-nav a.active {
+      background: linear-gradient(180deg, #fff9d7 0%, var(--card-border) 52%, color-mix(in srgb, var(--card-border) 74%, #7a4b00 26%) 100%);
+      color: var(--bg);
+      border-color: color-mix(in srgb, var(--card-border) 74%, #ffffff);
+      box-shadow:
+        0 0 18px color-mix(in srgb, var(--card-border) 38%, transparent),
+        0 8px 18px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        inset 0 -10px 18px rgba(116, 72, 0, 0.16);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+
+    .controls button {
+      border-radius: 50%;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--ctrl-bg) 76%, #ffffff 12%), color-mix(in srgb, var(--ctrl-bg) 82%, #000000 14%));
+      box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -8px 14px rgba(0, 0, 0, 0.16);
+      transition: transform 0.16s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    }
+
+    .controls button:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .controls button:active {
+      transform: scale(0.94);
+    }
+
+    .controls input {
+      border-radius: 10px;
+      box-shadow:
+        inset 0 2px 5px rgba(0, 0, 0, 0.18),
+        0 6px 16px rgba(0, 0, 0, 0.12);
     }
 
     .bottom-text {
@@ -801,6 +862,7 @@
 
 
 
+  <script src="../offline-runner.js"></script>
 </head>
 
 <body class="theme-royal">
@@ -852,6 +914,9 @@
     <button id="resetBtn" class="reset-btn" type="button" title="รีเซ็ต">↺</button>
   </div>
 
+  <div class="canvas-wrap">
+    <canvas id="wheelCanvas" width="1500" height="1500"></canvas>
+  </div>
   <section class="birth-panel" aria-label="ปีเกิดและเปรียบดวง">
     <div class="birth-grid">
       <div class="birth-field">
@@ -861,10 +926,6 @@
     </div>
     <div id="personalCard" class="personal-card" aria-live="polite"></div>
   </section>
-
-  <div class="canvas-wrap">
-    <canvas id="wheelCanvas" width="1500" height="1500"></canvas>
-  </div>
   <div class="bottom-text">นับจากปีเกิดไปหาปีสงกรานต์</div>
   <div class="credit">Developed with ❤️ by คนโบราณ</div>
 
@@ -915,70 +976,96 @@
       }
     }
 
-    const Z = [
-      { thai: "ชวด", animal: "หนู", en: "Rat", img: "assets/zodiac_rat.png" },
-      { thai: "ฉลู", animal: "วัว", en: "Ox", img: "assets/zodiac_ox.png" },
-      { thai: "ขาล", animal: "เสือ", en: "Tiger", img: "assets/zodiac_tiger.png" },
-      { thai: "เถาะ", animal: "กระต่าย", en: "Rabbit", img: "assets/zodiac_rabbit.png" },
-      { thai: "มะโรง", animal: "มังกร", en: "Dragon", img: "assets/zodiac_dragon.png" },
-      { thai: "มะเส็ง", animal: "งู", en: "Snake", img: "assets/zodiac_snake.png" },
-      { thai: "มะเมีย", animal: "ม้า", en: "Horse", img: "assets/zodiac_horse.png" },
-      { thai: "มะแม", animal: "แพะ", en: "Sheep", img: "assets/zodiac_goat.png" },
-      { thai: "วอก", animal: "ลิง", en: "Monkey", img: "assets/zodiac_monkey.png" },
-      { thai: "ระกา", animal: "ไก่", en: "Rooster", img: "assets/zodiac_rooster.png" },
-      { thai: "จอ", animal: "สุนัข", en: "Dog", img: "assets/zodiac_dog.png" },
-      { thai: "กุน", animal: "หมู", en: "Pig", img: "assets/zodiac_pig.png" }
-    ];
+    let Z = [];
+    let TK = [];
+    let RASI = [];
     const loadedImgs = {};
     let imgsLoaded = 0;
-    Z.forEach(z => {
-      const img = new Image();
-      img.src = z.img;
-      img.onload = () => {
-        imgsLoaded++;
-        if (imgsLoaded === 12) render();
-      };
-      loadedImgs[z.en] = img;
-    });
-    const TK = [
-      { name: "ตนุ", bad: false },
-      { name: "กดุมภะ", bad: false },
-      { name: "สหัชชะ", bad: false },
-      { name: "พันธุ", bad: false },
-      { name: "ปุตตะ", bad: false },
-      { name: "อริ", bad: true },
-      { name: "ปัตตนิ", bad: false },
-      { name: "มรณะ", bad: true },
-      { name: "ศุภะ", bad: false },
-      { name: "กัมมะ", bad: false },
-      { name: "ลาภะ", bad: false },
-      { name: "วินาสน์", bad: true }
-    ];
-    const RASI = [
-      { name: "เมษ", number: "๓" },
-      { name: "พฤษภ", number: "๖" },
-      { name: "เมถุน", number: "๔" },
-      { name: "กรกฎ", number: "๒" },
-      { name: "สิงห์", number: "๑" },
-      { name: "กันย์", number: "๔" },
-      { name: "ตุลย์", number: "๖" },
-      { name: "พิจิก", number: "๓" },
-      { name: "ธนู", number: "๕" },
-      { name: "มังกร", number: "๗" },
-      { name: "กุมภ์", number: "๘" },
-      { name: "มีน", number: "๕" }
-    ];
-    const BY = 2569, BI = 6;
+    let serverCurrentYear = 0;
+    let currentAnnualIndex = 0;
+    let currentZodiacResult = null;
+    let zodiacRequestKey = '';
+    const zodiacResultCache = new Map();
+    let zodiacRenderTimer = null;
+    let zodiacRenderToken = 0;
+    const ZODIAC_INPUT_DELAY = 400;
+
     function mod(v, n) { return ((v % n) + n) % n }
-    function y2i(y) { return mod(Number(y) - BY + BI, 12) }
     function toR(d) { return d * Math.PI / 180 }
     function ang(i) { return -90 - i * 30 }
-    function currentBEYear() {
-      const now = new Date();
-      const be = now.getFullYear() + 543;
-      const songkranStart = new Date(now.getFullYear(), 3, 13);
-      return now >= songkranStart ? be : be - 1;
+
+    function getRunner() {
+      if (window.google && window.google.script && window.google.script.run) {
+        return window.google.script.run;
+      }
+      try {
+        if (window.parent && window.parent.google && window.parent.google.script && window.parent.google.script.run) {
+          return window.parent.google.script.run;
+        }
+      } catch (error) {
+        }
+      return window.OFFLINE_RUNNER || null;
     }
+
+    function callServer(functionName, payload) {
+      return new Promise((resolve, reject) => {
+        const runner = getRunner();
+        if (!runner) {
+          reject(new Error('ต้องเปิดผ่านระบบ Apps Script'));
+          return;
+        }
+
+        try {
+          if (functionName === 'getZodiacWheelData') {
+            runner
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .getZodiacWheelData(payload);
+            return;
+          }
+
+          if (functionName === 'calculateZodiacWheel') {
+            runner
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .calculateZodiacWheel(payload);
+            return;
+          }
+
+          reject(new Error('ไม่พบฟังก์ชันฝั่ง server'));
+        } catch (error) {
+          reject(error);
+        }
+      });
+    }
+
+    async function loadZodiacWheelData() {
+      const result = await callServer('getZodiacWheelData', {});
+      if (!result || !result.ok) throw new Error('เรียกข้อมูลไม่สำเร็จ');
+      Z = result.zodiacs || [];
+      TK = result.taksa || [];
+      RASI = result.rasi || [];
+      serverCurrentYear = Number(result.currentYear) || new Date().getFullYear() + 543;
+      preloadZodiacImages();
+    }
+
+    function preloadZodiacImages() {
+      imgsLoaded = 0;
+      Z.forEach(z => {
+        const img = new Image();
+        img.src = z.img;
+        img.onload = () => {
+          imgsLoaded++;
+          if (imgsLoaded === Z.length) render();
+        };
+        loadedImgs[z.en] = img;
+      });
+    }
+
+    function currentBEYear() {
+      return serverCurrentYear || new Date().getFullYear() + 543;
+    }
+
     function selectedYear() {
       const y = Number(document.getElementById('yearInput').value);
       return Number.isFinite(y) && y >= 1 && y <= 3000 ? y : currentBEYear();
@@ -999,28 +1086,6 @@
     const PROFILE_COLORS = ['#1f9d55', '#2f80ed'];
     let birthProfiles = [];
 
-    function profileFromInput(inputId, order, ai) {
-      const el = document.getElementById(inputId);
-      if (!el) return null;
-      const raw = String(el.value || '').trim();
-      if (raw.length < 4) return null;
-      const year = Number(raw);
-      if (!Number.isFinite(year) || year < 1 || year > 3000) return null;
-      const zi = y2i(year);
-      const ti = mod(ai - zi, 12);
-      const tk = TK[ti];
-      return {
-        order,
-        year,
-        zodiacIndex: zi,
-        zodiac: Z[zi],
-        taksaIndex: ti,
-        taksa: tk,
-        isBad: tk.bad,
-        color: PROFILE_COLORS[order - 1] || '#ffd700'
-      };
-    }
-
     function taksaStatus(profile) {
       return profile.isBad ? 'ร้าย' : 'ดี';
     }
@@ -1034,9 +1099,11 @@
     }
 
     function updateBirthProfiles(ai, y) {
-      birthProfiles = [
-        profileFromInput('birthYearA', 1, ai)
-      ].filter(Boolean);
+      birthProfiles = (currentZodiacResult && currentZodiacResult.profiles ? currentZodiacResult.profiles : [])
+        .map((profile) => ({
+          ...profile,
+          color: PROFILE_COLORS[profile.order - 1] || '#ffd700'
+        }));
 
       const panel = document.querySelector('.birth-panel');
       const personalCard = document.getElementById('personalCard');
@@ -1367,8 +1434,9 @@
       drawAstroSeal(isSolar, isRoyal, isSacred, RC);
 
       for (let i = 0; i < 12; i++) {
-        const ti = mod(ai - i, 12);
-        const tk = TK[ti];
+        const slot = currentZodiacResult && currentZodiacResult.slots ? currentZodiacResult.slots[i] : null;
+        const ti = slot ? slot.taksaIndex : i;
+        const tk = slot ? slot.taksa : TK[ti];
         const a = toR(ang(i));
 
         const textCol = isSolar ? '#1a1a1a' : (isRoyal ? '#ffd700' : '#f0e6c8');
@@ -1464,7 +1532,7 @@
         if (p.life <= 0) FX.particles.splice(i, 1);
       }
 
-      draw(y2i(selectedYear()));
+      draw(currentAnnualIndex);
       requestAnimationFrame(animate);
     }
 
@@ -1473,19 +1541,64 @@
     }
 
 
-    function render() {
+    function zodiacBirthYears() {
+      const el = document.getElementById('birthYearA');
+      return [el ? el.value : ''];
+    }
+
+    async function render() {
+      if (!Z.length || !TK.length || !RASI.length) return;
       const y = selectedYear();
-      const ai = y2i(y);
-      document.getElementById('mainTitle').textContent = `13 เมษา ${y} ปี${Z[ai].thai}`;
-      const clashIndex = mod(ai + 6, 12);
-      document.getElementById('pageSubtitle').textContent = `ปี${Z[ai].thai} ชงปะทะ ปี${Z[clashIndex].thai} · 13 เม.ย. ${y} — 12 เม.ย. ${y + 1}`;
+      const birthYears = zodiacBirthYears();
+      const key = JSON.stringify({ y, birthYears });
+      if (key !== zodiacRequestKey) {
+        zodiacRequestKey = key;
+        try {
+          let nextResult;
+          if (zodiacResultCache.has(key)) {
+            nextResult = zodiacResultCache.get(key);
+          } else {
+            nextResult = await callServer('calculateZodiacWheel', { year: y, birthYears });
+            if (nextResult && nextResult.ok) {
+              zodiacResultCache.set(key, nextResult);
+            }
+          }
+          if (zodiacRequestKey !== key) return;
+          currentZodiacResult = nextResult;
+          if (!currentZodiacResult || !currentZodiacResult.ok) throw new Error('คำนวณไม่สำเร็จ');
+          currentAnnualIndex = currentZodiacResult.annualIndex;
+        } catch (error) {
+          currentZodiacResult = null;
+          return;
+        }
+      }
+      const ai = currentAnnualIndex;
+      const annual = currentZodiacResult.annual || Z[ai];
+      const clash = currentZodiacResult.clash || Z[currentZodiacResult.clashIndex];
+      document.getElementById('mainTitle').textContent = `13 เมษา ${y} ปี${annual.thai}`;
+      document.getElementById('pageSubtitle').textContent = `ปี${annual.thai} ชงปะทะ ปี${clash.thai} · 13 เม.ย. ${y} — 12 เม.ย. ${y + 1}`;
       updateBirthProfiles(ai, y);
       // draw is handled by animate loop
     }
 
-    document.getElementById('yearInput').value = currentBEYear();
-    render();
-    requestAnimationFrame(animate);
+    function scheduleZodiacRender() {
+      clearTimeout(zodiacRenderTimer);
+      zodiacRenderTimer = setTimeout(() => {
+        const token = ++zodiacRenderToken;
+        render().then(() => {
+          if (token !== zodiacRenderToken) return;
+        });
+      }, ZODIAC_INPUT_DELAY);
+    }
+
+    async function initZodiacPage() {
+      await loadZodiacWheelData();
+      document.getElementById('yearInput').value = currentBEYear();
+      await render();
+      requestAnimationFrame(animate);
+    }
+
+    initZodiacPage();
 
 
 
@@ -1493,7 +1606,7 @@
       const input = document.getElementById('yearInput');
       input.value = selectedYear() + delta;
       triggerFX();
-      render();
+      scheduleZodiacRender();
     }
 
     document.getElementById('prevYear').onclick = () => {
@@ -1506,11 +1619,11 @@
       document.getElementById('yearInput').value = currentBEYear();
       document.getElementById('birthYearA').value = '';
       createSparkles();
-      render();
+      scheduleZodiacRender();
     };
     document.getElementById('yearInput').addEventListener('input', () => {
       triggerFX();
-      render();
+      scheduleZodiacRender();
     });
 
     const wheelWrap = document.querySelector('.canvas-wrap');
@@ -1543,7 +1656,7 @@
       if (!input) return;
       input.addEventListener('input', () => {
         createSparkles();
-        render();
+        scheduleZodiacRender();
       });
     });
 
@@ -1591,7 +1704,7 @@
 
     function createExportCanvas() {
       const y = selectedYear();
-      const ai = y2i(y);
+      const ai = currentAnnualIndex;
       updateBirthProfiles(ai, y);
       draw(ai);
 
@@ -1691,7 +1804,7 @@
     }
 
     async function saveCurrentImage() {
-      render();
+      await render();
       const canvas = createExportCanvas();
       const blob = await canvasToBlob(canvas);
       if (!blob) return;
@@ -1700,7 +1813,7 @@
     }
 
     async function shareCurrentImage() {
-      render();
+      await render();
       const canvas = createExportCanvas();
       const filename = exportFileName();
       const y = selectedYear();

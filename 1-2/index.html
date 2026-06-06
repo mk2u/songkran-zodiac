@@ -133,14 +133,13 @@
     .theme-selector {
       position: fixed;
       top: 12px;
-      right: 12px;
+      right: max(12px, calc(50% - 380px - 68px)) !important;
       z-index: 30;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       gap: 10px;
     }
-
     .theme-main-btn {
       width: 48px;
       height: 48px;
@@ -250,6 +249,8 @@
       line-height: 1.35;
       padding: 0.04em 0 0.16em;
       text-shadow: 0 0 10px var(--title-shadow);
+      position: relative;
+      display: inline-block;
     }
 
     .range-summary {
@@ -1058,12 +1059,10 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* เมื่อ sheet เปิด ให้ซ่อนปุ่มไว้ด้านหลัง sheet */
+    /* เมื่อ sheet เปิด ปุ่มขึ้นไปอยู่เหนือ sheet */
     .sheet-overlay.open~#scrollTopBtn,
     body:has(.sheet-overlay.open) #scrollTopBtn {
-      opacity: 0;
-      pointer-events: none;
-      transform: translateX(-50%) translateY(80px);
+      bottom: calc(60vh + 16px);
     }
 
     #scrollTopBtn:hover {
@@ -1168,6 +1167,60 @@
 
     .filter-row button.active .filter-count {
       background: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Public Age dimensional main buttons. */
+    .segmented button,
+    .filter-row button,
+    .action-row button {
+      position: relative;
+      overflow: hidden;
+      border-width: 1.5px;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--ctrl-bg) 78%, #ffffff 12%), color-mix(in srgb, var(--ctrl-bg) 86%, #000000 14%));
+      box-shadow:
+        0 8px 18px color-mix(in srgb, var(--shadow) 70%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -8px 14px rgba(0, 0, 0, 0.14);
+      transition: transform 0.16s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    }
+
+    .segmented button:hover,
+    .filter-row button:hover,
+    .action-row button:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .segmented button:active,
+    .filter-row button:active,
+    .action-row button:active {
+      transform: scale(0.96);
+    }
+
+    .segmented button.active,
+    .filter-row button.active,
+    #todayBtn {
+      background: linear-gradient(180deg, #fff9d7 0%, var(--card-border) 52%, color-mix(in srgb, var(--card-border) 74%, #7a4b00 26%) 100%);
+      color: var(--bg);
+      border-color: color-mix(in srgb, var(--card-border) 72%, #ffffff);
+      box-shadow:
+        0 0 18px color-mix(in srgb, var(--card-border) 38%, transparent),
+        0 8px 18px color-mix(in srgb, var(--shadow) 78%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        inset 0 -10px 18px rgba(116, 72, 0, 0.16);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.42);
+    }
+
+    .filter-row button[data-filter="good"].active {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--good) 54%, #ffffff) 0%, var(--good) 100%);
+      color: #ffffff;
+      box-shadow: 0 0 18px var(--good-glow), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+    }
+
+    .filter-row button[data-filter="caution"].active {
+      background: linear-gradient(180deg, color-mix(in srgb, var(--caution) 54%, #ffffff) 0%, var(--caution) 100%);
+      color: #ffffff;
+      box-shadow: 0 0 18px var(--caution-glow), inset 0 1px 0 rgba(255, 255, 255, 0.38);
     }
 
     /* ── VOL CONTAINER HIDDEN CLASS ── */
@@ -1447,13 +1500,14 @@
     /* ── RESET BUTTON ── */
     #resetBtn {
       position: absolute;
-      top: 14px;
-      right: 4px;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%) translateY(-2px);
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border: 1.5px solid var(--ctrl-border);
       background: var(--ctrl-bg);
       color: var(--ctrl-text);
@@ -1462,9 +1516,10 @@
       font-weight: 800;
       cursor: pointer;
       border-radius: 50%;
-      opacity: 0.76;
+      opacity: 0.8;
       transition: opacity 0.2s, transform 0.18s ease, box-shadow 0.18s ease;
       line-height: 1;
+      margin-left: 12px;
       -webkit-text-fill-color: initial;
       filter: none;
       padding: 0;
@@ -1474,10 +1529,11 @@
     #resetBtn:hover {
       opacity: 1;
       box-shadow: 0 6px 18px var(--shadow);
+      transform: scale(1.08) translateY(-50%) translateY(-2px);
     }
 
     #resetBtn:active {
-      transform: scale(0.94);
+      transform: scale(0.92) translateY(-50%) translateY(-2px);
     }
 
     #resetBtn.spinning {
@@ -1486,15 +1542,16 @@
 
     @keyframes resetSpin {
       from {
-        transform: rotate(0deg);
+        transform: scale(1) translateY(-50%) translateY(-2px) rotate(0deg);
       }
 
       to {
-        transform: rotate(360deg);
+        transform: scale(1) translateY(-50%) translateY(-2px) rotate(360deg);
       }
     }
 
   </style>
+  <script src="../offline-runner.js"></script>
 </head>
 
 <body class="theme-royal" data-age-mode="month">
@@ -1531,8 +1588,7 @@
 
   <main class="app-shell">
     <header class="page-head">
-      <button id="resetBtn" type="button" title="รีเซ็ตเป็นวันนี้" aria-label="รีเซ็ตเป็นวันนี้">↺</button>
-      <h1>อายุจรประจำปี</h1>
+      <h1>อายุจรประจำปี <button id="resetBtn" type="button" title="รีเซ็ตเป็นวันนี้" aria-label="รีเซ็ตเป็นวันนี้">↺</button></h1>
       <div class="range-summary" id="rangeSummary"></div>
     </header>
 
@@ -1621,80 +1677,7 @@
       { short: 'ธ.ค.', full: 'ธันวาคม' }
     ];
 
-    const HOUSES = [
-      {
-        name: 'ตนุ',
-        short: 'ตัวเราเอง การเริ่มต้น การตัดสินใจ',
-        meaning: 'ตัวเราเองผู้กระทำเอง สั่งการเอง ลงมือเอง ตัดสินใจเอง',
-        level: 'neutral'
-      },
-      {
-        name: 'กดุมภะ',
-        short: 'การเงิน ทรัพย์ รายรับรายจ่าย',
-        meaning: 'การเงิน ข้อนี้มันร้ายนักจะฆ่ากันตายเพราะเรื่องเงิน',
-        level: 'neutral'
-      },
-      {
-        name: 'สหัชชะ',
-        short: 'การเดินทาง ญาติพี่น้อง เพื่อนฝูง',
-        meaning: 'การเดินทางไกล ใกล้ ญาติพี่น้อง เพื่อนฝูง',
-        level: 'neutral'
-      },
-      {
-        name: 'พันธุ',
-        short: 'บ้าน ที่ดิน พ่อแม่ ญาติ',
-        meaning: 'สมบัติ ที่ดิน งานบ้าน งานข้างนอก พ่อ-แม่ ญาติพี่น้อง',
-        level: 'neutral'
-      },
-      {
-        name: 'ปุตตะ',
-        short: 'รายได้ ลูกบริวาร เงินเข้า',
-        meaning: 'รายได้ ลูกบริวาร การใช้จ่าย มีเงินเข้ามา',
-        level: 'neutral'
-      },
-      {
-        name: 'อริ',
-        short: 'อุปสรรค หนี้สิน ป่วย ถูกโกง',
-        meaning: 'อุปสรรค นานา หนี้สิน วิตก ถูกโกง ป่วยไข้ อุบัติเหตุ ถูกจองจำ ตาย',
-        level: 'caution'
-      },
-      {
-        name: 'ปัตตนิ',
-        short: 'คู่ครอง คู่สัญญา หุ้นส่วน',
-        meaning: 'สามี - ภรรยา คู่สัญญา คู่ชู้ หุ้นส่วน คนรู้จักเก่าแก่',
-        level: 'neutral'
-      },
-      {
-        name: 'มรณะ',
-        short: 'สูญเสีย ห่างไกล ขาดทุน',
-        meaning: 'ความตาย สูญเสีย ห่างไกล ว่างเปล่า ขาดทุน เสียหาย ถูกจองจำ ตาย',
-        level: 'caution'
-      },
-      {
-        name: 'ศุภะ',
-        short: 'ความเจริญรุ่งเรือง',
-        meaning: 'ความเจริญรุ่งเรืองส่วนตัว ทั้งในบ้านและที่ทำงาน',
-        level: 'good'
-      },
-      {
-        name: 'กัมมะ',
-        short: 'งาน การติดต่อ การจัดการ',
-        meaning: 'งานที่ติดต่อ บริหารจัดการ ในครัวเรือน และนอกบ้าน',
-        level: 'neutral'
-      },
-      {
-        name: 'ลาภะ',
-        short: 'โชคลาภ ลาภผล',
-        meaning: 'โชคลาภ ลาภผลที่ได้รับมา จะมีจะหมดว่ากันไป',
-        level: 'good'
-      },
-      {
-        name: 'วินาศ',
-        short: 'สูญเสีย เหนื่อยล้า วิตก',
-        meaning: 'ความสูญเสีย เหนื่อยล้า วิตกกังวล ว่างเปล่า ขาดทุน ถูกจองจำ ตาย',
-        level: 'caution'
-      }
-    ];
+
 
     const state = {
       mode: 'month',
@@ -1840,143 +1823,120 @@
       };
     }
 
-    function buildMonthly() {
-      const { birthDay, birthMonth, targetMonth, beYear, adYear } = readInputs();
-
-      if (!beYear) {
-        return { error: 'กรุณาระบุปี พ.ศ.' };
+    function getRunner() {
+      if (window.google && window.google.script && window.google.script.run) {
+        return window.google.script.run;
       }
-
-      // เดือนที่ดูถูกวางอยู่ในรอบปีหลักที่เริ่มจากเดือนเกิด
-      const startYear = adYear;
-      const start = cycleStartForMonth(startYear, targetMonth, birthDay);
-
-      // end = วันก่อน birthDay ของเดือนถัดไป
-      const nextMonth = targetMonth === 11 ? 0 : targetMonth + 1;
-      const nextYear = targetMonth === 11 ? startYear + 1 : startYear;
-      const end = cycleStartForMonth(nextYear, nextMonth, birthDay);
-
-      const items = [];
-      let index = 0;
-      for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {
-        const house = HOUSES[index % HOUSES.length];
-        const d = new Date(cursor);
-        items.push({ date: d, house, order: index, key: dateKey(d) });
-        index++;
-      }
-
-      const endDisplay = new Date(end - 86400000);
-      return {
-        items,
-        summary: `${formatDate(start, true)} ถึง ${formatDate(endDisplay, true)}`
-      };
+      try {
+        if (window.parent && window.parent.google && window.parent.google.script && window.parent.google.script.run) {
+          return window.parent.google.script.run;
+        }
+      } catch (error) {
+        }
+      return window.OFFLINE_RUNNER || null;
     }
 
-    function nextAnnualStart(adYear, monthIndex, day) {
-      const maxDay = daysInMonth(adYear + 1, monthIndex);
-      return new Date(adYear + 1, monthIndex, Math.min(day, maxDay));
-    }
+    function callServer(functionName, payload) {
+      return new Promise((resolve, reject) => {
+        const runner = getRunner();
+        if (!runner) {
+          reject(new Error('ต้องเปิดผ่านระบบ Apps Script'));
+          return;
+        }
 
-    function cycleStartForMonth(adYear, monthIndex, day) {
-      return new Date(adYear, monthIndex, Math.min(day, daysInMonth(adYear, monthIndex)));
-    }
+        try {
+          if (functionName === 'calculateAge') {
+            runner
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .calculateAge(payload);
+            return;
+          }
 
-    function previousMonthParts(adYear, monthIndex) {
-      return monthIndex === 0
-        ? { year: adYear - 1, month: 11 }
-        : { year: adYear, month: monthIndex - 1 };
-    }
+          if (functionName === 'calculateAgeToday') {
+            runner
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .calculateAgeToday(payload);
+            return;
+          }
 
-    function cycleStartForOffset(adYear, birthMonth, birthDay, offset) {
-      const absoluteMonth = birthMonth + offset;
-      const year = adYear + Math.floor(absoluteMonth / 12);
-      const month = ((absoluteMonth % 12) + 12) % 12;
-      return cycleStartForMonth(year, month, birthDay);
-    }
-
-    function annualPeriodStarts(adYear, birthMonth, birthDay) {
-      return Array.from({ length: 13 }, (_, index) => (
-        cycleStartForOffset(adYear, birthMonth, birthDay, index)
-      ));
-    }
-
-    function cycleYearForMonth(adYear, birthMonth, targetMonth) {
-      return targetMonth < birthMonth ? adYear + 1 : adYear;
-    }
-
-    function annualBaseYearForDate(date, birthMonth, birthDay) {
-      const startThisYear = cycleStartForMonth(date.getFullYear(), birthMonth, birthDay);
-      return date < startThisYear ? date.getFullYear() - 1 : date.getFullYear();
-    }
-
-    function periodStartForDate(date, birthDay) {
-      let start = cycleStartForMonth(date.getFullYear(), date.getMonth(), birthDay);
-      if (date < start) {
-        const previous = previousMonthParts(date.getFullYear(), date.getMonth());
-        start = cycleStartForMonth(previous.year, previous.month, birthDay);
-      }
-      return start;
-    }
-
-    function buildAnnual() {
-      const { birthDay, birthMonth, beYear, adYear } = readInputs();
-
-      if (!beYear) {
-        return { error: 'กรุณาระบุปี พ.ศ.' };
-      }
-
-      const start = cycleStartForMonth(adYear, birthMonth, birthDay);
-      const end = cycleStartForMonth(adYear + 1, birthMonth, birthDay);
-      const items = [];
-
-      for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {
-        const itemDate = new Date(cursor);
-        const periodStart = periodStartForDate(itemDate, birthDay);
-        const offset = Math.round((itemDate - periodStart) / 86400000);
-        const house = HOUSES[offset % HOUSES.length];
-        items.push({
-          date: itemDate,
-          house,
-          order: offset,
-          key: dateKey(cursor),
-          periodKey: dateKey(periodStart)
-        });
-      }
-
-      const endDisplay = new Date(end - 86400000);
-      return {
-        items,
-        summary: `${formatDate(start, true)} ถึง ${formatDate(endDisplay, true)}`
-      };
-    }
-
-    function buildAnnualMonths() {
-      const { birthDay, birthMonth, beYear, adYear } = readInputs();
-
-      if (!beYear) {
-        return { error: 'กรุณาระบุปี พ.ศ.' };
-      }
-
-      const starts = annualPeriodStarts(adYear, birthMonth, birthDay);
-      const items = starts.slice(0, 12).map((start, index) => {
-        const nextStart = starts[index + 1];
-        const end = new Date(nextStart.getFullYear(), nextStart.getMonth(), nextStart.getDate() - 1);
-        const house = HOUSES[index % HOUSES.length];
-        return {
-          date: start,
-          endDate: end,
-          house,
-          order: index,
-          key: dateKey(start),
-          periodKey: dateKey(start),
-          isPeriod: true
-        };
+          reject(new Error('ไม่พบฟังก์ชันฝั่ง server'));
+        } catch (error) {
+          reject(error);
+        }
       });
+    }
 
+    function parseServerDate(value) {
+      if (value instanceof Date && Number.isFinite(value.getTime())) {
+        return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+      }
+
+      const raw = String(value || '').trim();
+      if (raw.includes('T')) {
+        const parsed = new Date(raw);
+        if (Number.isFinite(parsed.getTime())) {
+          return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+        }
+      }
+
+      const isNeg = raw.startsWith('-');
+      const cleanRaw = isNeg ? raw.slice(1) : raw;
+      const parts = cleanRaw.split('-').map(Number);
+      if (parts.length !== 3 || parts.some((part) => !Number.isFinite(part))) return new Date();
+      let year = parts[0];
+      if (isNeg) year = -year;
+      return new Date(year, parts[1] - 1, parts[2]);
+    }
+
+    function serverItemToClient(item) {
+      const date = parseServerDate(item.key);
+      const endDate = item.endDate ? parseServerDate(item.endDate) : null;
       return {
-        items,
-        summary: `${formatDate(items[0].date, true)} ถึง ${formatDate(items[items.length - 1].endDate, true)}`
+        ...item,
+        date,
+        endDate,
+        order: Number(item.order) || 0,
+        key: item.key || dateKey(date),
+        periodKey: item.periodKey || item.key || dateKey(date),
+        house: item.house || { name: '', short: '', meaning: '', level: 'neutral' }
       };
+    }
+
+    function applyServerResult(result) {
+      if (!result || !result.ok) {
+        const message = result && result.message ? result.message : 'คำนวณไม่สำเร็จ';
+        state.items = [];
+        $('rangeSummary').textContent = '';
+        $('summaryStrip').innerHTML = '';
+        $('notice').textContent = message;
+        $('results').innerHTML = '<div class="empty-state">เลือกวันที่ใหม่อีกครั้ง</div>';
+        return false;
+      }
+
+      state.items = (result.items || []).map(serverItemToClient);
+      $('rangeSummary').textContent = result.summary || '';
+      $('notice').textContent = '';
+      
+      if (state.mode === 'year') {
+        buildMonthOptions(state.items);
+      }
+      
+      renderSummaryStrip();
+      renderFilterCounts();
+      renderCards();
+      return true;
+    }
+
+    function showServerError(error) {
+      const message = error && error.message ? error.message : 'เกิดข้อผิดพลาด';
+      state.items = [];
+      $('rangeSummary').textContent = '';
+      $('summaryStrip').innerHTML = '';
+      $('notice').textContent = message;
+      $('results').innerHTML = `<div class="empty-state">เรียกข้อมูลไม่สำเร็จ<br>${message}</div>`;
+      console.error('Age server error:', error);
     }
 
     function periodEndForStart(starts, index, items) {
@@ -2041,34 +2001,16 @@
       `;
     }
 
-    function render() {
+    async function render() {
       showSkeletons(6);
-      const result = state.mode === 'month'
-        ? buildMonthly()
-        : state.mode === 'monthYear'
-          ? buildAnnualMonths()
-          : buildAnnual();
-
-      if (result.error) {
-        state.items = [];
-        $('rangeSummary').textContent = '';
-        $('summaryStrip').innerHTML = '';
-        $('notice').textContent = result.error;
-        $('results').innerHTML = '<div class="empty-state">เลือกวันที่ใหม่อีกครั้ง</div>';
-        return;
+      try {
+        const payload = readInputs();
+        payload.mode = state.mode;
+        const result = await callServer('calculateAge', payload);
+        applyServerResult(result);
+      } catch (error) {
+        showServerError(error);
       }
-
-      state.items = result.items;
-      $('rangeSummary').textContent = result.summary;
-      $('notice').textContent = '';
-
-      if (state.mode === 'year') {
-        buildMonthOptions(state.items);
-      }
-
-      renderSummaryStrip();
-      renderFilterCounts();
-      renderCards();
     }
 
     function renderFilterCounts() {
@@ -2254,34 +2196,28 @@
       }
     }
 
-    function jumpToToday() {
-      const today = new Date();
+    async function jumpToToday() {
       state.filter = 'all';
       activateFilterButton();
-
-      const birthDay = Number($('birthDay').value);
-      const birthMonth = Number($('birthMonth').value);
-      const baseYear = annualBaseYearForDate(today, birthMonth, birthDay);
-
-      if (state.mode === 'month') {
-        const periodStart = periodStartForDate(today, birthDay);
-
-        $('targetMonth').value = String(periodStart.getMonth());
-        $('targetYear').value = String(periodStart.getFullYear() + 543);
-        render();
-        requestAnimationFrame(() => revealToday(today));
-        return;
+      showSkeletons(6);
+      try {
+        const payload = readInputs();
+        payload.mode = state.mode;
+        const result = await callServer('calculateAgeToday', payload);
+        if (result.today) {
+          if (state.mode === 'month') {
+            $('targetMonth').value = String(result.today.targetMonth);
+          }
+          $('targetYear').value = String(result.today.beYear);
+        }
+        if (applyServerResult(result)) {
+          saveAgeSettings();
+          const today = result.today && result.today.key ? parseServerDate(result.today.key) : new Date();
+          requestAnimationFrame(() => revealToday(today));
+        }
+      } catch (error) {
+        showServerError(error);
       }
-
-      if (state.mode === 'monthYear' || state.mode === 'year') {
-        $('targetYear').value = String(baseYear + 543);
-        render();
-        requestAnimationFrame(() => revealToday(today));
-        return;
-      }
-
-      renderCards();
-      requestAnimationFrame(() => revealToday(today));
     }
 
     async function copySummary() {

@@ -138,14 +138,13 @@
     .theme-selector {
       position: fixed;
       top: calc(12px + var(--safe-top));
-      right: 12px;
+      right: max(12px, calc(50% - 310px - 68px)) !important;
       z-index: 70;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       gap: 10px;
     }
-
     .theme-main-btn {
       width: 48px;
       height: 48px;
@@ -215,24 +214,26 @@
       padding: 10px 0 2px;
       text-align: center;
     }
+
     .tool-nav {
-      width: min(100%, 620px);
+      width: 100%;
+      max-width: 620px;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 6px;
       margin: 68px auto 8px;
       padding: 5px;
-      border: 2px solid var(--ctrl-border);
+      border: 2px solid var(--card-border);
       border-radius: 8px;
       background: var(--ctrl-bg);
     }
 
     .tool-nav a {
       min-width: 0;
-      min-height: 42px;
       display: flex;
       align-items: center;
       justify-content: center;
+      min-height: 42px;
       padding: 4px 6px;
       border-radius: 6px;
       color: var(--ctrl-text);
@@ -248,6 +249,7 @@
       background: var(--card-border);
       color: var(--bg);
     }
+
     .page-head h1 {
       margin: 0;
       color: var(--title);
@@ -281,7 +283,7 @@
       max-width: 760px;
       margin: 6px auto 0;
       color: var(--muted);
-      font-size: clamp(17px, 4.5vw, 22px);
+      font-size: clamp(13px, 3.6vw, 16px);
       font-weight: 700;
       line-height: 1.5;
     }
@@ -299,14 +301,14 @@
       position: relative;
       z-index: 12;
       max-width: 620px;
-      margin: 0 auto;
+      margin: 0 auto 14px;
       padding: 10px;
       backdrop-filter: blur(14px);
     }
 
     .segmented {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 6px;
       margin-bottom: 10px;
     }
@@ -343,6 +345,7 @@
       color: var(--muted);
       font-size: 13px;
       font-weight: 900;
+      text-align: center;
     }
 
     .field input,
@@ -356,14 +359,40 @@
       background: var(--ctrl-bg);
       color: var(--ctrl-text);
       font-weight: 900;
+      text-align: center;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .field > * {
+      width: 100%;
     }
 
     .year-stepper {
       display: grid;
       grid-template-columns: 46px 1fr 46px;
       gap: 6px;
+      width: 100%;
     }
 
+    .year-stepper input {
+      text-align: center;
+    }
+
+    .year-stepper button {
+      min-height: 46px;
+      border: 2px solid var(--ctrl-border);
+      border-radius: 8px;
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer;
+    }
     .year-reset-btn {
       position: absolute;
       left: calc(100% + 8px);
@@ -381,17 +410,6 @@
     }
     .year-reset-btn:active {
       transform: translateY(-50%) scale(0.9);
-    }
-
-    .year-stepper button {
-      min-height: 46px;
-      border: 2px solid var(--ctrl-border);
-      border-radius: 8px;
-      background: var(--ctrl-bg);
-      color: var(--ctrl-text);
-      font-size: 20px;
-      font-weight: 900;
-      cursor: pointer;
     }
 
     .action-row,
@@ -653,7 +671,6 @@
       margin-bottom: 2px;
     }
 
-
     .day-card.main {
       border-color: color-mix(in srgb, var(--good) 56%, var(--card-border));
       border-left-color: var(--good);
@@ -879,6 +896,144 @@
       font-size: 13px;
     }
 
+    /* ── POPUP VS LAYOUT ── */
+    .sheet-clash-vs {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0 8px;
+    }
+
+    .sheet-vs-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 10px;
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      background: var(--surface-2);
+      text-align: center;
+      min-height: 120px;
+    }
+
+    .sheet-vs-box.clash-side {
+      border-color: var(--danger);
+      background: var(--danger-bg);
+    }
+
+    .sheet-vs-box strong {
+      display: block;
+      font-size: 18px;
+      font-weight: 900;
+      margin-top: 8px;
+      color: var(--text);
+    }
+
+    .sheet-vs-box.clash-side strong {
+      color: var(--danger);
+    }
+
+    .sheet-vs-divider {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--muted);
+      user-select: none;
+    }
+
+    /* ── POPUP CHATA CARD ── */
+    .sheet-chata-section {
+      margin-top: 18px;
+      width: 100%;
+    }
+
+    .chata-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 14px;
+      border: 2px solid var(--card-border);
+      border-radius: 14px;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 90%, var(--accent) 10%), var(--surface));
+      box-shadow:
+        0 12px 28px color-mix(in srgb, var(--shadow) 60%, transparent),
+        inset 0 0 16px color-mix(in srgb, var(--accent) 8%, transparent);
+      text-align: center;
+      overflow: visible;
+    }
+
+    .chata-card-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .sheet-chata-icon {
+      display: block;
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 12px color-mix(in srgb, var(--shadow) 40%, transparent));
+    }
+
+    .chata-card-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .chata-label-subtitle {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .chata-main-name {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.15;
+      text-shadow: 0 0 10px color-mix(in srgb, var(--text) 10%, transparent);
+    }
+
+    /* ── POPUP STATUS BADGE ── */
+    .sheet-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 900;
+      margin: 10px 0 4px;
+    }
+
+    .sheet-status-badge.main {
+      background: color-mix(in srgb, var(--good) 18%, var(--surface));
+      color: var(--good);
+      border: 1.5px solid var(--good);
+    }
+
+    .sheet-status-badge.clash {
+      background: color-mix(in srgb, var(--danger) 18%, var(--surface));
+      color: var(--danger);
+      border: 1.5px solid var(--danger);
+    }
+
+    .sheet-status-badge.neutral {
+      background: var(--neutral-bg);
+      color: var(--muted);
+      border: 1.5px solid var(--ctrl-border);
+    }
+
     .audio-group,
     .share-group {
       position: fixed;
@@ -1032,26 +1187,6 @@
     }
 
     @media (max-width: 520px) {
-      .app-shell {
-        padding-right: 6px;
-        padding-left: 6px;
-      }
-
-      .tool-nav {
-        width: 100%;
-        max-width: 620px;
-        gap: 6px;
-        padding: 5px;
-        margin-top: 68px;
-      }
-
-      .tool-nav a {
-        min-height: 42px;
-        padding: 4px 6px;
-        font-size: clamp(14px, 3.8vw, 17px);
-        line-height: 1.2;
-      }
-
       .summary-strip {
         padding: 10px 12px;
         gap: 8px;
@@ -1078,18 +1213,13 @@
         font-size: 15px;
       }
 
+      .tool-nav,
       .segmented,
       .form-grid,
       .filter-row,
       .action-row,
       .sheet-grid {
         grid-template-columns: 1fr;
-      }
-
-      @media (max-width: 340px) {
-        .tool-nav {
-          grid-template-columns: 1fr;
-        }
       }
 
       .control-panel {
@@ -1154,114 +1284,6 @@
       display: none !important;
     }
 
-    /* ── POPUP CLASH VS STYLE ── */
-    .sheet-clash-vs {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 12px;
-      margin: 16px 0 8px;
-    }
-
-    .sheet-vs-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 14px 10px;
-      border: 2px solid var(--card-border);
-      border-radius: 12px;
-      background: var(--surface-2);
-      text-align: center;
-      min-height: 120px;
-    }
-
-    .sheet-vs-box.clash-side {
-      border-color: var(--danger);
-      background: var(--danger-bg);
-    }
-
-    .sheet-vs-box strong {
-      display: block;
-      font-size: 18px;
-      font-weight: 900;
-      margin-top: 8px;
-      color: var(--text);
-    }
-
-    .sheet-vs-box.clash-side strong {
-      color: var(--danger);
-    }
-
-    .sheet-vs-divider {
-      font-size: 26px;
-      font-weight: 900;
-      color: var(--muted);
-      user-select: none;
-    }
-
-    /* ── POPUP CHATA STYLE ── */
-    .sheet-chata-section {
-      margin-top: 18px;
-      width: 100%;
-    }
-
-    .chata-card {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16px 14px;
-      border: 2px solid var(--card-border);
-      border-radius: 14px;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 90%, var(--accent) 10%), var(--surface));
-      box-shadow: 
-        0 12px 28px color-mix(in srgb, var(--shadow) 60%, transparent),
-        inset 0 0 16px color-mix(in srgb, var(--accent) 8%, transparent);
-      text-align: center;
-      overflow: visible;
-    }
-
-    .chata-card-body {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      width: 100%;
-    }
-
-    .sheet-chata-icon {
-      display: block;
-      width: 76px;
-      height: 76px;
-      object-fit: contain;
-      filter: drop-shadow(0 6px 12px color-mix(in srgb, var(--shadow) 40%, transparent));
-    }
-
-    .chata-card-info {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .chata-label-subtitle {
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--accent);
-      letter-spacing: 0.5px;
-      margin-bottom: 2px;
-    }
-
-    .chata-main-name {
-      font-size: 26px;
-      font-weight: 900;
-      color: var(--text);
-      line-height: 1.15;
-      text-shadow: 0 0 10px color-mix(in srgb, var(--text) 10%, transparent);
-    }
-
     /* ── TABLE SECTION ── */
     .table-section {
       width: 100%;
@@ -1293,26 +1315,6 @@
       table-layout: fixed;
       border-collapse: collapse;
       font-size: clamp(12px, 1.4vw, 14px);
-    }
-
-    .col-date {
-      width: 19%;
-    }
-
-    .col-chata {
-      width: 25%;
-    }
-
-    .col-main {
-      width: 21%;
-    }
-
-    .col-sword {
-      width: 8%;
-    }
-
-    .col-clash {
-      width: 27%;
     }
 
     thead th {
@@ -1370,19 +1372,61 @@
       text-align: center;
     }
 
-    tbody td:first-child {
-      text-align: left;
+    .td-clash {
+      color: var(--danger);
+      font-weight: 800;
     }
+
+    .td-main-badge {
+      color: var(--good);
+      font-weight: 800;
+    }
+
+    .td-today-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #1a0a00;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      margin-left: 6px;
+    }
+
+    /* ── TODAY CARD STYLE ── */
+    .day-card.today-card {
+      border-color: var(--accent) !important;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface) 68%) !important;
+      box-shadow: 0 0 0 2px var(--accent), 0 8px 24px var(--shadow) !important;
+      position: relative;
+    }
+
+    .card-today-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--accent);
+      color: #1a0a00;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      width: fit-content;
+      line-height: 1;
+    }
+
+    /* ── Chata Table Columns ── */
+    .col-date { width: 19%; }
+    .col-chata { width: 25%; }
+    .col-main { width: 21%; }
+    .col-sword { width: 8%; }
+    .col-clash { width: 27%; }
 
     .date-cell {
       min-width: 0;
       white-space: nowrap;
-    }
-
-    .date-main {
-      display: block;
-      font-weight: 900;
-      line-height: 1.25;
     }
 
     .chata-cell {
@@ -1414,13 +1458,9 @@
       filter: drop-shadow(0 7px 8px color-mix(in srgb, var(--shadow) 70%, transparent));
     }
 
-    .chata-label {
-      color: var(--muted);
-      font-weight: 800;
-    }
-
     .chata-name {
       color: var(--text);
+      font-weight: 900;
     }
 
     .table-animal-cell {
@@ -1480,6 +1520,14 @@
       filter: drop-shadow(0 4px 6px color-mix(in srgb, var(--shadow) 70%, transparent));
     }
 
+    tbody td:first-child {
+      text-align: left;
+    }
+
+    tbody td {
+      text-align: center;
+    }
+
     @media (max-width: 900px) {
       table {
         display: block;
@@ -1488,6 +1536,13 @@
         max-width: 100%;
         table-layout: auto;
         font-size: 11.5px;
+      }
+
+      .date-cell {
+        min-width: 0;
+        line-height: 1.25;
+        flex-direction: column;
+        align-items: flex-start !important;
       }
 
       thead,
@@ -1532,13 +1587,6 @@
       tbody td:nth-child(4),
       tbody td:nth-child(5) {
         justify-content: center;
-      }
-
-      .date-cell {
-        min-width: 0;
-        line-height: 1.25;
-        flex-direction: column;
-        align-items: flex-start !important;
       }
 
       .chata-cell {
@@ -1595,52 +1643,189 @@
         font-size: 18px;
       }
     }
-
-    .td-clash {
-      color: var(--danger);
-      font-weight: 800;
+    /* Unified Teacher/Owner tool navigation */
+    .tool-nav {
+      width: min(96vw, var(--owner-daily-layout-max, var(--content-width, 620px))) !important;
+      max-width: min(96vw, var(--owner-daily-layout-max, var(--content-width, 620px))) !important;
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 6px !important;
+      margin: 68px auto 8px !important;
+      padding: 5px !important;
+      border: 1.5px solid var(--ctrl-border, var(--card-border, var(--line, #ffd700))) !important;
+      border-radius: 8px !important;
+      background: color-mix(in srgb, var(--ctrl-bg, var(--surface, #061a10)) 88%, transparent) !important;
+      box-shadow: 0 0 18px color-mix(in srgb, var(--card-border, var(--gold, #ffd700)) 18%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+      backdrop-filter: blur(10px);
     }
 
-    .td-main-badge {
-      color: var(--good);
-      font-weight: 800;
+    .tool-nav a {
+      min-width: 0 !important;
+      min-height: 42px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 4px 6px !important;
+      border-radius: 6px !important;
+      color: var(--gold, var(--ctrl-text, var(--text, #ffd700))) !important;
+      font-size: clamp(11px, 3.1vw, 17px) !important;
+      font-weight: 900 !important;
+      line-height: 1.15 !important;
+      text-align: center !important;
+      text-decoration: none !important;
+      overflow-wrap: anywhere !important;
+      word-break: break-word !important;
     }
 
-    .td-today-badge {
-      display: inline-block;
-      background: var(--accent);
-      color: #1a0a00;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 2px 8px;
-      margin-left: 6px;
+    .tool-nav a.active {
+      background: linear-gradient(180deg, var(--gold2, var(--card-border, var(--line, #ffd700))), var(--gold3, var(--accent, var(--ctrl-border, #c8951a)))) !important;
+      color: var(--bg, #061a10) !important;
+      box-shadow: 0 0 16px color-mix(in srgb, var(--gold, var(--card-border, #ffd700)) 28%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
     }
 
-    /* ── TODAY CARD STYLE ── */
-    .day-card.today-card {
-      border-color: var(--accent) !important;
-      background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface) 68%) !important;
-      box-shadow: 0 0 0 2px var(--accent), 0 8px 24px var(--shadow) !important;
-      position: relative;
+    /* Teacher theme-aware dimensional navigation tabs. */
+    .tool-nav {
+      --teacher-nav-active-top: #f8e7a0;
+      --teacher-nav-active-mid: #d7a949;
+      --teacher-nav-active-bottom: #9b741c;
+      --teacher-nav-active-text: #111111;
+      background: linear-gradient(180deg,
+          color-mix(in srgb, var(--ctrl-bg, #f5f5f5) 94%, #ffffff 6%),
+          color-mix(in srgb, var(--ctrl-bg, #f5f5f5) 88%, #000000 12%)) !important;
+      box-shadow:
+        0 10px 24px rgba(0, 0, 0, 0.22),
+        0 0 20px color-mix(in srgb, var(--card-border, var(--ctrl-border, #c8951a)) 24%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -8px 18px rgba(0, 0, 0, 0.1) !important;
     }
 
-    .card-today-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: var(--accent);
-      color: #1a0a00;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 4px;
-      margin-bottom: 6px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-      width: fit-content;
-      line-height: 1;
+    body.theme-sacred .tool-nav {
+      --teacher-nav-active-top: #fff6b7;
+      --teacher-nav-active-mid: #e8c84a;
+      --teacher-nav-active-bottom: #9d7112;
+      --teacher-nav-active-text: #100923;
+    }
+
+    body.theme-royal .tool-nav {
+      --teacher-nav-active-top: #fff9a6;
+      --teacher-nav-active-mid: #ffd700;
+      --teacher-nav-active-bottom: #b8860b;
+      --teacher-nav-active-text: #061a10;
+    }
+
+    .tool-nav a {
+      position: relative !important;
+      overflow: hidden !important;
+      border: 1px solid transparent !important;
+      background: linear-gradient(180deg,
+          color-mix(in srgb, var(--ctrl-bg, #f5f5f5) 92%, #ffffff 8%),
+          color-mix(in srgb, var(--ctrl-bg, #f5f5f5) 88%, #000000 10%)) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -7px 14px rgba(0, 0, 0, 0.08) !important;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.12) !important;
+    }
+
+    .tool-nav a.active {
+      background: linear-gradient(180deg,
+          var(--teacher-nav-active-top) 0%,
+          var(--teacher-nav-active-mid) 52%,
+          var(--teacher-nav-active-bottom) 100%) !important;
+      color: var(--teacher-nav-active-text) !important;
+      border-color: color-mix(in srgb, var(--teacher-nav-active-mid) 70%, #ffffff) !important;
+      box-shadow:
+        0 9px 18px rgba(0, 0, 0, 0.26),
+        0 0 22px color-mix(in srgb, var(--teacher-nav-active-mid) 42%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        inset 0 -10px 18px rgba(88, 53, 0, 0.18) !important;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.34) !important;
+    }
+
+    @media (max-width: 760px) {
+      .tool-nav {
+        width: calc(100vw - 24px) !important;
+        max-width: calc(100vw - 24px) !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 4px !important;
+        padding: 4px !important;
+        margin-top: 64px !important;
+      }
+
+      .tool-nav a {
+        min-height: 42px !important;
+        padding: 3px 2px !important;
+        font-size: clamp(10px, 2.8vw, 13px) !important;
+        line-height: 1.08 !important;
+      }
+    }
+
+    /* Teacher Daily dimensional main buttons. */
+    .segmented button,
+    .filter-row button,
+    .action-row button,
+    .view-switch-row button,
+    #genderSelector button,
+    #birthScopeSelector button,
+    #btnSearchBirth {
+      border: 1.5px solid var(--ctrl-border, var(--card-border, #ffd700)) !important;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0) 44%),
+        color-mix(in srgb, var(--ctrl-bg, var(--card-bg, #062815)) 90%, transparent) !important;
+      box-shadow:
+        0 7px 16px rgba(0, 0, 0, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16),
+        inset 0 -8px 14px rgba(0, 0, 0, 0.13) !important;
+      text-shadow: 0 0 8px color-mix(in srgb, var(--accent, #ffd700) 20%, transparent);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .segmented button:hover,
+    .filter-row button:hover,
+    .action-row button:hover,
+    .view-switch-row button:hover,
+    #genderSelector button:hover,
+    #birthScopeSelector button:hover,
+    #btnSearchBirth:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 10px 20px rgba(0, 0, 0, 0.22),
+        0 0 14px color-mix(in srgb, var(--accent, #ffd700) 18%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -8px 14px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    .segmented button:active,
+    .filter-row button:active,
+    .action-row button:active,
+    .view-switch-row button:active,
+    #genderSelector button:active,
+    #birthScopeSelector button:active,
+    #btnSearchBirth:active {
+      transform: translateY(1px) scale(0.985);
+      box-shadow:
+        0 3px 9px rgba(0, 0, 0, 0.22),
+        inset 0 2px 7px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .segmented button.active,
+    .filter-row button.active,
+    .view-switch-row button.active,
+    #genderSelector button.active,
+    #birthScopeSelector button.active,
+    #todayBtn,
+    #btnSearchBirth {
+      background: linear-gradient(180deg, #fff9d0 0%, #ffe44d 48%, #c8951a 100%) !important;
+      color: #061a10 !important;
+      border-color: var(--accent, #ffd700) !important;
+      box-shadow:
+        0 0 18px color-mix(in srgb, var(--accent, #ffd700) 38%, transparent),
+        0 8px 18px rgba(0, 0, 0, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        inset 0 -10px 18px rgba(116, 72, 0, 0.16) !important;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) !important;
     }
   </style>
+  <script src="../offline-runner.js"></script>
 </head>
 
 <body class="theme-royal" data-view="year">
@@ -1678,20 +1863,21 @@
     <nav class="tool-nav" aria-label="เครื่องมือดูดวง">
       <a href="index.html">ปีนักษัตรสงกรานต์</a>
       <a class="active" href="songkran-zodiac-daily.html">นักษัตรปะทะ</a>
-      <a href="age-cycle.html">อายุจรประจำปี</a>
+      <a href="age-cycle.html">อายุจรเกิด</a>
+          <a href="monthly-zodiac-wheel.html">ลัคนาเดือน</a>
     </nav>
 
     <header class="page-head">
       <h1 id="mainTitle">13 เมษา 2569 ปีมะเมีย</h1>
-      <p class="subtitle" id="pageSubtitle">ปีมะเมีย ชงปะทะ ปีชวด · 13 เม.ย. 2569 — 12 เม.ย. 2570</p>
+      <p class="subtitle" id="pageSubtitle">ปีมะเมีย ปะทะ ปีชวด · 13 เม.ย. 2569 — 12 เม.ย. 2570</p>
     </header>
 
     <section class="control-panel">
-      <div class="segmented" aria-label="มุมมอง" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+      <div class="segmented" aria-label="มุมมอง">
         <button type="button" data-view="today" style="display: none;">วันนี้</button>
         <button type="button" data-view="month" style="display: none;">รายเดือน</button>
-        <button class="active" type="button" data-view="year" style="min-height: 42px;">ครบปี</button>
-        <button type="button" data-view="birth" style="min-height: 42px;">🔍 ค้นหาวันที่ต้องการ</button>
+        <button class="active" type="button" data-view="year">ครบปี</button>
+        <button type="button" data-view="birth">🔍 ค้นหาวันที่ต้องการ</button>
       </div>
 
       <!-- Birth Date Search Panel -->
@@ -1721,18 +1907,19 @@
             <button id="resetYearBtn" class="year-reset-btn" type="button" title="รีเซ็ตปี">↺</button>
           </div>
         </div>
-        <div class="field" style="margin-top: 14px; text-align: center;">
-          <label style="display: block; text-align: center; color: var(--muted); font-size: 13px; font-weight: 900; margin-bottom: 6px;">เพศผู้รับดวงชะตา (ใช้คำนวณนักษัตรรายวัน)</label>
-          <div class="segmented" id="genderSelector" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 auto; max-width: 240px;">
-            <button type="button" id="btnGenderMale" class="active" style="min-height: 42px;">ชาย</button>
-            <button type="button" id="btnGenderFemale" style="min-height: 42px;">หญิง</button>
-          </div>
-        </div>
         <div class="field" style="display: none;">
           <label for="focusAnimal">เลือกนักษัตรที่อยากดู</label>
           <select id="focusAnimal"></select>
         </div>
       </div>
+
+        <div class="field" style="margin-top: 14px; text-align: center; width: 100%;">
+          <label style="display: block; text-align: center; color: var(--muted); font-size: 13px; font-weight: 900; margin-bottom: 6px;">เพศผู้รับดวงชะตา (ใช้คำนวณนักษัตรรายวัน)</label>
+          <div class="segmented" id="genderSelector" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 auto; max-width: 240px; margin-bottom: 0;">
+            <button type="button" id="btnGenderMale" class="active" style="min-height: 42px;">ชาย</button>
+            <button type="button" id="btnGenderFemale" style="min-height: 42px;">หญิง</button>
+          </div>
+        </div>
 
       <div class="month-filter">
         <label for="targetMonth">เดือนในรอบสงกรานต์</label>
@@ -1760,10 +1947,10 @@
     <section class="summary-strip" id="summaryStrip"></section>
     <section class="today-board" id="todayBoard"></section>
     <section class="info-panel" id="infoPanel"></section>
-    <div id="notice" class="notice"></div>
-    <section class="results hidden" id="results"></section>
+    <div class="notice" id="notice"></div>
+    <section class="results" id="results"></section>
 
-    <section class="table-section" id="tableSection">
+    <section class="table-section hidden" id="tableSection">
       <h2>ตารางรวม</h2>
       <div class="table-wrap">
         <table>
@@ -1778,9 +1965,9 @@
             <tr>
               <th>วันที่</th>
               <th>ตกชะตา</th>
-              <th id="thMain">นักษัตร</th>
+              <th id="thMain">นักษัตรหลัก</th>
               <th class="sword-col">ปะทะ</th>
-              <th id="thClash">นักษัตร</th>
+              <th id="thClash">ปะทะ</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -1804,148 +1991,22 @@
   <button id="scrollTopBtn" type="button" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">▲</button>
 
   <script>
-    /*
-      จุดที่แก้ง่าย:
-      - ZODIACS: แก้ชื่อ/คำทำนาย/คำแนะนำของนักษัตร
-      - SONGKRAN_START_MONTH / SONGKRAN_START_DAY: แก้วันเริ่มรอบ
-      - clashIndex(): แก้สูตรปีปะทะ ถ้าตำราต้องการสูตรอื่น
-    */
-    const SONGKRAN_START_MONTH = 3;
-    const SONGKRAN_START_DAY = 13;
-    const SETTINGS_KEY = 'songkranZodiacDailySettingsV2';
+    const SETTINGS_KEY = 'songkranZodiacDailySettingsTeacherV1';
     const THEME_KEY = 'ageCycleTheme';
     const TEACHER_MODE_KEY = 'songkranTeacherMode';
-    const ENABLED_VIEWS = new Set(['today', 'month', 'year', 'birth']);
+    const DAILY_INCLUDE_CHATA = true;
+    const ENABLED_VIEWS = new Set(['year', 'birth']);
 
-    const MONTHS = [
-      { short: 'ม.ค.', full: 'มกราคม' },
-      { short: 'ก.พ.', full: 'กุมภาพันธ์' },
-      { short: 'มี.ค.', full: 'มีนาคม' },
-      { short: 'เม.ย.', full: 'เมษายน' },
-      { short: 'พ.ค.', full: 'พฤษภาคม' },
-      { short: 'มิ.ย.', full: 'มิถุนายน' },
-      { short: 'ก.ค.', full: 'กรกฎาคม' },
-      { short: 'ส.ค.', full: 'สิงหาคม' },
-      { short: 'ก.ย.', full: 'กันยายน' },
-      { short: 'ต.ค.', full: 'ตุลาคม' },
-      { short: 'พ.ย.', full: 'พฤศจิกายน' },
-      { short: 'ธ.ค.', full: 'ธันวาคม' }
-    ];
-
-    const ZODIACS = [
-      {
-        name: 'ชวด',
-        image: 'assets/zodiac_rat.png',
-        short: 'ไหวพริบ ข่าวสาร การเริ่มขยับ',
-        oracle: 'ชวดเป็นจังหวะของความไว คิดเร็ว ติดต่อเร็ว และต้องตัดสินใจให้ทันสถานการณ์',
-        do: ['ใช้ข้อมูลนำทาง', 'คุยงานที่ต้องใช้ไหวพริบ', 'เก็บรายละเอียดเล็กๆ ที่คนอื่นมองข้าม'],
-        watch: ['คิดมากจนลังเล', 'พูดเร็วหรือรับปากเร็วเกินไป']
-      },
-      {
-        name: 'ฉลู',
-        image: 'assets/zodiac_ox.png',
-        short: 'ความอดทน งานหนัก ฐานมั่นคง',
-        oracle: 'ฉลูให้แรงของคนที่ค่อยๆ ทำ แต่ทำแล้วอยู่ได้นาน วันนี้เหมาะกับการวางฐาน',
-        do: ['จัดระบบงาน', 'ทำเรื่องที่ต้องใช้ความอดทน', 'เคลียร์ภาระที่ต้องรับผิดชอบ'],
-        watch: ['ดื้อเงียบ', 'แบกทุกอย่างไว้คนเดียว']
-      },
-      {
-        name: 'ขาล',
-        image: 'assets/zodiac_tiger.png',
-        short: 'อำนาจ การลุย การตัดสินใจ',
-        oracle: 'ขาลเป็นแรงกล้า เหมาะกับการออกหน้า แต่ต้องคุมอารมณ์ให้ดี',
-        do: ['ตัดสินใจเรื่องค้างคา', 'นำทีม', 'เริ่มเรื่องที่ต้องใช้ความกล้า'],
-        watch: ['ปะทะตรงเกินไป', 'ใช้อารมณ์มากกว่าเหตุผล']
-      },
-      {
-        name: 'เถาะ',
-        image: 'assets/zodiac_rabbit.png',
-        short: 'คำพูด ความนุ่มนวล ความสัมพันธ์',
-        oracle: 'เถาะช่วยให้เรื่องแข็งนิ่มลง ใช้การเจรจาและความละมุนจะได้ผลกว่า',
-        do: ['เจรจา ปรับความเข้าใจ', 'ทำงานละเอียด', 'ดูแลความรู้สึกคนใกล้ตัว'],
-        watch: ['เกรงใจจนไม่พูดความจริง', 'ปล่อยเรื่องเล็กให้ค้างนาน']
-      },
-      {
-        name: 'มะโรง',
-        image: 'assets/zodiac_dragon.png',
-        short: 'พลังใหญ่ ผู้ใหญ่ โอกาส',
-        oracle: 'มะโรงเป็นพลังที่อยากยกเรื่องให้ใหญ่ขึ้น เหมาะกับแผนสำคัญและการขอแรงสนับสนุน',
-        do: ['เสนอแผนใหญ่', 'เข้าหาผู้ใหญ่', 'ขยับเรื่องที่ต้องใช้บารมี'],
-        watch: ['มั่นใจเกินจนมองข้ามรายละเอียด', 'รับปากเกินกำลัง']
-      },
-      {
-        name: 'มะเส็ง',
-        image: 'assets/zodiac_snake.png',
-        short: 'ความลึก ความลับ การวางแผน',
-        oracle: 'มะเส็งไม่ใช่วันเสียงดัง แต่เป็นวันที่เหมาะกับการอ่านเกมและเก็บไพ่สำคัญไว้ในมือ',
-        do: ['วางแผนหลังฉาก', 'ตรวจเอกสาร', 'ฟังมากกว่าพูด'],
-        watch: ['ระแวงเกินไป', 'พูดเรื่องลับกับคนที่ยังไม่ชัด']
-      },
-      {
-        name: 'มะเมีย',
-        image: 'assets/zodiac_horse.png',
-        short: 'การเคลื่อนไหว เดินทาง ความคึกคัก',
-        oracle: 'มะเมียคือแรงวิ่งของวัน เหมาะกับการเดินหน้า ติดต่อ เดินทาง และเปิดจังหวะใหม่',
-        do: ['ออกไปพบคน', 'เดินทาง ทำธุระ', 'ผลักเรื่องที่นิ่งให้ขยับ'],
-        watch: ['รีบจนพลาด', 'ใช้แรงเกินกำลัง']
-      },
-      {
-        name: 'มะแม',
-        image: 'assets/zodiac_goat.png',
-        short: 'ความละเมียด บ้านใจ การประคอง',
-        oracle: 'มะแมทำให้เรื่องอ่อนลง เหมาะกับการประคองคน ประคองงาน และทำให้บรรยากาศดีขึ้น',
-        do: ['ดูแลคนในบ้านหรือทีม', 'จัดสิ่งแวดล้อม', 'ใช้ความนุ่มนวลแก้ปัญหา'],
-        watch: ['คิดแทนคนอื่นมากไป', 'อ่อนไหวกับคำพูด']
-      },
-      {
-        name: 'วอก',
-        image: 'assets/zodiac_monkey.png',
-        short: 'พลิกแพลง ไอเดีย การแก้สถานการณ์',
-        oracle: 'วอกเป็นวันของความไวและลูกเล่น เรื่องติดขัดอาจแก้ได้ด้วยทางที่ไม่ตรงไปตรงมา',
-        do: ['ทดลองไอเดีย', 'แก้ปัญหาเฉพาะหน้า', 'ใช้เทคนิคช่วยงาน'],
-        watch: ['เล่นเยอะจนคนไม่มั่นใจ', 'เปลี่ยนแผนบ่อยเกิน']
-      },
-      {
-        name: 'ระกา',
-        image: 'assets/zodiac_rooster.png',
-        short: 'ชื่อเสียง รายละเอียด การประกาศ',
-        oracle: 'ระกาทำให้คนเห็นและได้ยิน เหมาะกับการประกาศ ตรวจงาน และจัดภาพลักษณ์ให้คม',
-        do: ['ส่งงานที่ต้องดูดี', 'ตรวจรายละเอียด', 'พูดให้ชัดและเป็นระบบ'],
-        watch: ['จุกจิกจนเสียเวลา', 'คำพูดแข็งทำให้คนสะดุ้ง']
-      },
-      {
-        name: 'จอ',
-        image: 'assets/zodiac_dog.png',
-        short: 'ความซื่อสัตย์ เพื่อน การปกป้อง',
-        oracle: 'จอเป็นวันของความจริงใจ คนใกล้ตัวและความไว้ใจกันมีน้ำหนักมาก',
-        do: ['คุยตรงๆ แบบรักษาน้ำใจ', 'ช่วยคนที่ควรช่วย', 'ยืนข้างสิ่งที่ถูกต้อง'],
-        watch: ['ปกป้องคนอื่นจนตัวเองเดือดร้อน', 'พูดตรงจนแรง']
-      },
-      {
-        name: 'กุน',
-        image: 'assets/zodiac_pig.png',
-        short: 'ความอุดมสมบูรณ์ การพัก การรับผล',
-        oracle: 'กุนเป็นจังหวะรับผลและเติมกำลัง เหมาะกับการปิดงาน รับของดี หรือพักให้ร่างกายกลับมา',
-        do: ['รับผลจากงานเก่า', 'กิน พัก ฟื้นแรง', 'จัดการทรัพย์สินหรือของใช้'],
-        watch: ['สบายเกินจนงานช้า', 'ใช้จ่ายเพราะอยากให้ตัวเองสบาย']
-      }
-    ];
-
-    const CHATA_SIGNS = [
-      { name: 'เจดีย์', image: 'assets/chata/01_chedi.png' },
-      { name: 'ฉัตรเงิน', image: 'assets/chata/02_chat-ngoen.png' },
-      { name: 'คนคอขาด', image: 'assets/chata/03_khon-kho-khat.png' },
-      { name: 'เรือนหลวง', image: 'assets/chata/04_ruean-luang.png' },
-      { name: 'ปราสาท', image: 'assets/chata/05_prasat.png' },
-      { name: 'ราหู', image: 'assets/chata/06_rahu.png' },
-      { name: 'ฉัตรทอง', image: 'assets/chata/07_chat-thong.png' },
-      { name: 'เทวดาขี่เต่า', image: 'assets/chata/08_thewada-khi-tao.png' },
-      { name: 'คนต้องขื่อคา', image: 'assets/chata/09_khon-tong-khue-kha.png' },
-      { name: 'พ่อหมอ', image: 'assets/chata/10_pho-mo.png' },
-      { name: 'แม่มด', image: 'assets/chata/11_mae-mod.png' },
-      { name: 'นาคราช', image: 'assets/chata/12_nakarat.png' }
-    ];
-
+    let MONTHS = [];
+    let ZODIACS = [];
+    let CHATA_SIGNS = [];
+    let dailyInfo = null;
+    let dailyLoadedYear = 0;
+    let serverDefaultYear = 0;
+    const dailyDataCache = new Map();
+    let dailyYearTimer = null;
+    let dailyRefreshToken = 0;
+    const DAILY_INPUT_DELAY = 400;
     const MUSIC_PLAYLIST = [
       { title: 'โชคชะตาแห่งดวงดาว - Destiny of the Stars', url: 'https://cdn1.suno.ai/b0aadeef-7861-4e8e-b972-f5b1bd76698d.mp3' },
       { title: 'ชะตาแห่งดวงดาว - Destiny of the Stars', url: 'https://cdn1.suno.ai/b1936e1e-2c3e-4c0a-8fe8-e671f31f13bb.mp3' },
@@ -1956,7 +2017,7 @@
     const state = {
       view: 'year',
       filter: 'all',
-      yearBE: currentSongkranBEYear(new Date()),
+      yearBE: currentSongkranBEYear(),
       focusAnimal: 'all',
       monthKey: '',
       displayMode: 'table',
@@ -1974,6 +2035,118 @@
     let musicPlaying = false;
     const zodiacImageCache = new Map();
     let zodiacImagesReady = Promise.resolve();
+
+    function getRunner() {
+      if (window.google && window.google.script && window.google.script.run) {
+        return window.google.script.run;
+      }
+      try {
+        if (window.parent && window.parent.google && window.parent.google.script && window.parent.google.script.run) {
+          return window.parent.google.script.run;
+        }
+      } catch (error) {
+        }
+      return window.OFFLINE_RUNNER || null;
+    }
+
+    function callServer(functionName, payload) {
+      return new Promise((resolve, reject) => {
+        const runner = getRunner();
+        if (!runner) {
+          reject(new Error('ต้องเปิดผ่านระบบ Apps Script'));
+          return;
+        }
+
+        try {
+          if (functionName === 'getDailyData') {
+            runner
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .getDailyData(payload);
+            return;
+          }
+
+          reject(new Error('ไม่พบฟังก์ชันฝั่ง server'));
+        } catch (error) {
+          reject(error);
+        }
+      });
+    }
+
+    function parseServerDate(value) {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? new Date() : date;
+    }
+
+    function applyDailyData(result) {
+      if (!result || !result.ok) throw new Error(result && result.message ? result.message : 'เรียกข้อมูลไม่สำเร็จ');
+      MONTHS = result.months || [];
+      ZODIACS = result.zodiacs || [];
+      CHATA_SIGNS = result.chataSigns || [];
+      dailyLoadedYear = Number(result.yearBE) || 0;
+      serverDefaultYear = serverDefaultYear || dailyLoadedYear;
+      dailyInfo = {
+        ...result.info,
+        start: parseServerDate(result.info.start),
+        end: parseServerDate(result.info.end)
+      };
+      items = (result.items || []).map((item) => ({
+        ...item,
+        date: parseServerDate(item.date),
+        clashAnimal: item.clashAnimal,
+        chata: item.chata
+      }));
+      if (!state.yearBE) state.yearBE = dailyLoadedYear;
+    }
+
+    async function loadDailyData(beYear) {
+      const requestedYear = Number(beYear) || 0;
+      const cacheKey = `${requestedYear}_${state.gender || 'male'}`;
+      
+      if (requestedYear && dailyDataCache.has(cacheKey)) {
+        const cached = dailyDataCache.get(cacheKey);
+        applyDailyData(cached);
+        return cached;
+      }
+      if (!requestedYear && serverDefaultYear) {
+        const defaultCacheKey = `${serverDefaultYear}_${state.gender || 'male'}`;
+        if (dailyDataCache.has(defaultCacheKey)) {
+          const cached = dailyDataCache.get(defaultCacheKey);
+          applyDailyData(cached);
+          return cached;
+        }
+      }
+
+      const result = await callServer('getDailyData', {
+        beYear: beYear || undefined,
+        includeChata: DAILY_INCLUDE_CHATA,
+        gender: state.gender || 'male'
+      });
+      if (result && result.ok && result.yearBE) {
+        const resultKey = `${Number(result.yearBE)}_${state.gender || 'male'}`;
+        dailyDataCache.set(resultKey, result);
+      }
+      applyDailyData(result);
+      return result;
+    }
+
+    async function refreshDailyYear() {
+      const token = ++dailyRefreshToken;
+      try {
+        await loadDailyData(state.yearBE);
+        if (token !== dailyRefreshToken) return;
+        populateControls();
+        render();
+      } catch (error) {
+        $('notice').style.display = 'block';
+        $('notice').textContent = error && error.message ? error.message : 'เรียกข้อมูลไม่สำเร็จ';
+      }
+    }
+
+    function scheduleDailyYearRefresh() {
+      clearTimeout(dailyYearTimer);
+      dailyYearTimer = setTimeout(refreshDailyYear, DAILY_INPUT_DELAY);
+    }
 
     function animalImageTag(animal, className = 'animal-img') {
       return `<img class="${className}" src="${animal.image}" alt="ปี${animal.name}" loading="lazy">`;
@@ -2030,28 +2203,8 @@
       });
     }
 
-    function currentSongkranBEYear(date) {
-      const be = date.getFullYear() + 543;
-      const start = new Date(date.getFullYear(), SONGKRAN_START_MONTH, SONGKRAN_START_DAY);
-      return date >= start ? be : be - 1;
-    }
-
-    function adYear(beYear) {
-      return Number(beYear) - 543;
-    }
-
-    function songkranStart(beYear) {
-      return new Date(adYear(beYear), SONGKRAN_START_MONTH, SONGKRAN_START_DAY);
-    }
-
-    function songkranEnd(beYear) {
-      return new Date(adYear(beYear + 1), SONGKRAN_START_MONTH, SONGKRAN_START_DAY - 1);
-    }
-
-    function daysBetween(a, b) {
-      const start = new Date(a.getFullYear(), a.getMonth(), a.getDate());
-      const end = new Date(b.getFullYear(), b.getMonth(), b.getDate());
-      return Math.round((end - start) / 86400000);
+    function currentSongkranBEYear() {
+      return serverDefaultYear || currentBEYear();
     }
 
     function dateKey(date) {
@@ -2078,88 +2231,14 @@
       return `${MONTHS[month - 1].full} ${year + 543}`;
     }
 
-    function zodiacIndexForBEYear(beYear) {
-      return mod(Number(beYear) - 2563, 12);
-    }
-
-    function clashIndex(index) {
-      return mod(index + 6, 12);
-    }
-
-    function chataForZodiacIndex(index) {
-      return CHATA_SIGNS[mod(index - 6, CHATA_SIGNS.length)];
-    }
-
-    function statusFor(index, annualIndex) {
-      if (index === annualIndex) return 'main';
-      if (index === clashIndex(annualIndex)) return 'clash';
-      return 'neutral';
-    }
-
     function statusLabel(status) {
       if (status === 'main') return 'ปีหลัก';
       if (status === 'clash') return 'ปะทะ';
       return 'กลาง';
     }
 
-
-    function birthHeroCardHtml(item) {
-      if (!item) return '';
-      const info = annualInfo();
-      return `
-        <div class="today-board" style="display: block; width: 100%; grid-column: 1 / -1; margin-bottom: 12px; border: 2px solid var(--accent); border-radius: 12px; overflow: hidden; background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface));">
-          <div class="today-hero" style="display: grid; grid-template-columns: 112px 1fr; gap: 16px; padding: 18px;">
-            <div class="animal-orb" style="width: 100px; height: 100px; padding: 6px;">${animalImageTag(item.animal)}</div>
-            <div class="today-copy">
-              <span class="card-today-tag" style="background: var(--accent); color: #1a0a00; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; display: inline-block;">📍 วันเริ่มต้น / วันที่ค้นหา</span>
-              <span class="status-pill ${item.status}" style="margin-left: 6px;">${statusLabel(item.status)}</span>
-              <h2 style="font-size: 24px; margin: 4px 0 6px;">วัน${formatDate(item.date, true)} ตก${item.animal.name}</h2>
-              <p style="margin: 0 0 6px; color: var(--muted); font-weight: 800; line-height: 1.4;">ดวงชะตากำเนิด: <strong>ตกปี${item.animal.name} · ${item.animal.short}</strong></p>
-              ${item.chata ? `<p style="margin: 0; color: var(--accent); font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
-                <img src="${item.chata.image}" style="width: 24px; height: 24px; object-fit: contain;" alt="${item.chata.name}">
-                ตกดวงชะตา: <strong>${item.chata.name}</strong>
-              </p>` : ''}
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
     function buildItems() {
-      let start, total, annualIndex;
-      if (state.view === 'birth' && state.searchTargetKey) {
-        const parts = state.searchTargetKey.split('-');
-        const y = Number(parts[0]);
-        const m = Number(parts[1]);
-        const d = Number(parts[2]);
-        start = new Date(y, m - 1, d);
-        total = 365;
-        const startYearBE = currentSongkranBEYear(start);
-        annualIndex = zodiacIndexForBEYear(startYearBE);
-      } else {
-        start = songkranStart(state.yearBE);
-        const end = songkranEnd(state.yearBE);
-        total = daysBetween(start, end) + 1;
-        annualIndex = zodiacIndexForBEYear(state.yearBE);
-      }
-      const isFemale = state.gender === 'female';
-      items = Array.from({ length: total }, (_, offset) => {
-        const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + offset);
-        const index = mod(isFemale ? (annualIndex - offset) : (annualIndex + offset), 12);
-        const animal = ZODIACS[index];
-        const chata = chataForZodiacIndex(index);
-        const status = statusFor(index, annualIndex);
-        return {
-          key: dateKey(date),
-          date,
-          offset,
-          index,
-          animal,
-          chata,
-          status,
-          monthKey: monthKey(date)
-        };
-      });
+      return items;
     }
 
     function monthOptions() {
@@ -2175,10 +2254,16 @@
       return items.find((item) => item.key === key) || items[0];
     }
 
+    function birthTargetItem() {
+      if (!state.searchTargetKey) return null;
+      return items.find((item) => item.key === state.searchTargetKey) || null;
+    }
+
     function visibleItems() {
       if (state.view === 'birth') {
-        if (!state.searchTargetKey) return [];
-        return state.birthScope === 'day' ? items.slice(0, 1) : items;
+        const target = birthTargetItem();
+        if (!target) return [];
+        return state.birthScope === 'day' ? [target] : items.slice();
       }
       let list = state.view === 'today' ? [todayItem()] : items.slice();
       if (state.view === 'month') {
@@ -2201,15 +2286,14 @@
         focusAnimal: state.focusAnimal,
         monthKey: state.monthKey,
         displayMode: state.displayMode,
-        gender: state.gender,
         searchTargetKey: state.searchTargetKey,
-        birthScope: state.birthScope,
+        gender: state.gender,
         theme: currentTheme()
       }));
     }
 
     function normalizeView(view) {
-      return ENABLED_VIEWS.has(view) ? view : 'today';
+      return ENABLED_VIEWS.has(view) ? view : 'year';
     }
 
     function restoreSettings() {
@@ -2221,10 +2305,12 @@
       }
       state.view = normalizeView(saved.view || 'year');
       state.filter = saved.filter || 'all';
-      state.yearBE = Number(saved.yearBE) || currentSongkranBEYear(new Date());
+      state.yearBE = Number(saved.yearBE) || 0;
       state.focusAnimal = saved.focusAnimal || 'all';
       state.monthKey = saved.monthKey || '';
       state.displayMode = saved.displayMode || 'table';
+      state.searchTargetKey = saved.searchTargetKey || '';
+      state.birthScope = saved.birthScope || 'year';
       state.gender = saved.gender || 'male';
 
       let theme = saved.theme || localStorage.getItem(THEME_KEY) || 'royal';
@@ -2284,15 +2370,13 @@
     }
 
     function annualInfo() {
-      const annualIndex = zodiacIndexForBEYear(state.yearBE);
-      const clash = clashIndex(annualIndex);
-      return {
-        annualIndex,
-        annual: ZODIACS[annualIndex],
-        clashIndex: clash,
-        clash: ZODIACS[clash],
-        start: songkranStart(state.yearBE),
-        end: songkranEnd(state.yearBE)
+      return dailyInfo || {
+        annualIndex: 0,
+        annual: ZODIACS[0] || { name: '' },
+        clashIndex: 0,
+        clash: ZODIACS[0] || { name: '' },
+        start: new Date(),
+        end: new Date()
       };
     }
 
@@ -2340,6 +2424,29 @@
       `;
     }
 
+    function birthHeroCardHtml(item) {
+      if (!item) return '';
+      const info = annualInfo();
+      const clashAnimal = item.clashAnimal;
+      return `
+        <div class="today-board" style="display: block; width: 100%; grid-column: 1 / -1; margin-bottom: 12px; border: 2px solid var(--accent); border-radius: 12px; overflow: hidden; background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface));">
+          <div class="today-hero" style="display: grid; grid-template-columns: 112px 1fr; gap: 16px; padding: 18px;">
+            <div class="animal-orb" style="width: 100px; height: 100px; padding: 6px;">${animalImageTag(item.animal)}</div>
+            <div class="today-copy">
+              <span class="card-today-tag" style="background: var(--accent); color: #1a0a00; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; display: inline-block;">📍 วันเริ่มต้น / วันที่ค้นหา</span>
+              <span class="status-pill ${item.status}" style="margin-left: 6px;">${statusLabel(item.status)}</span>
+              <h2 style="font-size: 24px; margin: 4px 0 6px;">วัน${formatDate(item.date, true)} ตก${item.animal.name}</h2>
+              <p style="margin: 0 0 6px; color: var(--muted); font-weight: 800; line-height: 1.4;">ดวงชะตากำเนิด: <strong>ตกปี${item.animal.name} · ${item.animal.short}</strong></p>
+              ${item.chata ? `<p style="margin: 0; color: var(--accent); font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                <img src="${item.chata.image}" style="width: 24px; height: 24px; object-fit: contain;" alt="${item.chata.name}">
+                ตกดวงชะตา: <strong>${item.chata.name}</strong>
+              </p>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderCards() {
       const list = visibleItems();
       const notice = $('notice');
@@ -2358,13 +2465,14 @@
       const dayNames = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
       
       let html = '';
-      if (state.view === 'birth' && list.length > 0) {
-        html += birthHeroCardHtml(list[0]);
+      const target = state.view === 'birth' ? birthTargetItem() : null;
+      if (state.view === 'birth' && target) {
+        html += birthHeroCardHtml(target);
       }
       
       html += list.map((item, index) => {
         const isToday = item.key === tKey;
-        const isBirthDay = state.view === 'birth' && index === 0;
+        const isBirthDay = state.view === 'birth' && item.key === state.searchTargetKey;
         const todayCls = isToday ? 'today-card' : isBirthDay ? 'today-card' : '';
         const dayName = dayNames[item.date.getDay()];
         return `
@@ -2388,6 +2496,7 @@
           </button>
         `;
       }).join('');
+      
       $('results').innerHTML = html;
     }
 
@@ -2419,8 +2528,8 @@
       $('birthSearchPanel').classList.toggle('hidden', !isBirth);
       document.querySelector('.form-grid').classList.toggle('hidden', isBirth);
       document.querySelector('.month-filter').classList.toggle('hidden', isBirth);
-      document.querySelector('.action-row').classList.toggle('hidden', isBirth);
-      document.querySelector('.filter-row').classList.toggle('hidden', isBirth);
+      document.querySelector('.action-row').classList.add('hidden');
+      document.querySelector('.filter-row').classList.add('hidden');
       
       render();
     }
@@ -2440,31 +2549,51 @@
       const info = annualInfo();
       const dayNames = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
 
-      $('thMain').textContent = 'นักษัตร';
-      $('thClash').textContent = 'นักษัตร';
+      $('thMain').textContent = `นักษัตรหลัก`;
+      $('thClash').textContent = `ปะทะ`;
 
       if (!list.length) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted)">ไม่มีข้อมูล</td></tr>';
+        if (state.view === 'birth') {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);font-weight:700;">🔮 กรุณาป้อนวัน เดือน ปี ที่ต้องการ แล้วกดปุ่มวิเคราะห์ดวงด้านบน</td></tr>';
+        } else {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted)">ไม่มีข้อมูล</td></tr>';
+        }
+        const oldHero = $('tableBirthHero');
+        if (oldHero) oldHero.remove();
         return;
       }
 
-      tbody.innerHTML = list.map(item => {
+      const oldHero = $('tableBirthHero');
+      if (oldHero) oldHero.remove();
+      
+      const target = state.view === 'birth' ? birthTargetItem() : null;
+      if (state.view === 'birth' && target) {
+        const heroDiv = document.createElement('div');
+        heroDiv.id = 'tableBirthHero';
+        heroDiv.style.marginBottom = '12px';
+        heroDiv.innerHTML = birthHeroCardHtml(target);
+        $('tableSection').insertBefore(heroDiv, $('tableSection').querySelector('.table-wrap'));
+      }
+
+      tbody.innerHTML = list.map((item, index) => {
         const isToday = item.key === tKey;
+        const isBirthDay = state.view === 'birth' && item.key === state.searchTargetKey;
         const rowClasses = [];
         if (item.status === 'clash') rowClasses.push('clash-row');
         else if (item.status === 'main') rowClasses.push('main-row');
         if (isToday) rowClasses.push('today-row');
-        if (item.offset === 0) rowClasses.push('songkran-start-row');
+        if (isBirthDay) rowClasses.push('songkran-start-row');
+        if (item.offset === 0 && state.view !== 'birth') rowClasses.push('songkran-start-row');
         const rowCls = rowClasses.join(' ');
 
-        const clashAnimal = ZODIACS[clashIndex(item.index)];
-        
+        const clashAnimal = item.clashAnimal;
+
         return `
           <tr class="${rowCls}" data-key="${item.key}">
             <td class="date-cell">
               <span class="date-day-table">${dayNames[item.date.getDay()]}</span>
               <span class="date-main">${formatDate(item.date, true)}</span>
-              ${isToday ? '<span class="td-today-badge" style="margin-left: 0; margin-top: 4px; display: inline-block;">วันนี้</span>' : ''}
+              ${isToday ? '<span class="td-today-badge" style="margin-left: 0; margin-top: 4px; display: inline-block;">วันนี้</span>' : isBirthDay ? '<span class="td-today-badge" style="background: var(--accent); color: #1a0a00; margin-left: 0; margin-top: 4px; display: inline-block;">วันเริ่มต้น</span>' : ''}
             </td>
             <td>
               <span class="chata-cell">
@@ -2499,7 +2628,7 @@
       renderCards();
       renderTable();
       $('infoPanel').innerHTML = '';
-      
+
       if (state.displayMode === 'table') {
         $('results').classList.add('hidden');
         $('tableSection').classList.remove('hidden');
@@ -2507,7 +2636,7 @@
         $('results').classList.remove('hidden');
         $('tableSection').classList.add('hidden');
       }
-      
+
       document.body.dataset.view = state.view;
       document.querySelectorAll('.segmented [data-view]').forEach((button) => button.classList.toggle('active', button.dataset.view === state.view));
       document.querySelectorAll('[data-filter]').forEach((button) => button.classList.toggle('active', button.dataset.filter === state.filter));
@@ -2516,7 +2645,7 @@
 
     function openItem(item) {
       const info = annualInfo();
-      const clashAnimal = ZODIACS[clashIndex(item.index)];
+      const clashAnimal = item.clashAnimal;
       
       const dayNames = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
       const dayName = dayNames[item.date.getDay()];
@@ -2592,9 +2721,14 @@
       $('sheetOverlay').classList.remove('open');
     }
 
-    function jumpToToday() {
-      const today = new Date();
-      state.yearBE = currentSongkranBEYear(today);
+    async function jumpToToday() {
+      const todayDate = new Date();
+      const currentBE = todayDate.getFullYear() + 543;
+      const songkranStart = new Date(todayDate.getFullYear(), 3, 13);
+      const actualYear = todayDate >= songkranStart ? currentBE : currentBE - 1;
+      
+      state.yearBE = actualYear;
+      await loadDailyData(actualYear);
       state.view = 'today';
       state.filter = 'all';
       state.focusAnimal = 'all';
@@ -2700,7 +2834,7 @@
       const ctx = canvas.getContext('2d');
       const bg = cssVar('--bg', '#f6f3ea');
       const surface = cssVar('--surface', '#fffdf6');
-      const text = cssVar('--text', '#1c1a15');
+      const text = ctx.fillStyle = cssVar('--text', '#1c1a15');
       const muted = cssVar('--muted', '#6f6656');
       const accent = cssVar('--accent', '#d7a327');
       const good = cssVar('--good', '#147d49');
@@ -2807,6 +2941,7 @@
       shareNoticeTimer = setTimeout(() => notice.classList.remove('show'), 2600);
     }
 
+    // Activated classes
     function activateAudioGroup() {
       const group = $('audioGroup');
       group.classList.add('active');
@@ -2967,16 +3102,20 @@
       document.querySelectorAll('.segmented [data-view]').forEach((button) => button.addEventListener('click', () => setView(button.dataset.view)));
       document.querySelectorAll('[data-filter]').forEach((button) => button.addEventListener('click', () => setFilter(button.dataset.filter)));
       $('resetYearBtn').addEventListener('click', () => {
-        state.yearBE = currentSongkranBEYear(new Date());
+        const todayDate = new Date();
+        const currentBE = todayDate.getFullYear() + 543;
+        const songkranStart = new Date(todayDate.getFullYear(), 3, 13);
+        const actualYear = todayDate >= songkranStart ? currentBE : currentBE - 1;
+        state.yearBE = actualYear;
         $('targetYear').value = String(state.yearBE);
-        render();
+        refreshDailyYear();
       });
       $('btnGenderMale').addEventListener('click', () => {
         if (state.gender !== 'male') {
           state.gender = 'male';
           saveSettings();
           populateControls();
-          render();
+          refreshDailyYear();
         }
       });
       $('btnGenderFemale').addEventListener('click', () => {
@@ -2984,7 +3123,7 @@
           state.gender = 'female';
           saveSettings();
           populateControls();
-          render();
+          refreshDailyYear();
         }
       });
       $('btnBirthScopeDay').addEventListener('click', () => {
@@ -3006,18 +3145,18 @@
       $('prevYear').addEventListener('click', () => {
         state.yearBE -= 1;
         $('targetYear').value = String(state.yearBE);
-        render();
+        refreshDailyYear();
       });
       $('nextYear').addEventListener('click', () => {
         state.yearBE += 1;
         $('targetYear').value = String(state.yearBE);
-        render();
+        refreshDailyYear();
       });
       $('targetYear').addEventListener('input', () => {
         const value = Number($('targetYear').value);
         if (Number.isFinite(value) && value >= 1 && value <= 3000) {
           state.yearBE = value;
-          render();
+          scheduleDailyYearRefresh();
         }
       });
       $('targetMonth').addEventListener('input', () => {
@@ -3092,30 +3231,38 @@
       $('bgMusic').addEventListener('timeupdate', () => {
         if (!$('bgMusic').paused) saveMusicState();
       });
-      window.addEventListener('beforeunload', saveMusicState);
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') saveMusicState();
+      document.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', (event) => {
+          const href = link.getAttribute('href') || '';
+          if (window.parent && typeof window.parent.loadPage === 'function' && link.closest('.tool-nav')) {
+            event.preventDefault();
+            let targetPageId = '';
+            if (href.includes('index.html')) {
+              targetPageId = 'OWNER_ZODIAC';
+            } else if (href.includes('songkran-zodiac-daily.html')) {
+              targetPageId = 'OWNER_DAILY';
+            } else if (href.includes('age-cycle.html')) {
+              targetPageId = 'OWNER_AGE';
+            }
+            if (targetPageId) {
+              saveMusicState();
+              window.parent.loadPage(targetPageId);
+            }
+          } else {
+            saveMusicState();
+          }
+        });
       });
-
-      $('shareGroup').addEventListener('touchstart', activateShareGroup, { passive: true });
-      $('shareGroup').addEventListener('mouseenter', activateShareGroup);
-      $('saveImageBtn').addEventListener('click', saveCurrentImage);
-      $('shareImageBtn').addEventListener('click', shareCurrentImage);
-
-      const scrollTopBtn = $('scrollTopBtn');
-      window.addEventListener('scroll', () => scrollTopBtn.classList.toggle('visible', window.scrollY > 280), { passive: true });
-            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
       // Populate Birth Search Selectors
       $('searchDay').innerHTML = Array.from({ length: 31 }, (_, i) => `<option value="${i+1}">${i+1}</option>`).join('');
       $('searchMonth').innerHTML = ZODIACS.map((_, i) => `<option value="${i}">${MONTHS[i].full}</option>`).join('');
       
-      const savedSearchDate = state.searchTargetKey ? new Date(state.searchTargetKey) : new Date();
+      const savedSearchDate = state.searchTargetKey ? parseServerDate(state.searchTargetKey) : new Date();
       $('searchDay').value = String(savedSearchDate.getDate());
       $('searchMonth').value = String(savedSearchDate.getMonth());
       $('searchYear').value = String(savedSearchDate.getFullYear() + 543);
       
-      $('btnSearchBirth').addEventListener('click', () => {
+      $('btnSearchBirth').addEventListener('click', async () => {
         const day = Number($('searchDay').value);
         const month = Number($('searchMonth').value);
         const beYear = Number($('searchYear').value);
@@ -3133,15 +3280,35 @@
         
         const adYear = beYear - 543;
         const targetDate = new Date(adYear, month, day);
-        const sStart = new Date(adYear, 3, 13);
-        const cycleYearBE = (targetDate >= sStart ? adYear : adYear - 1) + 543;
+        const songkranStart = new Date(adYear, 3, 13);
+        const cycleYearBE = (targetDate >= songkranStart ? adYear : adYear - 1) + 543;
         
         state.searchTargetKey = `${adYear}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         state.yearBE = cycleYearBE;
         state.view = 'birth';
         
-        setView('birth');
+        try {
+          await loadDailyData(cycleYearBE);
+          setView('birth');
+        } catch (error) {
+          $('notice').style.display = 'block';
+          $('notice').textContent = error && error.message ? error.message : 'เรียกข้อมูลดวงกำเนิดไม่สำเร็จ';
+        }
       });
+
+      window.addEventListener('beforeunload', saveMusicState);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') saveMusicState();
+      });
+
+      $('shareGroup').addEventListener('touchstart', activateShareGroup, { passive: true });
+      $('shareGroup').addEventListener('mouseenter', activateShareGroup);
+      $('saveImageBtn').addEventListener('click', saveCurrentImage);
+      $('shareImageBtn').addEventListener('click', shareCurrentImage);
+
+      const scrollTopBtn = $('scrollTopBtn');
+      window.addEventListener('scroll', () => scrollTopBtn.classList.toggle('visible', window.scrollY > 280), { passive: true });
+      scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     }
 
     function initStarfield() {
@@ -3176,22 +3343,34 @@
       requestAnimationFrame(draw);
     }
 
-    applyTeacherMode();
-    preloadZodiacImages();
-    restoreSettings();
-    if (state.view === 'birth') {
-      $('birthSearchPanel').classList.remove('hidden');
-      document.querySelector('.form-grid').classList.add('hidden');
-      document.querySelector('.month-filter').classList.add('hidden');
-      document.querySelector('.action-row').classList.add('hidden');
-      document.querySelector('.filter-row').classList.add('hidden');
+    async function initDailyPage() {
+      try {
+        applyTeacherMode();
+        restoreSettings();
+        await loadDailyData(state.yearBE);
+        preloadZodiacImages();
+        populateControls();
+        bindEvents();
+        initMusic();
+        initStarfield();
+        
+        // Restore Birth Panel visibility if we were in birth view
+        if (state.view === 'birth') {
+          $('birthSearchPanel').classList.remove('hidden');
+          document.querySelector('.form-grid').classList.add('hidden');
+          document.querySelector('.month-filter').classList.add('hidden');
+          document.querySelector('.action-row').classList.add('hidden');
+          document.querySelector('.filter-row').classList.add('hidden');
+        }
+        
+        render();
+      } catch (error) {
+        $('notice').style.display = 'block';
+        $('notice').textContent = error && error.message ? error.message : 'เรียกข้อมูลไม่สำเร็จ';
+      }
     }
-    buildItems();
-    populateControls();
-    bindEvents();
-    initMusic();
-    initStarfield();
-    render();
+
+    initDailyPage();
   </script>
 </body>
 

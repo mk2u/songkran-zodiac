@@ -138,14 +138,13 @@
     .theme-selector {
       position: fixed;
       top: calc(12px + var(--safe-top));
-      right: 12px;
+      right: max(12px, calc(50% - 310px - 68px)) !important;
       z-index: 70;
       display: flex;
       flex-direction: column;
       align-items: flex-end;
       gap: 10px;
     }
-
     .theme-main-btn {
       width: 48px;
       height: 48px;
@@ -216,6 +215,41 @@
       text-align: center;
     }
 
+    .tool-nav {
+      width: 100%;
+      max-width: 620px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+      margin: 68px auto 8px;
+      padding: 5px;
+      border: 2px solid var(--card-border);
+      border-radius: 8px;
+      background: var(--ctrl-bg);
+    }
+
+    .tool-nav a {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 4px 6px;
+      border-radius: 6px;
+      color: var(--ctrl-text);
+      font-size: clamp(14px, 3.8vw, 17px);
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    .tool-nav a.active {
+      background: var(--card-border);
+      color: var(--bg);
+    }
+
     .page-head h1 {
       margin: 0;
       color: var(--title);
@@ -249,7 +283,7 @@
       max-width: 760px;
       margin: 6px auto 0;
       color: var(--muted);
-      font-size: clamp(17px, 4.5vw, 22px);
+      font-size: clamp(13px, 3.6vw, 16px);
       font-weight: 700;
       line-height: 1.5;
     }
@@ -267,14 +301,14 @@
       position: relative;
       z-index: 12;
       max-width: 620px;
-      margin: 0 auto;
+      margin: 0 auto 14px;
       padding: 10px;
       backdrop-filter: blur(14px);
     }
 
     .segmented {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 6px;
       margin-bottom: 10px;
     }
@@ -311,6 +345,7 @@
       color: var(--muted);
       font-size: 13px;
       font-weight: 900;
+      text-align: center;
     }
 
     .field input,
@@ -324,14 +359,40 @@
       background: var(--ctrl-bg);
       color: var(--ctrl-text);
       font-weight: 900;
+      text-align: center;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .field > * {
+      width: 100%;
     }
 
     .year-stepper {
       display: grid;
       grid-template-columns: 46px 1fr 46px;
       gap: 6px;
+      width: 100%;
     }
 
+    .year-stepper input {
+      text-align: center;
+    }
+
+    .year-stepper button {
+      min-height: 46px;
+      border: 2px solid var(--ctrl-border);
+      border-radius: 8px;
+      background: var(--ctrl-bg);
+      color: var(--ctrl-text);
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer;
+    }
     .year-reset-btn {
       position: absolute;
       left: calc(100% + 8px);
@@ -349,17 +410,6 @@
     }
     .year-reset-btn:active {
       transform: translateY(-50%) scale(0.9);
-    }
-
-    .year-stepper button {
-      min-height: 46px;
-      border: 2px solid var(--ctrl-border);
-      border-radius: 8px;
-      background: var(--ctrl-bg);
-      color: var(--ctrl-text);
-      font-size: 20px;
-      font-weight: 900;
-      cursor: pointer;
     }
 
     .action-row,
@@ -621,7 +671,6 @@
       margin-bottom: 2px;
     }
 
-
     .day-card.main {
       border-color: color-mix(in srgb, var(--good) 56%, var(--card-border));
       border-left-color: var(--good);
@@ -847,6 +896,144 @@
       font-size: 13px;
     }
 
+    /* ── POPUP VS LAYOUT ── */
+    .sheet-clash-vs {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0 8px;
+    }
+
+    .sheet-vs-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 10px;
+      border: 2px solid var(--card-border);
+      border-radius: 12px;
+      background: var(--surface-2);
+      text-align: center;
+      min-height: 120px;
+    }
+
+    .sheet-vs-box.clash-side {
+      border-color: var(--danger);
+      background: var(--danger-bg);
+    }
+
+    .sheet-vs-box strong {
+      display: block;
+      font-size: 18px;
+      font-weight: 900;
+      margin-top: 8px;
+      color: var(--text);
+    }
+
+    .sheet-vs-box.clash-side strong {
+      color: var(--danger);
+    }
+
+    .sheet-vs-divider {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--muted);
+      user-select: none;
+    }
+
+    /* ── POPUP CHATA CARD ── */
+    .sheet-chata-section {
+      margin-top: 18px;
+      width: 100%;
+    }
+
+    .chata-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 14px;
+      border: 2px solid var(--card-border);
+      border-radius: 14px;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--surface-2) 90%, var(--accent) 10%), var(--surface));
+      box-shadow:
+        0 12px 28px color-mix(in srgb, var(--shadow) 60%, transparent),
+        inset 0 0 16px color-mix(in srgb, var(--accent) 8%, transparent);
+      text-align: center;
+      overflow: visible;
+    }
+
+    .chata-card-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .sheet-chata-icon {
+      display: block;
+      width: 76px;
+      height: 76px;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 12px color-mix(in srgb, var(--shadow) 40%, transparent));
+    }
+
+    .chata-card-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .chata-label-subtitle {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
+    }
+
+    .chata-main-name {
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.15;
+      text-shadow: 0 0 10px color-mix(in srgb, var(--text) 10%, transparent);
+    }
+
+    /* ── POPUP STATUS BADGE ── */
+    .sheet-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 900;
+      margin: 10px 0 4px;
+    }
+
+    .sheet-status-badge.main {
+      background: color-mix(in srgb, var(--good) 18%, var(--surface));
+      color: var(--good);
+      border: 1.5px solid var(--good);
+    }
+
+    .sheet-status-badge.clash {
+      background: color-mix(in srgb, var(--danger) 18%, var(--surface));
+      color: var(--danger);
+      border: 1.5px solid var(--danger);
+    }
+
+    .sheet-status-badge.neutral {
+      background: var(--neutral-bg);
+      color: var(--muted);
+      border: 1.5px solid var(--ctrl-border);
+    }
+
     .audio-group,
     .share-group {
       position: fixed;
@@ -1000,13 +1187,6 @@
     }
 
     @media (max-width: 520px) {
-      .app-shell {
-        padding-right: 6px;
-        padding-left: 6px;
-      }
-
-
-
       .summary-strip {
         padding: 10px 12px;
         gap: 8px;
@@ -1033,6 +1213,7 @@
         font-size: 15px;
       }
 
+      .tool-nav,
       .segmented,
       .form-grid,
       .filter-row,
@@ -1040,8 +1221,6 @@
       .sheet-grid {
         grid-template-columns: 1fr;
       }
-
-
 
       .control-panel {
         position: relative;
@@ -1101,57 +1280,70 @@
       box-shadow: 0 0 16px color-mix(in srgb, var(--accent) 34%, transparent);
     }
 
+    /* Public Daily dimensional main buttons. */
+    .segmented button,
+    .filter-row button,
+    .action-row button,
+    .view-switch-row button,
+    #genderSelector button,
+    #birthScopeSelector button,
+    .year-stepper button,
+    #btnSearchBirth {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, color-mix(in srgb, var(--ctrl-bg) 78%, #ffffff 12%), color-mix(in srgb, var(--ctrl-bg) 86%, #000000 14%)) !important;
+      border-color: var(--ctrl-border) !important;
+      box-shadow:
+        0 8px 18px color-mix(in srgb, var(--shadow) 70%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -8px 14px rgba(0, 0, 0, 0.14) !important;
+      transition: transform 0.16s ease, box-shadow 0.18s ease, filter 0.18s ease !important;
+    }
+
+    .segmented button:hover,
+    .filter-row button:hover,
+    .action-row button:hover,
+    .view-switch-row button:hover,
+    #genderSelector button:hover,
+    #birthScopeSelector button:hover,
+    .year-stepper button:hover,
+    #btnSearchBirth:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+
+    .segmented button:active,
+    .filter-row button:active,
+    .action-row button:active,
+    .view-switch-row button:active,
+    #genderSelector button:active,
+    #birthScopeSelector button:active,
+    .year-stepper button:active,
+    #btnSearchBirth:active {
+      transform: scale(0.96);
+    }
+
+    .segmented button.active,
+    .filter-row button.active,
+    .view-switch-row button.active,
+    #genderSelector button.active,
+    #birthScopeSelector button.active,
+    #todayBtn,
+    #btnSearchBirth {
+      background: linear-gradient(180deg, #fff9d7 0%, var(--accent) 52%, color-mix(in srgb, var(--accent) 74%, #7a4b00 26%) 100%) !important;
+      color: #16130d !important;
+      border-color: color-mix(in srgb, var(--accent) 72%, #ffffff) !important;
+      box-shadow:
+        0 0 18px color-mix(in srgb, var(--accent) 38%, transparent),
+        0 8px 18px color-mix(in srgb, var(--shadow) 78%, transparent),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        inset 0 -10px 18px rgba(116, 72, 0, 0.16) !important;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.42);
+    }
+
     .hidden {
       display: none !important;
     }
-
-    /* ── POPUP CLASH VS STYLE ── */
-    .sheet-clash-vs {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 12px;
-      margin: 16px 0 8px;
-    }
-
-    .sheet-vs-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 14px 10px;
-      border: 2px solid var(--card-border);
-      border-radius: 12px;
-      background: var(--surface-2);
-      text-align: center;
-      min-height: 120px;
-    }
-
-    .sheet-vs-box.clash-side {
-      border-color: var(--danger);
-      background: var(--danger-bg);
-    }
-
-    .sheet-vs-box strong {
-      display: block;
-      font-size: 18px;
-      font-weight: 900;
-      margin-top: 8px;
-      color: var(--text);
-    }
-
-    .sheet-vs-box.clash-side strong {
-      color: var(--danger);
-    }
-
-    .sheet-vs-divider {
-      font-size: 26px;
-      font-weight: 900;
-      color: var(--muted);
-      user-select: none;
-    }
-
-
 
     /* ── TABLE SECTION ── */
     .table-section {
@@ -1184,22 +1376,6 @@
       table-layout: fixed;
       border-collapse: collapse;
       font-size: clamp(12px, 1.4vw, 14px);
-    }
-
-    .col-date {
-      width: 20%;
-    }
-
-    .col-main {
-      width: 35%;
-    }
-
-    .col-sword {
-      width: 10%;
-    }
-
-    .col-clash {
-      width: 35%;
     }
 
     thead th {
@@ -1257,22 +1433,95 @@
       text-align: center;
     }
 
-    tbody td:first-child {
-      text-align: left;
+    .td-clash {
+      color: var(--danger);
+      font-weight: 800;
     }
+
+    .td-main-badge {
+      color: var(--good);
+      font-weight: 800;
+    }
+
+    .td-today-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #1a0a00;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      margin-left: 6px;
+    }
+
+    /* ── TODAY CARD STYLE ── */
+    .day-card.today-card {
+      border-color: var(--accent) !important;
+      background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface) 68%) !important;
+      box-shadow: 0 0 0 2px var(--accent), 0 8px 24px var(--shadow) !important;
+      position: relative;
+    }
+
+    .card-today-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--accent);
+      color: #1a0a00;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      width: fit-content;
+      line-height: 1;
+    }
+
+    /* ── Columns ── */
+    .col-date { width: 20%; }
+    .col-main { width: 35%; }
+    .col-sword { width: 10%; }
+    .col-clash { width: 35%; }
 
     .date-cell {
       min-width: 0;
       white-space: nowrap;
     }
 
-    .date-main {
-      display: block;
+    .chata-cell {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 128px;
+      font-size: 12px;
       font-weight: 900;
-      line-height: 1.25;
+      line-height: 1.2;
     }
 
+    .chata-orb {
+      display: grid;
+      place-items: center;
+      flex: 0 0 58px;
+      width: 58px;
+      height: 58px;
+      overflow: visible;
+    }
 
+    .chata-icon {
+      display: block;
+      width: 58px;
+      height: 58px;
+      max-width: none;
+      object-fit: contain;
+      background: transparent;
+      filter: drop-shadow(0 7px 8px color-mix(in srgb, var(--shadow) 70%, transparent));
+    }
+
+    .chata-name {
+      color: var(--text);
+      font-weight: 900;
+    }
 
     .table-animal-cell {
       display: inline-flex;
@@ -1331,6 +1580,14 @@
       filter: drop-shadow(0 4px 6px color-mix(in srgb, var(--shadow) 70%, transparent));
     }
 
+    tbody td:first-child {
+      text-align: left;
+    }
+
+    tbody td {
+      text-align: center;
+    }
+
     @media (max-width: 900px) {
       table {
         display: block;
@@ -1339,6 +1596,13 @@
         max-width: 100%;
         table-layout: auto;
         font-size: 11.5px;
+      }
+
+      .date-cell {
+        min-width: 0;
+        line-height: 1.25;
+        flex-direction: column;
+        align-items: flex-start !important;
       }
 
       thead,
@@ -1380,18 +1644,30 @@
 
       tbody td:nth-child(2),
       tbody td:nth-child(3),
-      tbody td:nth-child(4) {
+      tbody td:nth-child(4),
+      tbody td:nth-child(5) {
         justify-content: center;
       }
 
-      .date-cell {
-        min-width: 0;
-        line-height: 1.25;
+      .chata-cell {
         flex-direction: column;
-        align-items: flex-start !important;
+        align-items: center;
+        gap: 4px;
+        min-width: 0;
+        font-size: 10.5px;
+        text-align: center;
       }
 
+      .chata-orb {
+        flex-basis: 36px;
+        width: 36px;
+        height: 36px;
+      }
 
+      .chata-icon {
+        width: 38px;
+        height: 38px;
+      }
 
       .table-animal-cell {
         flex-direction: column;
@@ -1427,52 +1703,8 @@
         font-size: 18px;
       }
     }
-
-    .td-clash {
-      color: var(--danger);
-      font-weight: 800;
-    }
-
-    .td-main-badge {
-      color: var(--good);
-      font-weight: 800;
-    }
-
-    .td-today-badge {
-      display: inline-block;
-      background: var(--accent);
-      color: #1a0a00;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 2px 8px;
-      margin-left: 6px;
-    }
-
-    /* ── TODAY CARD STYLE ── */
-    .day-card.today-card {
-      border-color: var(--accent) !important;
-      background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface) 68%) !important;
-      box-shadow: 0 0 0 2px var(--accent), 0 8px 24px var(--shadow) !important;
-      position: relative;
-    }
-
-    .card-today-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: var(--accent);
-      color: #1a0a00;
-      font-size: 11px;
-      font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 4px;
-      margin-bottom: 6px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-      width: fit-content;
-      line-height: 1;
-    }
   </style>
+  <script src="../offline-runner.js"></script>
 </head>
 
 <body class="theme-royal" data-view="year">
@@ -1507,7 +1739,11 @@
   <div id="shareNotice" class="share-notice" role="status" aria-live="polite"></div>
 
   <main class="app-shell">
-
+    <nav class="tool-nav" aria-label="เครื่องมือดูดวง">
+      <a href="index.html">ปีนักษัตรสงกรานต์</a>
+      <a class="active" href="songkran-zodiac-daily.html">นักษัตรปะทะ</a>
+      <a href="age-cycle.html">อายุจรประจำปี</a>
+    </nav>
 
     <header class="page-head">
       <h1 id="mainTitle">13 เมษา 2569 ปีมะเมีย</h1>
@@ -1515,11 +1751,11 @@
     </header>
 
     <section class="control-panel">
-      <div class="segmented" aria-label="มุมมอง" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+      <div class="segmented" aria-label="มุมมอง">
         <button type="button" data-view="today" style="display: none;">วันนี้</button>
         <button type="button" data-view="month" style="display: none;">รายเดือน</button>
-        <button class="active" type="button" data-view="year" style="min-height: 42px;">ครบปี</button>
-        <button type="button" data-view="birth" style="min-height: 42px;">🔍 ค้นหาวันที่ต้องการ</button>
+        <button class="active" type="button" data-view="year">ครบปี</button>
+        <button type="button" data-view="birth">🔍 ค้นหาวันที่ต้องการ</button>
       </div>
 
       <!-- Birth Date Search Panel -->
@@ -1549,18 +1785,19 @@
             <button id="resetYearBtn" class="year-reset-btn" type="button" title="รีเซ็ตปี">↺</button>
           </div>
         </div>
-        <div class="field" style="margin-top: 14px; text-align: center;">
-          <label style="display: block; text-align: center; color: var(--muted); font-size: 13px; font-weight: 900; margin-bottom: 6px;">เพศผู้รับดวงชะตา (ใช้คำนวณนักษัตรรายวัน)</label>
-          <div class="segmented" id="genderSelector" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 auto; max-width: 240px;">
-            <button type="button" id="btnGenderMale" class="active" style="min-height: 42px;">ชาย</button>
-            <button type="button" id="btnGenderFemale" style="min-height: 42px;">หญิง</button>
-          </div>
-        </div>
         <div class="field" style="display: none;">
           <label for="focusAnimal">เลือกนักษัตรที่อยากดู</label>
           <select id="focusAnimal"></select>
         </div>
       </div>
+
+        <div class="field" style="margin-top: 14px; text-align: center; width: 100%;">
+          <label style="display: block; text-align: center; color: var(--muted); font-size: 13px; font-weight: 900; margin-bottom: 6px;">เพศผู้รับดวงชะตา (ใช้คำนวณนักษัตรรายวัน)</label>
+          <div class="segmented" id="genderSelector" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 auto; max-width: 240px; margin-bottom: 0;">
+            <button type="button" id="btnGenderMale" class="active" style="min-height: 42px;">ชาย</button>
+            <button type="button" id="btnGenderFemale" style="min-height: 42px;">หญิง</button>
+          </div>
+        </div>
 
       <div class="month-filter">
         <label for="targetMonth">เดือนในรอบสงกรานต์</label>
@@ -1588,10 +1825,10 @@
     <section class="summary-strip" id="summaryStrip"></section>
     <section class="today-board" id="todayBoard"></section>
     <section class="info-panel" id="infoPanel"></section>
-    <div id="notice" class="notice"></div>
-    <section class="results hidden" id="results"></section>
+    <div class="notice" id="notice"></div>
+    <section class="results" id="results"></section>
 
-    <section class="table-section" id="tableSection">
+    <section class="table-section hidden" id="tableSection">
       <h2>ตารางรวม</h2>
       <div class="table-wrap">
         <table>
@@ -1604,9 +1841,9 @@
           <thead>
             <tr>
               <th>วันที่</th>
-              <th id="thMain">นักษัตร</th>
+              <th id="thMain">นักษัตรหลัก</th>
               <th class="sword-col">ปะทะ</th>
-              <th id="thClash">นักษัตร</th>
+              <th id="thClash">ปะทะ</th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
@@ -1630,135 +1867,22 @@
   <button id="scrollTopBtn" type="button" title="กลับขึ้นบน" aria-label="กลับขึ้นบน">▲</button>
 
   <script>
-    /*
-      จุดที่แก้ง่าย:
-      - ZODIACS: แก้ชื่อ/คำทำนาย/คำแนะนำของนักษัตร
-      - SONGKRAN_START_MONTH / SONGKRAN_START_DAY: แก้วันเริ่มรอบ
-      - clashIndex(): แก้สูตรปีปะทะ ถ้าตำราต้องการสูตรอื่น
-    */
-    const SONGKRAN_START_MONTH = 3;
-    const SONGKRAN_START_DAY = 13;
-    const SETTINGS_KEY = 'songkranZodiacDailySettingsV2';
+    const SETTINGS_KEY = 'songkranZodiacDailySettingsPublicV1';
     const THEME_KEY = 'ageCycleTheme';
+    const TEACHER_MODE_KEY = 'songkranTeacherMode';
+    const DAILY_INCLUDE_CHATA = false;
+    const ENABLED_VIEWS = new Set(['year', 'birth']);
 
-    const ENABLED_VIEWS = new Set(['today', 'month', 'year', 'birth']);
-
-    const MONTHS = [
-      { short: 'ม.ค.', full: 'มกราคม' },
-      { short: 'ก.พ.', full: 'กุมภาพันธ์' },
-      { short: 'มี.ค.', full: 'มีนาคม' },
-      { short: 'เม.ย.', full: 'เมษายน' },
-      { short: 'พ.ค.', full: 'พฤษภาคม' },
-      { short: 'มิ.ย.', full: 'มิถุนายน' },
-      { short: 'ก.ค.', full: 'กรกฎาคม' },
-      { short: 'ส.ค.', full: 'สิงหาคม' },
-      { short: 'ก.ย.', full: 'กันยายน' },
-      { short: 'ต.ค.', full: 'ตุลาคม' },
-      { short: 'พ.ย.', full: 'พฤศจิกายน' },
-      { short: 'ธ.ค.', full: 'ธันวาคม' }
-    ];
-
-    const ZODIACS = [
-      {
-        name: 'ชวด',
-        image: 'assets/zodiac_rat.png',
-        short: 'ไหวพริบ ข่าวสาร การเริ่มขยับ',
-        oracle: 'ชวดเป็นจังหวะของความไว คิดเร็ว ติดต่อเร็ว และต้องตัดสินใจให้ทันสถานการณ์',
-        do: ['ใช้ข้อมูลนำทาง', 'คุยงานที่ต้องใช้ไหวพริบ', 'เก็บรายละเอียดเล็กๆ ที่คนอื่นมองข้าม'],
-        watch: ['คิดมากจนลังเล', 'พูดเร็วหรือรับปากเร็วเกินไป']
-      },
-      {
-        name: 'ฉลู',
-        image: 'assets/zodiac_ox.png',
-        short: 'ความอดทน งานหนัก ฐานมั่นคง',
-        oracle: 'ฉลูให้แรงของคนที่ค่อยๆ ทำ แต่ทำแล้วอยู่ได้นาน วันนี้เหมาะกับการวางฐาน',
-        do: ['จัดระบบงาน', 'ทำเรื่องที่ต้องใช้ความอดทน', 'เคลียร์ภาระที่ต้องรับผิดชอบ'],
-        watch: ['ดื้อเงียบ', 'แบกทุกอย่างไว้คนเดียว']
-      },
-      {
-        name: 'ขาล',
-        image: 'assets/zodiac_tiger.png',
-        short: 'อำนาจ การลุย การตัดสินใจ',
-        oracle: 'ขาลเป็นแรงกล้า เหมาะกับการออกหน้า แต่ต้องคุมอารมณ์ให้ดี',
-        do: ['ตัดสินใจเรื่องค้างคา', 'นำทีม', 'เริ่มเรื่องที่ต้องใช้ความกล้า'],
-        watch: ['ปะทะตรงเกินไป', 'ใช้อารมณ์มากกว่าเหตุผล']
-      },
-      {
-        name: 'เถาะ',
-        image: 'assets/zodiac_rabbit.png',
-        short: 'คำพูด ความนุ่มนวล ความสัมพันธ์',
-        oracle: 'เถาะช่วยให้เรื่องแข็งนิ่มลง ใช้การเจรจาและความละมุนจะได้ผลกว่า',
-        do: ['เจรจา ปรับความเข้าใจ', 'ทำงานละเอียด', 'ดูแลความรู้สึกคนใกล้ตัว'],
-        watch: ['เกรงใจจนไม่พูดความจริง', 'ปล่อยเรื่องเล็กให้ค้างนาน']
-      },
-      {
-        name: 'มะโรง',
-        image: 'assets/zodiac_dragon.png',
-        short: 'พลังใหญ่ ผู้ใหญ่ โอกาส',
-        oracle: 'มะโรงเป็นพลังที่อยากยกเรื่องให้ใหญ่ขึ้น เหมาะกับแผนสำคัญและการขอแรงสนับสนุน',
-        do: ['เสนอแผนใหญ่', 'เข้าหาผู้ใหญ่', 'ขยับเรื่องที่ต้องใช้บารมี'],
-        watch: ['มั่นใจเกินจนมองข้ามรายละเอียด', 'รับปากเกินกำลัง']
-      },
-      {
-        name: 'มะเส็ง',
-        image: 'assets/zodiac_snake.png',
-        short: 'ความลึก ความลับ การวางแผน',
-        oracle: 'มะเส็งไม่ใช่วันเสียงดัง แต่เป็นวันที่เหมาะกับการอ่านเกมและเก็บไพ่สำคัญไว้ในมือ',
-        do: ['วางแผนหลังฉาก', 'ตรวจเอกสาร', 'ฟังมากกว่าพูด'],
-        watch: ['ระแวงเกินไป', 'พูดเรื่องลับกับคนที่ยังไม่ชัด']
-      },
-      {
-        name: 'มะเมีย',
-        image: 'assets/zodiac_horse.png',
-        short: 'การเคลื่อนไหว เดินทาง ความคึกคัก',
-        oracle: 'มะเมียคือแรงวิ่งของวัน เหมาะกับการเดินหน้า ติดต่อ เดินทาง และเปิดจังหวะใหม่',
-        do: ['ออกไปพบคน', 'เดินทาง ทำธุระ', 'ผลักเรื่องที่นิ่งให้ขยับ'],
-        watch: ['รีบจนพลาด', 'ใช้แรงเกินกำลัง']
-      },
-      {
-        name: 'มะแม',
-        image: 'assets/zodiac_goat.png',
-        short: 'ความละเมียด บ้านใจ การประคอง',
-        oracle: 'มะแมทำให้เรื่องอ่อนลง เหมาะกับการประคองคน ประคองงาน และทำให้บรรยากาศดีขึ้น',
-        do: ['ดูแลคนในบ้านหรือทีม', 'จัดสิ่งแวดล้อม', 'ใช้ความนุ่มนวลแก้ปัญหา'],
-        watch: ['คิดแทนคนอื่นมากไป', 'อ่อนไหวกับคำพูด']
-      },
-      {
-        name: 'วอก',
-        image: 'assets/zodiac_monkey.png',
-        short: 'พลิกแพลง ไอเดีย การแก้สถานการณ์',
-        oracle: 'วอกเป็นวันของความไวและลูกเล่น เรื่องติดขัดอาจแก้ได้ด้วยทางที่ไม่ตรงไปตรงมา',
-        do: ['ทดลองไอเดีย', 'แก้ปัญหาเฉพาะหน้า', 'ใช้เทคนิคช่วยงาน'],
-        watch: ['เล่นเยอะจนคนไม่มั่นใจ', 'เปลี่ยนแผนบ่อยเกิน']
-      },
-      {
-        name: 'ระกา',
-        image: 'assets/zodiac_rooster.png',
-        short: 'ชื่อเสียง รายละเอียด การประกาศ',
-        oracle: 'ระกาทำให้คนเห็นและได้ยิน เหมาะกับการประกาศ ตรวจงาน และจัดภาพลักษณ์ให้คม',
-        do: ['ส่งงานที่ต้องดูดี', 'ตรวจรายละเอียด', 'พูดให้ชัดและเป็นระบบ'],
-        watch: ['จุกจิกจนเสียเวลา', 'คำพูดแข็งทำให้คนสะดุ้ง']
-      },
-      {
-        name: 'จอ',
-        image: 'assets/zodiac_dog.png',
-        short: 'ความซื่อสัตย์ เพื่อน การปกป้อง',
-        oracle: 'จอเป็นวันของความจริงใจ คนใกล้ตัวและความไว้ใจกันมีน้ำหนักมาก',
-        do: ['คุยตรงๆ แบบรักษาน้ำใจ', 'ช่วยคนที่ควรช่วย', 'ยืนข้างสิ่งที่ถูกต้อง'],
-        watch: ['ปกป้องคนอื่นจนตัวเองเดือดร้อน', 'พูดตรงจนแรง']
-      },
-      {
-        name: 'กุน',
-        image: 'assets/zodiac_pig.png',
-        short: 'ความอุดมสมบูรณ์ การพัก การรับผล',
-        oracle: 'กุนเป็นจังหวะรับผลและเติมกำลัง เหมาะกับการปิดงาน รับของดี หรือพักให้ร่างกายกลับมา',
-        do: ['รับผลจากงานเก่า', 'กิน พัก ฟื้นแรง', 'จัดการทรัพย์สินหรือของใช้'],
-        watch: ['สบายเกินจนงานช้า', 'ใช้จ่ายเพราะอยากให้ตัวเองสบาย']
-      }
-    ];
-
-
-
+    let MONTHS = [];
+    let ZODIACS = [];
+    let CHATA_SIGNS = [];
+    let dailyInfo = null;
+    let dailyLoadedYear = 0;
+    let serverDefaultYear = 0;
+    const dailyDataCache = new Map();
+    let dailyYearTimer = null;
+    let dailyRefreshToken = 0;
+    const DAILY_INPUT_DELAY = 400;
     const MUSIC_PLAYLIST = [
       { title: 'โชคชะตาแห่งดวงดาว - Destiny of the Stars', url: 'https://cdn1.suno.ai/b0aadeef-7861-4e8e-b972-f5b1bd76698d.mp3' },
       { title: 'ชะตาแห่งดวงดาว - Destiny of the Stars', url: 'https://cdn1.suno.ai/b1936e1e-2c3e-4c0a-8fe8-e671f31f13bb.mp3' },
@@ -1769,7 +1893,7 @@
     const state = {
       view: 'year',
       filter: 'all',
-      yearBE: currentSongkranBEYear(new Date()),
+      yearBE: currentSongkranBEYear(),
       focusAnimal: 'all',
       monthKey: '',
       displayMode: 'table',
@@ -1788,11 +1912,125 @@
     const zodiacImageCache = new Map();
     let zodiacImagesReady = Promise.resolve();
 
+    function getRunner() {
+      if (window.google && window.google.script && window.google.script.run) {
+        return window.google.script.run;
+      }
+      try {
+        if (window.parent && window.parent.google && window.parent.google.script && window.parent.google.script.run) {
+          return window.parent.google.script.run;
+        }
+      } catch (error) {
+        }
+      return window.OFFLINE_RUNNER || null;
+    }
+
+    function callServer(functionName, payload) {
+      return new Promise((resolve, reject) => {
+        const runner = getRunner();
+        if (!runner) {
+          reject(new Error('ต้องเปิดผ่านระบบ Apps Script'));
+          return;
+        }
+
+        try {
+          if (functionName === 'getDailyData') {
+            runner
+              .withSuccessHandler(resolve)
+              .withFailureHandler(reject)
+              .getDailyData(payload);
+            return;
+          }
+
+          reject(new Error('ไม่พบฟังก์ชันฝั่ง server'));
+        } catch (error) {
+          reject(error);
+        }
+      });
+    }
+
+    function parseServerDate(value) {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? new Date() : date;
+    }
+
+    function applyDailyData(result) {
+      if (!result || !result.ok) throw new Error(result && result.message ? result.message : 'เรียกข้อมูลไม่สำเร็จ');
+      MONTHS = result.months || [];
+      ZODIACS = result.zodiacs || [];
+      CHATA_SIGNS = result.chataSigns || [];
+      dailyLoadedYear = Number(result.yearBE) || 0;
+      serverDefaultYear = serverDefaultYear || dailyLoadedYear;
+      dailyInfo = {
+        ...result.info,
+        start: parseServerDate(result.info.start),
+        end: parseServerDate(result.info.end)
+      };
+      items = (result.items || []).map((item) => ({
+        ...item,
+        date: parseServerDate(item.date),
+        clashAnimal: item.clashAnimal,
+        chata: item.chata
+      }));
+      if (!state.yearBE) state.yearBE = dailyLoadedYear;
+    }
+
+    async function loadDailyData(beYear) {
+      const requestedYear = Number(beYear) || 0;
+      const cacheKey = `${requestedYear}_${state.gender || 'male'}`;
+      
+      if (requestedYear && dailyDataCache.has(cacheKey)) {
+        const cached = dailyDataCache.get(cacheKey);
+        applyDailyData(cached);
+        return cached;
+      }
+      if (!requestedYear && serverDefaultYear) {
+        const defaultCacheKey = `${serverDefaultYear}_${state.gender || 'male'}`;
+        if (dailyDataCache.has(defaultCacheKey)) {
+          const cached = dailyDataCache.get(defaultCacheKey);
+          applyDailyData(cached);
+          return cached;
+        }
+      }
+
+      const result = await callServer('getDailyData', {
+        beYear: beYear || undefined,
+        includeChata: DAILY_INCLUDE_CHATA,
+        gender: state.gender || 'male'
+      });
+      if (result && result.ok && result.yearBE) {
+        const resultKey = `${Number(result.yearBE)}_${state.gender || 'male'}`;
+        dailyDataCache.set(resultKey, result);
+      }
+      applyDailyData(result);
+      return result;
+    }
+
+    async function refreshDailyYear() {
+      const token = ++dailyRefreshToken;
+      try {
+        await loadDailyData(state.yearBE);
+        if (token !== dailyRefreshToken) return;
+        populateControls();
+        render();
+      } catch (error) {
+        $('notice').style.display = 'block';
+        $('notice').textContent = error && error.message ? error.message : 'เรียกข้อมูลไม่สำเร็จ';
+      }
+    }
+
+    function scheduleDailyYearRefresh() {
+      clearTimeout(dailyYearTimer);
+      dailyYearTimer = setTimeout(refreshDailyYear, DAILY_INPUT_DELAY);
+    }
+
     function animalImageTag(animal, className = 'animal-img') {
       return `<img class="${className}" src="${animal.image}" alt="ปี${animal.name}" loading="lazy">`;
     }
 
-
+    function chataImageTag(chata) {
+      return `<span class="chata-orb"><img class="chata-icon" src="${chata.image}" alt="${chata.name}" loading="lazy"></span>`;
+    }
 
     function preloadZodiacImages() {
       zodiacImagesReady = Promise.all(ZODIACS.map((animal) => new Promise((resolve) => {
@@ -1815,30 +2053,34 @@
       return new Date().getFullYear() + 543;
     }
 
-
-
-    function currentSongkranBEYear(date) {
-      const be = date.getFullYear() + 543;
-      const start = new Date(date.getFullYear(), SONGKRAN_START_MONTH, SONGKRAN_START_DAY);
-      return date >= start ? be : be - 1;
+    function teacherHref(href) {
+      const [beforeHash, hash = ''] = href.split('#');
+      const [path, query = ''] = beforeHash.split('?');
+      const params = new URLSearchParams(query);
+      params.set('teacher', '1');
+      return `${path}?${params.toString()}${hash ? `#${hash}` : ''}`;
     }
 
-    function adYear(beYear) {
-      return Number(beYear) - 543;
+    function applyTeacherMode() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('teacher') === '1') {
+        localStorage.setItem(TEACHER_MODE_KEY, '1');
+      } else if (params.get('teacher') === '0') {
+        localStorage.removeItem(TEACHER_MODE_KEY);
+      }
+
+      const enabled = localStorage.getItem(TEACHER_MODE_KEY) === '1';
+      document.documentElement.classList.toggle('teacher-mode', enabled);
+      if (!enabled) return;
+
+      document.querySelectorAll('.tool-nav a').forEach((link) => {
+        const href = link.getAttribute('href');
+        if (href) link.setAttribute('href', teacherHref(href));
+      });
     }
 
-    function songkranStart(beYear) {
-      return new Date(adYear(beYear), SONGKRAN_START_MONTH, SONGKRAN_START_DAY);
-    }
-
-    function songkranEnd(beYear) {
-      return new Date(adYear(beYear + 1), SONGKRAN_START_MONTH, SONGKRAN_START_DAY - 1);
-    }
-
-    function daysBetween(a, b) {
-      const start = new Date(a.getFullYear(), a.getMonth(), a.getDate());
-      const end = new Date(b.getFullYear(), b.getMonth(), b.getDate());
-      return Math.round((end - start) / 86400000);
+    function currentSongkranBEYear() {
+      return serverDefaultYear || currentBEYear();
     }
 
     function dateKey(date) {
@@ -1865,84 +2107,14 @@
       return `${MONTHS[month - 1].full} ${year + 543}`;
     }
 
-    function zodiacIndexForBEYear(beYear) {
-      return mod(Number(beYear) - 2563, 12);
-    }
-
-    function clashIndex(index) {
-      return mod(index + 6, 12);
-    }
-
-
-
-    function statusFor(index, annualIndex) {
-      if (index === annualIndex) return 'main';
-      if (index === clashIndex(annualIndex)) return 'clash';
-      return 'neutral';
-    }
-
     function statusLabel(status) {
       if (status === 'main') return 'ปีหลัก';
       if (status === 'clash') return 'ปะทะ';
       return 'กลาง';
     }
 
-
-    function birthHeroCardHtml(item) {
-      if (!item) return '';
-      const info = annualInfo();
-      return `
-        <div class="today-board" style="display: block; width: 100%; grid-column: 1 / -1; margin-bottom: 12px; border: 2px solid var(--accent); border-radius: 12px; overflow: hidden; background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface));">
-          <div class="today-hero" style="display: grid; grid-template-columns: 112px 1fr; gap: 16px; padding: 18px;">
-            <div class="animal-orb" style="width: 100px; height: 100px; padding: 6px;">${animalImageTag(item.animal)}</div>
-            <div class="today-copy">
-              <span class="card-today-tag" style="background: var(--accent); color: #1a0a00; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; display: inline-block;">📍 วันเริ่มต้น / วันที่ค้นหา</span>
-              <span class="status-pill ${item.status}" style="margin-left: 6px;">${statusLabel(item.status)}</span>
-              <h2 style="font-size: 24px; margin: 4px 0 6px;">วัน${formatDate(item.date, true)} ตก${item.animal.name}</h2>
-              <p style="margin: 0 0 6px; color: var(--muted); font-weight: 800; line-height: 1.4;">ดวงชะตากำเนิด: <strong>ตกปี${item.animal.name} · ${item.animal.short}</strong></p>
-              ${item.chata ? `<p style="margin: 0; color: var(--accent); font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
-                <img src="${item.chata.image}" style="width: 24px; height: 24px; object-fit: contain;" alt="${item.chata.name}">
-                ตกดวงชะตา: <strong>${item.chata.name}</strong>
-              </p>` : ''}
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
     function buildItems() {
-      let start, total, annualIndex;
-      if (state.view === 'birth' && state.searchTargetKey) {
-        const parts = state.searchTargetKey.split('-');
-        const y = Number(parts[0]);
-        const m = Number(parts[1]);
-        const d = Number(parts[2]);
-        start = new Date(y, m - 1, d);
-        total = 365;
-        const startYearBE = currentSongkranBEYear(start);
-        annualIndex = zodiacIndexForBEYear(startYearBE);
-      } else {
-        start = songkranStart(state.yearBE);
-        const end = songkranEnd(state.yearBE);
-        total = daysBetween(start, end) + 1;
-        annualIndex = zodiacIndexForBEYear(state.yearBE);
-      }
-      const isFemale = state.gender === 'female';
-      items = Array.from({ length: total }, (_, offset) => {
-        const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + offset);
-        const index = mod(isFemale ? (annualIndex - offset) : (annualIndex + offset), 12);
-        const animal = ZODIACS[index];
-        const status = statusFor(index, annualIndex);
-        return {
-          key: dateKey(date),
-          date,
-          offset,
-          index,
-          animal,
-          status,
-          monthKey: monthKey(date)
-        };
-      });
+      return items;
     }
 
     function monthOptions() {
@@ -1958,10 +2130,16 @@
       return items.find((item) => item.key === key) || items[0];
     }
 
+    function birthTargetItem() {
+      if (!state.searchTargetKey) return null;
+      return items.find((item) => item.key === state.searchTargetKey) || null;
+    }
+
     function visibleItems() {
       if (state.view === 'birth') {
-        if (!state.searchTargetKey) return [];
-        return state.birthScope === 'day' ? items.slice(0, 1) : items;
+        const target = birthTargetItem();
+        if (!target) return [];
+        return state.birthScope === 'day' ? [target] : items.slice();
       }
       let list = state.view === 'today' ? [todayItem()] : items.slice();
       if (state.view === 'month') {
@@ -1984,15 +2162,14 @@
         focusAnimal: state.focusAnimal,
         monthKey: state.monthKey,
         displayMode: state.displayMode,
-        gender: state.gender,
         searchTargetKey: state.searchTargetKey,
-        birthScope: state.birthScope,
+        gender: state.gender,
         theme: currentTheme()
       }));
     }
 
     function normalizeView(view) {
-      return ENABLED_VIEWS.has(view) ? view : 'today';
+      return ENABLED_VIEWS.has(view) ? view : 'year';
     }
 
     function restoreSettings() {
@@ -2004,13 +2181,14 @@
       }
       state.view = normalizeView(saved.view || 'year');
       state.filter = saved.filter || 'all';
-      state.yearBE = Number(saved.yearBE) || currentSongkranBEYear(new Date());
+      state.yearBE = Number(saved.yearBE) || 0;
       state.focusAnimal = saved.focusAnimal || 'all';
       state.monthKey = saved.monthKey || '';
       state.displayMode = saved.displayMode || 'table';
-      state.gender = saved.gender || 'male';
       state.searchTargetKey = saved.searchTargetKey || '';
       state.birthScope = saved.birthScope || 'year';
+      state.gender = saved.gender || 'male';
+
       let theme = saved.theme || localStorage.getItem(THEME_KEY) || 'royal';
       if (!localStorage.getItem('themeMigratedToRoyalV3')) {
         theme = 'royal';
@@ -2068,15 +2246,13 @@
     }
 
     function annualInfo() {
-      const annualIndex = zodiacIndexForBEYear(state.yearBE);
-      const clash = clashIndex(annualIndex);
-      return {
-        annualIndex,
-        annual: ZODIACS[annualIndex],
-        clashIndex: clash,
-        clash: ZODIACS[clash],
-        start: songkranStart(state.yearBE),
-        end: songkranEnd(state.yearBE)
+      return dailyInfo || {
+        annualIndex: 0,
+        annual: ZODIACS[0] || { name: '' },
+        clashIndex: 0,
+        clash: ZODIACS[0] || { name: '' },
+        start: new Date(),
+        end: new Date()
       };
     }
 
@@ -2124,6 +2300,29 @@
       `;
     }
 
+    function birthHeroCardHtml(item) {
+      if (!item) return '';
+      const info = annualInfo();
+      const clashAnimal = item.clashAnimal;
+      return `
+        <div class="today-board" style="display: block; width: 100%; grid-column: 1 / -1; margin-bottom: 12px; border: 2px solid var(--accent); border-radius: 12px; overflow: hidden; background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface));">
+          <div class="today-hero" style="display: grid; grid-template-columns: 112px 1fr; gap: 16px; padding: 18px;">
+            <div class="animal-orb" style="width: 100px; height: 100px; padding: 6px;">${animalImageTag(item.animal)}</div>
+            <div class="today-copy">
+              <span class="card-today-tag" style="background: var(--accent); color: #1a0a00; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; display: inline-block;">📍 วันเริ่มต้น / วันที่ค้นหา</span>
+              <span class="status-pill ${item.status}" style="margin-left: 6px;">${statusLabel(item.status)}</span>
+              <h2 style="font-size: 24px; margin: 4px 0 6px;">วัน${formatDate(item.date, true)} ตก${item.animal.name}</h2>
+              <p style="margin: 0 0 6px; color: var(--muted); font-weight: 800; line-height: 1.4;">ดวงชะตากำเนิด: <strong>ตกปี${item.animal.name} · ${item.animal.short}</strong></p>
+              ${item.chata ? `<p style="margin: 0; color: var(--accent); font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                <img src="${item.chata.image}" style="width: 24px; height: 24px; object-fit: contain;" alt="${item.chata.name}">
+                ตกดวงชะตา: <strong>${item.chata.name}</strong>
+              </p>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderCards() {
       const list = visibleItems();
       const notice = $('notice');
@@ -2142,13 +2341,14 @@
       const dayNames = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
       
       let html = '';
-      if (state.view === 'birth' && list.length > 0) {
-        html += birthHeroCardHtml(list[0]);
+      const target = state.view === 'birth' ? birthTargetItem() : null;
+      if (state.view === 'birth' && target) {
+        html += birthHeroCardHtml(target);
       }
       
       html += list.map((item, index) => {
         const isToday = item.key === tKey;
-        const isBirthDay = state.view === 'birth' && index === 0;
+        const isBirthDay = state.view === 'birth' && item.key === state.searchTargetKey;
         const todayCls = isToday ? 'today-card' : isBirthDay ? 'today-card' : '';
         const dayName = dayNames[item.date.getDay()];
         return `
@@ -2172,6 +2372,7 @@
           </button>
         `;
       }).join('');
+      
       $('results').innerHTML = html;
     }
 
@@ -2203,8 +2404,8 @@
       $('birthSearchPanel').classList.toggle('hidden', !isBirth);
       document.querySelector('.form-grid').classList.toggle('hidden', isBirth);
       document.querySelector('.month-filter').classList.toggle('hidden', isBirth);
-      document.querySelector('.action-row').classList.toggle('hidden', isBirth);
-      document.querySelector('.filter-row').classList.toggle('hidden', isBirth);
+      document.querySelector('.action-row').classList.add('hidden');
+      document.querySelector('.filter-row').classList.add('hidden');
       
       render();
     }
@@ -2224,8 +2425,8 @@
       const info = annualInfo();
       const dayNames = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
 
-      $('thMain').textContent = 'นักษัตร';
-      $('thClash').textContent = 'นักษัตร';
+      $('thMain').textContent = `นักษัตร`;
+      $('thClash').textContent = `นักษัตร`;
 
       if (!list.length) {
         if (state.view === 'birth') {
@@ -2241,17 +2442,18 @@
       const oldHero = $('tableBirthHero');
       if (oldHero) oldHero.remove();
       
-      if (state.view === 'birth') {
+      const target = state.view === 'birth' ? birthTargetItem() : null;
+      if (state.view === 'birth' && target) {
         const heroDiv = document.createElement('div');
         heroDiv.id = 'tableBirthHero';
         heroDiv.style.marginBottom = '12px';
-        heroDiv.innerHTML = birthHeroCardHtml(list[0]);
+        heroDiv.innerHTML = birthHeroCardHtml(target);
         $('tableSection').insertBefore(heroDiv, $('tableSection').querySelector('.table-wrap'));
       }
 
       tbody.innerHTML = list.map((item, index) => {
         const isToday = item.key === tKey;
-        const isBirthDay = state.view === 'birth' && index === 0;
+        const isBirthDay = state.view === 'birth' && item.key === state.searchTargetKey;
         const rowClasses = [];
         if (item.status === 'clash') rowClasses.push('clash-row');
         else if (item.status === 'main') rowClasses.push('main-row');
@@ -2260,8 +2462,8 @@
         if (item.offset === 0 && state.view !== 'birth') rowClasses.push('songkran-start-row');
         const rowCls = rowClasses.join(' ');
 
-        const clashAnimal = ZODIACS[clashIndex(item.index)];
-        
+        const clashAnimal = item.clashAnimal;
+
         return `
           <tr class="${rowCls}" data-key="${item.key}">
             <td class="date-cell">
@@ -2296,7 +2498,7 @@
       renderCards();
       renderTable();
       $('infoPanel').innerHTML = '';
-      
+
       if (state.displayMode === 'table') {
         $('results').classList.add('hidden');
         $('tableSection').classList.remove('hidden');
@@ -2304,7 +2506,7 @@
         $('results').classList.remove('hidden');
         $('tableSection').classList.add('hidden');
       }
-      
+
       document.body.dataset.view = state.view;
       document.querySelectorAll('.segmented [data-view]').forEach((button) => button.classList.toggle('active', button.dataset.view === state.view));
       document.querySelectorAll('[data-filter]').forEach((button) => button.classList.toggle('active', button.dataset.filter === state.filter));
@@ -2313,7 +2515,7 @@
 
     function openItem(item) {
       const info = annualInfo();
-      const clashAnimal = ZODIACS[clashIndex(item.index)];
+      const clashAnimal = item.clashAnimal;
       
       const dayNames = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
       const dayName = dayNames[item.date.getDay()];
@@ -2376,9 +2578,14 @@
       $('sheetOverlay').classList.remove('open');
     }
 
-    function jumpToToday() {
-      const today = new Date();
-      state.yearBE = currentSongkranBEYear(today);
+    async function jumpToToday() {
+      const todayDate = new Date();
+      const currentBE = todayDate.getFullYear() + 543;
+      const songkranStart = new Date(todayDate.getFullYear(), 3, 13);
+      const actualYear = todayDate >= songkranStart ? currentBE : currentBE - 1;
+      
+      state.yearBE = actualYear;
+      await loadDailyData(actualYear);
       state.view = 'today';
       state.filter = 'all';
       state.focusAnimal = 'all';
@@ -2484,7 +2691,7 @@
       const ctx = canvas.getContext('2d');
       const bg = cssVar('--bg', '#f6f3ea');
       const surface = cssVar('--surface', '#fffdf6');
-      const text = cssVar('--text', '#1c1a15');
+      const text = ctx.fillStyle = cssVar('--text', '#1c1a15');
       const muted = cssVar('--muted', '#6f6656');
       const accent = cssVar('--accent', '#d7a327');
       const good = cssVar('--good', '#147d49');
@@ -2591,6 +2798,7 @@
       shareNoticeTimer = setTimeout(() => notice.classList.remove('show'), 2600);
     }
 
+    // Activated classes
     function activateAudioGroup() {
       const group = $('audioGroup');
       group.classList.add('active');
@@ -2751,16 +2959,20 @@
       document.querySelectorAll('.segmented [data-view]').forEach((button) => button.addEventListener('click', () => setView(button.dataset.view)));
       document.querySelectorAll('[data-filter]').forEach((button) => button.addEventListener('click', () => setFilter(button.dataset.filter)));
       $('resetYearBtn').addEventListener('click', () => {
-        state.yearBE = currentSongkranBEYear(new Date());
+        const todayDate = new Date();
+        const currentBE = todayDate.getFullYear() + 543;
+        const songkranStart = new Date(todayDate.getFullYear(), 3, 13);
+        const actualYear = todayDate >= songkranStart ? currentBE : currentBE - 1;
+        state.yearBE = actualYear;
         $('targetYear').value = String(state.yearBE);
-        render();
+        refreshDailyYear();
       });
       $('btnGenderMale').addEventListener('click', () => {
         if (state.gender !== 'male') {
           state.gender = 'male';
           saveSettings();
           populateControls();
-          render();
+          refreshDailyYear();
         }
       });
       $('btnGenderFemale').addEventListener('click', () => {
@@ -2768,7 +2980,7 @@
           state.gender = 'female';
           saveSettings();
           populateControls();
-          render();
+          refreshDailyYear();
         }
       });
       $('btnBirthScopeDay').addEventListener('click', () => {
@@ -2790,18 +3002,18 @@
       $('prevYear').addEventListener('click', () => {
         state.yearBE -= 1;
         $('targetYear').value = String(state.yearBE);
-        render();
+        refreshDailyYear();
       });
       $('nextYear').addEventListener('click', () => {
         state.yearBE += 1;
         $('targetYear').value = String(state.yearBE);
-        render();
+        refreshDailyYear();
       });
       $('targetYear').addEventListener('input', () => {
         const value = Number($('targetYear').value);
         if (Number.isFinite(value) && value >= 1 && value <= 3000) {
           state.yearBE = value;
-          render();
+          scheduleDailyYearRefresh();
         }
       });
       $('targetMonth').addEventListener('input', () => {
@@ -2876,30 +3088,38 @@
       $('bgMusic').addEventListener('timeupdate', () => {
         if (!$('bgMusic').paused) saveMusicState();
       });
-      window.addEventListener('beforeunload', saveMusicState);
-      document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'hidden') saveMusicState();
+      document.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', (event) => {
+          const href = link.getAttribute('href') || '';
+          if (window.parent && typeof window.parent.loadPage === 'function' && link.closest('.tool-nav')) {
+            event.preventDefault();
+            let targetPageId = '';
+            if (href.includes('index.html')) {
+              targetPageId = 'OWNER_ZODIAC';
+            } else if (href.includes('songkran-zodiac-daily.html')) {
+              targetPageId = 'OWNER_DAILY';
+            } else if (href.includes('age-cycle.html')) {
+              targetPageId = 'OWNER_AGE';
+            }
+            if (targetPageId) {
+              saveMusicState();
+              window.parent.loadPage(targetPageId);
+            }
+          } else {
+            saveMusicState();
+          }
+        });
       });
-
-      $('shareGroup').addEventListener('touchstart', activateShareGroup, { passive: true });
-      $('shareGroup').addEventListener('mouseenter', activateShareGroup);
-      $('saveImageBtn').addEventListener('click', saveCurrentImage);
-      $('shareImageBtn').addEventListener('click', shareCurrentImage);
-
-      const scrollTopBtn = $('scrollTopBtn');
-      window.addEventListener('scroll', () => scrollTopBtn.classList.toggle('visible', window.scrollY > 280), { passive: true });
-            scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-
       // Populate Birth Search Selectors
       $('searchDay').innerHTML = Array.from({ length: 31 }, (_, i) => `<option value="${i+1}">${i+1}</option>`).join('');
       $('searchMonth').innerHTML = ZODIACS.map((_, i) => `<option value="${i}">${MONTHS[i].full}</option>`).join('');
       
-      const savedSearchDate = state.searchTargetKey ? new Date(state.searchTargetKey) : new Date();
+      const savedSearchDate = state.searchTargetKey ? parseServerDate(state.searchTargetKey) : new Date();
       $('searchDay').value = String(savedSearchDate.getDate());
       $('searchMonth').value = String(savedSearchDate.getMonth());
       $('searchYear').value = String(savedSearchDate.getFullYear() + 543);
       
-      $('btnSearchBirth').addEventListener('click', () => {
+      $('btnSearchBirth').addEventListener('click', async () => {
         const day = Number($('searchDay').value);
         const month = Number($('searchMonth').value);
         const beYear = Number($('searchYear').value);
@@ -2917,15 +3137,35 @@
         
         const adYear = beYear - 543;
         const targetDate = new Date(adYear, month, day);
-        const sStart = new Date(adYear, 3, 13);
-        const cycleYearBE = (targetDate >= sStart ? adYear : adYear - 1) + 543;
+        const songkranStart = new Date(adYear, 3, 13);
+        const cycleYearBE = (targetDate >= songkranStart ? adYear : adYear - 1) + 543;
         
         state.searchTargetKey = `${adYear}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         state.yearBE = cycleYearBE;
         state.view = 'birth';
         
-        setView('birth');
+        try {
+          await loadDailyData(cycleYearBE);
+          setView('birth');
+        } catch (error) {
+          $('notice').style.display = 'block';
+          $('notice').textContent = error && error.message ? error.message : 'เรียกข้อมูลดวงกำเนิดไม่สำเร็จ';
+        }
       });
+
+      window.addEventListener('beforeunload', saveMusicState);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden') saveMusicState();
+      });
+
+      $('shareGroup').addEventListener('touchstart', activateShareGroup, { passive: true });
+      $('shareGroup').addEventListener('mouseenter', activateShareGroup);
+      $('saveImageBtn').addEventListener('click', saveCurrentImage);
+      $('shareImageBtn').addEventListener('click', shareCurrentImage);
+
+      const scrollTopBtn = $('scrollTopBtn');
+      window.addEventListener('scroll', () => scrollTopBtn.classList.toggle('visible', window.scrollY > 280), { passive: true });
+      scrollTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
     }
 
     function initStarfield() {
@@ -2960,21 +3200,34 @@
       requestAnimationFrame(draw);
     }
 
-    preloadZodiacImages();
-    restoreSettings();
-    if (state.view === 'birth') {
-      $('birthSearchPanel').classList.remove('hidden');
-      document.querySelector('.form-grid').classList.add('hidden');
-      document.querySelector('.month-filter').classList.add('hidden');
-      document.querySelector('.action-row').classList.add('hidden');
-      document.querySelector('.filter-row').classList.add('hidden');
+    async function initDailyPage() {
+      try {
+        applyTeacherMode();
+        restoreSettings();
+        await loadDailyData(state.yearBE);
+        preloadZodiacImages();
+        populateControls();
+        bindEvents();
+        initMusic();
+        initStarfield();
+        
+        // Restore Birth Panel visibility if we were in birth view
+        if (state.view === 'birth') {
+          $('birthSearchPanel').classList.remove('hidden');
+          document.querySelector('.form-grid').classList.add('hidden');
+          document.querySelector('.month-filter').classList.add('hidden');
+          document.querySelector('.action-row').classList.add('hidden');
+          document.querySelector('.filter-row').classList.add('hidden');
+        }
+        
+        render();
+      } catch (error) {
+        $('notice').style.display = 'block';
+        $('notice').textContent = error && error.message ? error.message : 'เรียกข้อมูลไม่สำเร็จ';
+      }
     }
-    buildItems();
-    populateControls();
-    bindEvents();
-    initMusic();
-    initStarfield();
-    render();
+
+    initDailyPage();
   </script>
 </body>
 
