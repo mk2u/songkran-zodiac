@@ -1002,6 +1002,13 @@
       text-align: center;
     }
 
+    .results-birth .date-period-sep {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
     @media (max-width: 420px) {
       .app-shell {
         padding-left: 8px;
@@ -1025,6 +1032,13 @@
         grid-column: 2;
         justify-self: start;
       }
+
+      .results-period .level,
+      .results-birth .level {
+        grid-column: 3;
+        justify-self: end;
+        align-self: center;
+      }
     }
 
     @media (max-width: 340px) {
@@ -1040,6 +1054,12 @@
 
       .level {
         grid-column: 1;
+      }
+
+      .results-period .level,
+      .results-birth .level {
+        grid-column: 1;
+        justify-self: start;
       }
     }
 
