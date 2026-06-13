@@ -10,6 +10,236 @@ Online Apps Script and Cloudflare deployments have their own changelogs.
 
 ## Entries
 
+### 2026-06-13 - Sync public Winas taksa label filter
+
+Status: Done / Not deployed
+
+Reason:
+- Local/offline Public Zodiac should match AppsScriptBuild after hiding the Winas/Winasna taksa labels on the wheel.
+- GitHub Pages should no longer publish the local `1-2` and `1-3` folders, while keeping those folders available locally.
+
+Changed:
+- Ran `node sync-offline-folders.mjs` after the AppsScriptBuild Public Zodiac change.
+- Synced `1-1/index.html` with the new `shouldDrawTaksaLabel()` guard.
+- Added local git ignore rules for `1-2/` and `1-3/` so they can remain local without being published to GitHub.
+
+Files:
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\1-1\index.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\.gitignore`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\CHANGELOG_OFFLINE.md`
+
+Tested:
+- Parsed inline JavaScript in `AppsScriptBuild\Public_Zodiac.html`.
+- Parsed inline JavaScript in `1-1\index.html`.
+- Verified `shouldDrawTaksaLabel()` exists in AppsScriptBuild, Cloudflare generated template, and local `1-1`.
+
+Deploy:
+- Not deployed. Local/offline files only.
+- GitHub publish is handled by normal git commit/push from `SongkranZodiacMobile`, without any GitHub API calls.
+
+Notes:
+- Do not delete local `1-2` or `1-3` folders. They are only removed from Git tracking/public GitHub Pages output.
+
+### 2026-06-09 - Sync persisted form settings
+
+Status: Done / Not deployed
+
+Reason:
+- Offline/local pages needed to match AppsScriptBuild after date/form persistence was added.
+- The offline pages should remember manually entered values after refresh until reset is pressed.
+
+Changed:
+- Ran `node sync-offline-folders.mjs` to regenerate offline files from `AppsScriptBuild`.
+- Synced Public package pages, Teacher pages, and Owner pages that contain date/form inputs.
+- Kept the offline-only `offline-runner.js` injection intact.
+
+Files:
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\1-1\index.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\1-2\index.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\1-3\index.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\1-4\index.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\2\index.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\2\age-cycle.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\2\songkran-zodiac-daily.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\2\monthly-zodiac-wheel.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\3\index.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\3\age-cycle.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\3\songkran-zodiac-daily.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\3\monthly-zodiac-wheel.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\CHANGELOG_OFFLINE.md`
+
+Tested:
+- Parsed inline JavaScript in all generated offline HTML pages.
+- Verified each generated offline page includes `offline-runner.js` exactly once.
+- Ran the Cloudflare source/scope checks after offline sync.
+
+Deploy:
+- Not deployed. Local offline files only.
+
+Notes:
+- Offline files are generated copies. Future fixes should be made in AppsScriptBuild first, then synced offline again.
+
+### 2026-06-09 - Sync uniform monthly wheel text sizing
+
+Status: Done / Not deployed
+
+Reason:
+- Offline monthly wheel pages needed to match AppsScriptBuild after per-word SVG label compression was removed.
+- Each ring should display fixed labels using one consistent font size instead of compressing longer words.
+
+Changed:
+- Ran `node sync-offline-folders.mjs` to regenerate offline files from `AppsScriptBuild`.
+- Synced `2/monthly-zodiac-wheel.html` and `3/monthly-zodiac-wheel.html` so `addArcText()` no longer writes `textLength` or `lengthAdjust`.
+- Kept the offline-only `offline-runner.js` injection intact.
+
+Files:
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\2\monthly-zodiac-wheel.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\3\monthly-zodiac-wheel.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\offline-runner.js`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\CHANGELOG_OFFLINE.md`
+
+Tested:
+- Parsed inline JavaScript in both monthly wheel offline pages.
+- Verified each monthly wheel page includes `offline-runner.js` exactly once.
+- Verified both pages no longer contain `textLength` or `lengthAdjust`.
+- Verified both pages still contain `element: slot.element` and no old element fallback.
+- Rechecked the rasi direction guard expressions required by `AI_HANDOFF_OFFLINE.md`.
+- Parsed `offline-runner.js`.
+
+Deploy:
+- Not deployed. Local offline files only.
+
+Notes:
+- This is a visual typography fix only. It does not change formulas, house rotation, rasi ring, date numbers, elements, save/share behavior, or access rules.
+
+### 2026-06-09 - Sync monthly wheel fixed elements
+
+Status: Done / Not deployed
+
+Reason:
+- Offline Teacher and Owner monthly wheel pages still used the old rotating element assignment.
+- They needed to match AppsScriptBuild after `Monthly_Zodiac_Wheel.html` was changed to use the fixed `slot.element` layout.
+
+Changed:
+- Ran `node sync-offline-folders.mjs` to regenerate offline files from `AppsScriptBuild`.
+- Synced `2/monthly-zodiac-wheel.html` and `3/monthly-zodiac-wheel.html` so `buildWheelTemplate()` now uses `element: slot.element`.
+- Kept the offline-only `offline-runner.js` injection intact.
+
+Files:
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\2\monthly-zodiac-wheel.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\3\monthly-zodiac-wheel.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\offline-runner.js`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\CHANGELOG_OFFLINE.md`
+
+Tested:
+- Parsed inline JavaScript in both monthly wheel offline pages.
+- Verified each monthly wheel page includes `offline-runner.js` exactly once.
+- Verified both pages contain `element: slot.element` and no longer contain `element: HOUSE_ELEMENTS[houseIndex] || slot.element`.
+- Rechecked the rasi direction guard expressions required by `AI_HANDOFF_OFFLINE.md`.
+- Parsed `offline-runner.js`.
+
+Deploy:
+- Not deployed. Local offline files only.
+
+Notes:
+- This is a visual layer fix only. It does not change formulas, house rotation, rasi ring, date numbers, or custom-house rings.
+
+### 2026-06-09 - Sync hidden copy-summary buttons
+
+Status: Done / Not deployed
+
+Reason:
+- Offline test folders needed to match the Apps Script source after the copy-summary buttons were disabled for public, teacher, and owner pages.
+- The copy-summary functions must remain available in the code for a future re-enable.
+
+Changed:
+- Ran `node sync-offline-folders.mjs` to regenerate offline files from `AppsScriptBuild`.
+- Synced the hidden `copyBtn`, `SHOW_COPY_SUMMARY = false`, and `applyCopySummaryVisibility()` changes into offline public, teacher, and owner pages.
+- Kept `copySummary()` functions in place.
+
+Files:
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\1-2\index.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\1-3\index.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\1-4\index.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\2\age-cycle.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\2\songkran-zodiac-daily.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\3\age-cycle.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\3\songkran-zodiac-daily.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\offline-runner.js`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\CHANGELOG_OFFLINE.md`
+
+Tested:
+- Parsed inline JavaScript in all seven affected offline pages.
+- Verified each affected offline page includes `offline-runner.js` exactly once.
+- Verified each affected offline page has a hidden copy button, `SHOW_COPY_SUMMARY = false`, and an existing `copySummary()` function.
+- Parsed `offline-runner.js`.
+
+Deploy:
+- Not deployed. Local offline files only.
+
+Notes:
+- This is a UI display toggle only. Do not delete the copy-summary code unless the user explicitly asks.
+
+### 2026-06-09 - Sync hidden Winas wheel label and birth-age pair layout
+
+Status: Done / Not deployed
+
+Reason:
+- Offline Teacher and Owner test pages needed to match the Apps Script Owner/Teacher visual update.
+- The zodiac wheel should no longer draw the `วินาสน์` / `วินาศ` label while still showing `อริ` and `มรณะ`.
+- Birth-age result cards needed the paired-house display to be balanced on desktop and mobile.
+
+Changed:
+- Ran `node sync-offline-folders.mjs` to regenerate offline files from `AppsScriptBuild`.
+- Synced Teacher and Owner zodiac pages with the taksa label display guard.
+- Synced Teacher and Owner age-cycle pages with `.house-pair` structured pair layout.
+- Regenerated `offline-runner.js` from current services.
+
+Files:
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\2\index.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\2\age-cycle.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\3\index.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\3\age-cycle.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\offline-runner.js`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\CHANGELOG_OFFLINE.md`
+
+Tested:
+- Parsed inline JavaScript in `2/index.html`, `2/age-cycle.html`, `3/index.html`, and `3/age-cycle.html`.
+- Verified each checked offline file includes `offline-runner.js` exactly once.
+- Parsed `offline-runner.js`.
+- Verified the generated files contain `shouldDrawTaksaLabel` and `.house-pair`.
+
+Deploy:
+- Not deployed. Local offline files only.
+
+Notes:
+- This is a local sync from the Apps Script source and does not change formulas.
+
+### 2026-06-07 - Move daily zodiac next to house name and fix mobile layout
+
+Status: Done / Deployed (via sync-offline-folders.mjs)
+
+Reason:
+- The user wanted the daily zodiac sign (e.g. "ระกา", "จอ") displayed in the same row as the house name (e.g. "ตนุ"), aligned to the right of the house block, and styled with the same font size and weight as the house name (font-size: 19px, font-weight: 800).
+- The date column on the left needed to show only the BE year (e.g. "2569"), removing the previously added zodiac suffix (e.g. "· ระกา").
+- On mobile screens (max-width: 420px), the rating badges ("ดี" / "กลาง" / "ไม่ดี") were dropping down to the second row below the house info block. This layout needed to be corrected so that the badges stay horizontally aligned on the right.
+
+Changed:
+- Reverted the date-year template in `renderCards()` to only render the BE year.
+- Wrapped the house name template in a `.house-header` flex row and conditionally appended the daily zodiac (`.day-zodiac` span) on the right side if in year mode.
+- Added CSS classes `.house-header` and `.day-zodiac` with matching typography rules.
+- Corrected the mobile CSS media query `@media (max-width: 420px)` to use a 3-column layout grid (`90px 1fr auto`) for `.day-card` and removed the custom `.level` grid-column/alignment overrides.
+- Re-ran `node sync-offline-folders.mjs` to propagate all layout and template edits to folders `1-1`, `1-2`, `1-3`, `1-4`, `2`, and `3`.
+
+Files:
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\3\age-cycle.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\2\age-cycle.html`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\CHANGELOG_OFFLINE.md`
+
+Tested:
+- Checked Javascript and CSS syntax.
+- Verified visual layout alignment.
+
 ### 2026-06-06 - Fix mobile layout badge alignment and enlarge birth date font size
 
 Status: Done / Not deployed

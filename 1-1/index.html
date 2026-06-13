@@ -285,6 +285,24 @@
       font-size: 22px;
     }
 
+    #toggleDirection {
+      position: absolute;
+      right: calc(50% + 106px);
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      font-size: 20px;
+    }
+
+    #toggleDirection:hover {
+      transform: translateY(-50%) translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    #toggleDirection:active {
+      transform: translateY(-50%) scale(0.94);
+    }
+
     .controls input {
       width: 100px;
       height: 40px;
@@ -908,6 +926,7 @@
 
 
   <div class="controls">
+    <button id="toggleDirection" type="button" style="display: none;" title="สลับทิศทางคำนวณ">⇄</button>
     <button id="prevYear" type="button">−</button>
     <input id="yearInput" type="number" inputmode="numeric" min="1" max="3000" value="2569">
     <button id="nextYear" type="button">+</button>
@@ -930,6 +949,7 @@
   <div class="credit">Developed with ❤️ by คนโบราณ</div>
 
   <script>
+    const SHOW_DIRECTION_TOGGLE = true;
     let currentTheme = 'royal';
 
     // ── FX State ──
@@ -986,6 +1006,14 @@
     let currentZodiacResult = null;
     let zodiacRequestKey = '';
     const zodiacResultCache = new Map();
+    const ZODIAC_SETTINGS_KEY = 'songkranZodiacSettingsPublicV1';
+    let savedZodiacSettings = {};
+    try {
+      savedZodiacSettings = JSON.parse(localStorage.getItem(ZODIAC_SETTINGS_KEY) || '{}') || {};
+    } catch (error) {
+      savedZodiacSettings = {};
+    }
+    let zodiacDirection = savedZodiacSettings.direction || localStorage.getItem('zodiacDirection') || 'songkranToBirth';
     let zodiacRenderTimer = null;
     let zodiacRenderToken = 0;
     const ZODIAC_INPUT_DELAY = 400;
@@ -1071,6 +1099,44 @@
       return Number.isFinite(y) && y >= 1 && y <= 3000 ? y : currentBEYear();
     }
 
+    function zodiacInputValue(id) {
+      const el = document.getElementById(id);
+      return el ? el.value : '';
+    }
+
+    function saveZodiacSettings() {
+      localStorage.setItem(ZODIAC_SETTINGS_KEY, JSON.stringify({
+        year: zodiacInputValue('yearInput'),
+        birthYearA: zodiacInputValue('birthYearA'),
+        birthYearB: zodiacInputValue('birthYearB'),
+        direction: zodiacDirection
+      }));
+    }
+
+    function restoreZodiacSettings() {
+      const yearInput = document.getElementById('yearInput');
+      const birthA = document.getElementById('birthYearA');
+      const birthB = document.getElementById('birthYearB');
+      const savedYear = Number(savedZodiacSettings.year);
+      yearInput.value = Number.isFinite(savedYear) && savedYear >= 1 && savedYear <= 3000
+        ? String(savedYear)
+        : String(currentBEYear());
+      if (birthA) birthA.value = savedZodiacSettings.birthYearA || '';
+      if (birthB) birthB.value = savedZodiacSettings.birthYearB || '';
+    }
+
+    function resetZodiacSettings() {
+      localStorage.removeItem(ZODIAC_SETTINGS_KEY);
+      localStorage.removeItem('zodiacDirection');
+      savedZodiacSettings = {};
+      zodiacDirection = 'songkranToBirth';
+      document.getElementById('yearInput').value = currentBEYear();
+      const birthA = document.getElementById('birthYearA');
+      const birthB = document.getElementById('birthYearB');
+      if (birthA) birthA.value = '';
+      if (birthB) birthB.value = '';
+    }
+
     const cv = document.getElementById('wheelCanvas');
     const c = cv.getContext('2d');
     const W = cv.width, CX = W / 2, CY = W / 2;
@@ -1085,6 +1151,10 @@
     const VINAS_FONT_SIZE = 66;
     const PROFILE_COLORS = ['#1f9d55', '#2f80ed'];
     let birthProfiles = [];
+
+    function shouldDrawTaksaLabel(taksa) {
+      return taksa && taksa.name !== 'วินาสน์' && taksa.name !== 'วินาศ';
+    }
 
     function taksaStatus(profile) {
       return profile.isBad ? 'ร้าย' : 'ดี';
@@ -1116,7 +1186,7 @@
         personalCard.innerHTML = `
           <div class="card-line">ปี ${y} · ปี${annual.thai} · คุณเกิดปี${first.zodiac.thai}</div>
           <div class="card-main ${cls}">ตกทักษา ${first.taksa.name} ${taksaDot(first)}</div>
-          <div class="card-meta">${taksaStatus(first)} · นับจากปีเกิดไปหาปีสงกรานต์</div>
+          <div class="card-meta">${taksaStatus(first)} · ${zodiacDirection === 'birthToSongkran' ? 'นับจากปีเกิดไปหาปีสงกรานต์' : 'นับจากปีสงกรานต์ไปหาปีเกิด'}</div>
         `;
         personalCard.classList.add('show');
       } else {
@@ -1483,6 +1553,7 @@
           c.restore();
         } else {
           const isBad = tk.bad;
+          if (!shouldDrawTaksaLabel(tk)) continue;
           if (!SHOW_ALL_TAKSA_LABELS && !isBad) continue;
           
           c.save();
@@ -1550,7 +1621,7 @@
       if (!Z.length || !TK.length || !RASI.length) return;
       const y = selectedYear();
       const birthYears = zodiacBirthYears();
-      const key = JSON.stringify({ y, birthYears });
+      const key = JSON.stringify({ y, birthYears, direction: zodiacDirection });
       if (key !== zodiacRequestKey) {
         zodiacRequestKey = key;
         try {
@@ -1558,7 +1629,7 @@
           if (zodiacResultCache.has(key)) {
             nextResult = zodiacResultCache.get(key);
           } else {
-            nextResult = await callServer('calculateZodiacWheel', { year: y, birthYears });
+            nextResult = await callServer('calculateZodiacWheel', { year: y, birthYears, direction: zodiacDirection });
             if (nextResult && nextResult.ok) {
               zodiacResultCache.set(key, nextResult);
             }
@@ -1577,6 +1648,10 @@
       const clash = currentZodiacResult.clash || Z[currentZodiacResult.clashIndex];
       document.getElementById('mainTitle').textContent = `13 เมษา ${y} ปี${annual.thai}`;
       document.getElementById('pageSubtitle').textContent = `ปี${annual.thai} ชงปะทะ ปี${clash.thai} · 13 เม.ย. ${y} — 12 เม.ย. ${y + 1}`;
+      const directionText = zodiacDirection === 'birthToSongkran' ? 'นับจากปีเกิดไปหาปีสงกรานต์' : 'นับจากปีสงกรานต์ไปหาปีเกิด';
+      const botText = document.querySelector('.bottom-text');
+      if (botText) botText.textContent = directionText;
+
       updateBirthProfiles(ai, y);
       // draw is handled by animate loop
     }
@@ -1592,8 +1667,12 @@
     }
 
     async function initZodiacPage() {
+      if (SHOW_DIRECTION_TOGGLE) {
+        const btn = document.getElementById('toggleDirection');
+        if (btn) btn.style.display = 'inline-block';
+      }
       await loadZodiacWheelData();
-      document.getElementById('yearInput').value = currentBEYear();
+      restoreZodiacSettings();
       await render();
       requestAnimationFrame(animate);
     }
@@ -1605,6 +1684,7 @@
     function changeYear(delta) {
       const input = document.getElementById('yearInput');
       input.value = selectedYear() + delta;
+      saveZodiacSettings();
       triggerFX();
       scheduleZodiacRender();
     }
@@ -1615,13 +1695,21 @@
     document.getElementById('nextYear').onclick = () => {
       changeYear(1);
     };
+    if (SHOW_DIRECTION_TOGGLE) {
+      document.getElementById('toggleDirection').onclick = () => {
+        zodiacDirection = zodiacDirection === 'songkranToBirth' ? 'birthToSongkran' : 'songkranToBirth';
+        saveZodiacSettings();
+        triggerFX();
+        scheduleZodiacRender();
+      };
+    }
     document.getElementById('resetBtn').onclick = () => {
-      document.getElementById('yearInput').value = currentBEYear();
-      document.getElementById('birthYearA').value = '';
+      resetZodiacSettings();
       createSparkles();
       scheduleZodiacRender();
     };
     document.getElementById('yearInput').addEventListener('input', () => {
+      saveZodiacSettings();
       triggerFX();
       scheduleZodiacRender();
     });
@@ -1649,12 +1737,46 @@
           changeYear(dx < 0 ? 1 : -1);
         }
       });
+
+      cv.addEventListener('mousemove', (event) => {
+        if (!SHOW_DIRECTION_TOGGLE) return;
+        const rect = cv.getBoundingClientRect();
+        const scaleX = cv.width / rect.width;
+        const scaleY = cv.height / rect.height;
+        const x = (event.clientX - rect.left) * scaleX;
+        const y = (event.clientY - rect.top) * scaleY;
+        const dx = x - CX;
+        const dy = y - CY;
+        if (Math.sqrt(dx * dx + dy * dy) <= RC) {
+          cv.style.cursor = 'pointer';
+        } else {
+          cv.style.cursor = '';
+        }
+      });
+
+      cv.addEventListener('click', (event) => {
+        if (!SHOW_DIRECTION_TOGGLE) return;
+        const rect = cv.getBoundingClientRect();
+        const scaleX = cv.width / rect.width;
+        const scaleY = cv.height / rect.height;
+        const x = (event.clientX - rect.left) * scaleX;
+        const y = (event.clientY - rect.top) * scaleY;
+        const dx = x - CX;
+        const dy = y - CY;
+        if (Math.sqrt(dx * dx + dy * dy) <= RC) {
+          zodiacDirection = zodiacDirection === 'songkranToBirth' ? 'birthToSongkran' : 'songkranToBirth';
+          saveZodiacSettings();
+          triggerFX();
+          scheduleZodiacRender();
+        }
+      });
     }
 
     ['birthYearA'].forEach((id) => {
       const input = document.getElementById(id);
       if (!input) return;
       input.addEventListener('input', () => {
+        saveZodiacSettings();
         createSparkles();
         scheduleZodiacRender();
       });
@@ -1762,7 +1884,7 @@
         drawFittedText(x, 'กรอกปีเกิด เพื่อสร้างการ์ดดวงส่วนตัว', 800, 1384, 1240, 50, 900, p.text);
       }
 
-      drawFittedText(x, 'นับจากปีเกิดไปหาปีสงกรานต์', 800, 1534, 1240, 28, 800, p.text);
+      drawFittedText(x, zodiacDirection === 'birthToSongkran' ? 'นับจากปีเกิดไปหาปีสงกรานต์' : 'นับจากปีสงกรานต์ไปหาปีเกิด', 800, 1534, 1240, 28, 800, p.text);
       drawFittedText(x, 'Credit ❤️ by คนโบราณ', 800, 1572, 1240, 26, 800, p.text);
       return out;
     }
