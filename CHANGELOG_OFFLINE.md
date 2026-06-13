@@ -10,6 +10,31 @@ Online Apps Script and Cloudflare deployments have their own changelogs.
 
 ## Entries
 
+### 2026-06-13 - Unpublish local teacher folder from GitHub
+
+Status: Done / Not deployed
+
+Reason:
+- The user asked to remove the local `2/` folder from GitHub while keeping the local files unchanged on disk.
+
+Changed:
+- Added `2/` to `.gitignore`.
+- Removed tracked `2/` files from the Git index with `git rm --cached -r -- 2`.
+- Kept local `2/` files available for offline use.
+
+Files:
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\.gitignore`
+- `F:\Administrator\Desktop\System Prompt\SongkranZodiacMobile\CHANGELOG_OFFLINE.md`
+
+Tested:
+- Verified `2\index.html`, `2\age-cycle.html`, and `2\songkran-zodiac-daily.html` still exist locally after `git rm --cached`.
+
+Deploy:
+- Not deployed. GitHub publish change only.
+
+Notes:
+- Do not delete local `2/` unless the user explicitly asks. This folder is only removed from Git tracking/public GitHub output.
+
 ### 2026-06-13 - Sync public Winas taksa label filter
 
 Status: Done / Not deployed
