@@ -1681,7 +1681,7 @@
 
       <div class="action-row">
         <button id="todayBtn" type="button">⭐ วันนี้ตกอะไร</button>
-        <button id="copyBtn" type="button" style="display: none;">📋 คัดลอกผลย่อ</button>
+        <button id="copyBtn" type="button" data-feature="copy-summary" hidden>📋 คัดลอกผลย่อ</button>
       </div>
 
     </section>
@@ -1745,7 +1745,15 @@
     };
 
     const $ = (id) => document.getElementById(id);
-    const AGE_SETTINGS_KEY = 'ageCycleSettings';
+    const SHOW_COPY_SUMMARY = false;
+
+    function applyCopySummaryVisibility() {
+      const copyBtn = $('copyBtn');
+      if (!copyBtn) return;
+      copyBtn.hidden = !SHOW_COPY_SUMMARY;
+      copyBtn.style.display = SHOW_COPY_SUMMARY ? '' : 'none';
+    }
+    const AGE_SETTINGS_KEY = 'ageCycleMonthSettingsPublicV1';
     const AGE_THEME_KEY = 'ageCycleTheme';
     const MUSIC_PLAYLIST = [
       {
@@ -2884,6 +2892,7 @@
         requestAnimationFrame(() => btn.classList.add('spinning'));
         btn.addEventListener('animationend', () => btn.classList.remove('spinning'), { once: true });
 
+        localStorage.removeItem(AGE_SETTINGS_KEY);
         $('birthDay').value = String(today.getDate());
         $('birthMonth').value = String(today.getMonth());
         $('targetMonth').value = String(today.getMonth());
@@ -2952,7 +2961,8 @@
       });
 
       $('todayBtn').addEventListener('click', jumpToToday);
-      $('copyBtn').addEventListener('click', copySummary);
+      applyCopySummaryVisibility();
+      $('copyBtn')?.addEventListener('click', copySummary);
       $('sheetClose').addEventListener('click', closeSheet);
       $('sheetOverlay').addEventListener('click', (event) => {
         if (event.target === $('sheetOverlay')) closeSheet();
