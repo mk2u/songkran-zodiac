@@ -1,8 +1,25 @@
+# Development / Build tools
 Fix/
 AppsScriptBuild/
-3/
+ClaspCloneTemp/
+ClaspCloneTemp_backup/
+scratch/
+
+# Synced offline pages to ignore (only 1-1 and 1-4 are tracked/pushed)
 1-2/
 1-3/
 2/
+3/
+
+# Backups (all folders starting with underscore)
+_*
+
+# Documentation / Logs
 CHANGELOG_OFFLINE.md
-github-recovery-codes.txt
+*.log
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

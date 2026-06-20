@@ -4,13 +4,13 @@
   if (window.OFFLINE_RUNNER) return;
 
 const ZodiacService = (() => {
-/*
+/* 
   ⚠️ [คำเตือนสำคัญที่สุดสำหรับนักพัฒนาและ AI Coding Assistant ในอนาคต]
   แต่ละไฟล์ในระบบดวงชะตานี้มีสิทธิ์เข้าถึงและการจัดวางเลย์เอาต์ (Layout Style) ที่ไม่เหมือนกัน!
-
+  
   🚨 กฎเหล็ก 3 ข้อที่ห้ามละเมิดโดยเด็ดขาด:
   1. 🧮 [ระบบสูตรคำนวณ ห้ามพังเด็ดขาด!]
-     ตรรกะการเดินอายุจร การเวียนนักษัตรย้อนทิศทางสำหรับเพศหญิง ตรรกะวันเกิดเริ่มต้นและการสแกน 365 วัน
+     ตรรกะการเดินอายุจร การเวียนนักษัตรย้อนทิศทางสำหรับเพศหญิง ตรรกะวันเกิดเริ่มต้นและการสแกน 365 วัน 
      รวมถึงฟังก์ชันคีย์แคช 2 สล็อต (${year}_${gender}) ต้องทำงานได้อย่างถูกต้องแม่นยำ ห้ามดัดแปลงจนสูตรเพี้ยน
   2. 🎨 [จัดรูปแบบโครงสร้าง Layout ให้สวยงามสอดคล้องตามข้อกำหนดเฉพาะของแต่ละไฟล์]
      - ไฟล์ฝั่ง Owner: แสดงผลแท็บควบคุมมุมมอง 4 ปุ่มแบบสมมาตรแนวระนาบเดี่ยวบน Desktop
@@ -106,7 +106,12 @@ function calculateZodiacWheel(input) {
     clashIndex: clashIndex,
     clash: ZODIAC_WHEEL_ZODIACS[clashIndex],
     slots: zodiacWheelSlots_(annualIndex, direction),
-    profiles: profiles
+    profiles: profiles,
+    needles: [
+      annualIndex,
+      zodiacMod_(annualIndex + 4, ZODIAC_WHEEL_ZODIACS.length),
+      zodiacMod_(annualIndex + 8, ZODIAC_WHEEL_ZODIACS.length)
+    ]
   };
 }
 
@@ -176,13 +181,13 @@ return { getZodiacWheelData: getZodiacWheelData, calculateZodiacWheel: calculate
 })();
 
 const DailyService = (() => {
-/*
+/* 
   ⚠️ [คำเตือนสำคัญที่สุดสำหรับนักพัฒนาและ AI Coding Assistant ในอนาคต]
   แต่ละไฟล์ในระบบดวงชะตานี้มีสิทธิ์เข้าถึงและการจัดวางเลย์เอาต์ (Layout Style) ที่ไม่เหมือนกัน!
-
+  
   🚨 กฎเหล็ก 3 ข้อที่ห้ามละเมิดโดยเด็ดขาด:
   1. 🧮 [ระบบสูตรคำนวณ ห้ามพังเด็ดขาด!]
-     ตรรกะการเดินอายุจร การเวียนนักษัตรย้อนทิศทางสำหรับเพศหญิง ตรรกะวันเกิดเริ่มต้นและการสแกน 365 วัน
+     ตรรกะการเดินอายุจร การเวียนนักษัตรย้อนทิศทางสำหรับเพศหญิง ตรรกะวันเกิดเริ่มต้นและการสแกน 365 วัน 
      รวมถึงฟังก์ชันคีย์แคช 2 สล็อต (${year}_${gender}) ต้องทำงานได้อย่างถูกต้องแม่นยำ ห้ามดัดแปลงจนสูตรเพี้ยน
   2. 🎨 [จัดรูปแบบโครงสร้าง Layout ให้สวยงามสอดคล้องตามข้อกำหนดเฉพาะของแต่ละไฟล์]
      - ไฟล์ฝั่ง Owner: แสดงผลแท็บควบคุมมุมมอง 4 ปุ่มแบบสมมาตรแนวระนาบเดี่ยวบน Desktop
@@ -334,9 +339,9 @@ function getDailyData(input) {
   const source = input || {};
   const includeChata = source.includeChata === true;
   const isFemale = source.gender === 'female';
-
+  
   let start, total, annualIndex, yearBEVal;
-
+  
   if (source.startDate) {
     const targetDate = new Date(source.startDate);
     start = targetDate;
@@ -350,7 +355,7 @@ function getDailyData(input) {
     total = dailyDaysBetween_(start, end) + 1;
     annualIndex = dailyZodiacIndexForBEYear_(yearBEVal);
   }
-
+  
   const annual = DAILY_ZODIACS[annualIndex];
   const clashIndex = dailyClashIndex_(annualIndex);
   const clash = DAILY_ZODIACS[clashIndex];
@@ -460,13 +465,13 @@ return { getDailyData: getDailyData };
 })();
 
 const AgeYearService = (() => {
-/*
+/* 
   ⚠️ [คำเตือนสำคัญที่สุดสำหรับนักพัฒนาและ AI Coding Assistant ในอนาคต]
   แต่ละไฟล์ในระบบดวงชะตานี้มีสิทธิ์เข้าถึงและการจัดวางเลย์เอาต์ (Layout Style) ที่ไม่เหมือนกัน!
-
+  
   🚨 กฎเหล็ก 3 ข้อที่ห้ามละเมิดโดยเด็ดขาด:
   1. 🧮 [ระบบสูตรคำนวณ ห้ามพังเด็ดขาด!]
-     ตรรกะการเดินอายุจร การเวียนนักษัตรย้อนทิศทางสำหรับเพศหญิง ตรรกะวันเกิดเริ่มต้นและการสแกน 365 วัน
+     ตรรกะการเดินอายุจร การเวียนนักษัตรย้อนทิศทางสำหรับเพศหญิง ตรรกะวันเกิดเริ่มต้นและการสแกน 365 วัน 
      รวมถึงฟังก์ชันคีย์แคช 2 สล็อต (${year}_${gender}) ต้องทำงานได้อย่างถูกต้องแม่นยำ ห้ามดัดแปลงจนสูตรเพี้ยน
   2. 🎨 [จัดรูปแบบโครงสร้าง Layout ให้สวยงามสอดคล้องตามข้อกำหนดเฉพาะของแต่ละไฟล์]
      - ไฟล์ฝั่ง Owner: แสดงผลแท็บควบคุมมุมมอง 4 ปุ่มแบบสมมาตรแนวระนาบเดี่ยวบน Desktop
@@ -761,7 +766,7 @@ function buildMonthly_(birthDay, birthMonth, targetMonth, beYear) {
   const nextMonth = targetMonth === 11 ? 0 : targetMonth + 1;
   const nextYear = targetMonth === 11 ? startYear + 1 : startYear;
   const end = cycleStartForMonth_(nextYear, nextMonth, birthDay);
-
+  
   const items = [];
   let index = 0;
   for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {
@@ -1000,13 +1005,13 @@ return { calculateAge: calculateAge, calculateAgeToday: calculateAgeToday, calcu
 })();
 
 const AgeMonthService = (() => {
-/*
+/* 
   ⚠️ [คำเตือนสำคัญที่สุดสำหรับนักพัฒนาและ AI Coding Assistant ในอนาคต]
   แต่ละไฟล์ในระบบดวงชะตานี้มีสิทธิ์เข้าถึงและการจัดวางเลย์เอาต์ (Layout Style) ที่ไม่เหมือนกัน!
-
+  
   🚨 กฎเหล็ก 3 ข้อที่ห้ามละเมิดโดยเด็ดขาด:
   1. 🧮 [ระบบสูตรคำนวณ ห้ามพังเด็ดขาด!]
-     ตรรกะการเดินอายุจร การเวียนนักษัตรย้อนทิศทางสำหรับเพศหญิง ตรรกะวันเกิดเริ่มต้นและการสแกน 365 วัน
+     ตรรกะการเดินอายุจร การเวียนนักษัตรย้อนทิศทางสำหรับเพศหญิง ตรรกะวันเกิดเริ่มต้นและการสแกน 365 วัน 
      รวมถึงฟังก์ชันคีย์แคช 2 สล็อต (${year}_${gender}) ต้องทำงานได้อย่างถูกต้องแม่นยำ ห้ามดัดแปลงจนสูตรเพี้ยน
   2. 🎨 [จัดรูปแบบโครงสร้าง Layout ให้สวยงามสอดคล้องตามข้อกำหนดเฉพาะของแต่ละไฟล์]
      - ไฟล์ฝั่ง Owner: แสดงผลแท็บควบคุมมุมมอง 4 ปุ่มแบบสมมาตรแนวระนาบเดี่ยวบน Desktop
@@ -1268,13 +1273,13 @@ return { calculateAgeMonth: calculateAgeMonth, calculateAgeMonthToday: calculate
 })();
 
 const OwnerAgeService = (() => {
-/*
+/* 
   ⚠️ [คำเตือนสำคัญที่สุดสำหรับนักพัฒนาและ AI Coding Assistant ในอนาคต]
   แต่ละไฟล์ในระบบดวงชะตานี้มีสิทธิ์เข้าถึงและการจัดวางเลย์เอาต์ (Layout Style) ที่ไม่เหมือนกัน!
-
+  
   🚨 กฎเหล็ก 3 ข้อที่ห้ามละเมิดโดยเด็ดขาด:
   1. 🧮 [ระบบสูตรคำนวณ ห้ามพังเด็ดขาด!]
-     ตรรกะการเดินอายุจร การเวียนนักษัตรย้อนทิศทางสำหรับเพศหญิง ตรรกะวันเกิดเริ่มต้นและการสแกน 365 วัน
+     ตรรกะการเดินอายุจร การเวียนนักษัตรย้อนทิศทางสำหรับเพศหญิง ตรรกะวันเกิดเริ่มต้นและการสแกน 365 วัน 
      รวมถึงฟังก์ชันคีย์แคช 2 สล็อต (${year}_${gender}) ต้องทำงานได้อย่างถูกต้องแม่นยำ ห้ามดัดแปลงจนสูตรเพี้ยน
   2. 🎨 [จัดรูปแบบโครงสร้าง Layout ให้สวยงามสอดคล้องตามข้อกำหนดเฉพาะของแต่ละไฟล์]
      - ไฟล์ฝั่ง Owner: แสดงผลแท็บควบคุมมุมมอง 4 ปุ่มแบบสมมาตรแนวระนาบเดี่ยวบน Desktop
@@ -1715,7 +1720,7 @@ function buildOwnerMonthly_(birthDay, birthMonth, targetMonth, beYear) {
   const nextMonth = targetMonth === 11 ? 0 : targetMonth + 1;
   const nextYear = targetMonth === 11 ? startYear + 1 : startYear;
   const end = ownerAgeCycleStartForMonth_(nextYear, nextMonth, birthDay);
-
+  
   const items = [];
   let index = 0;
   for (let cursor = new Date(start); cursor < end; cursor.setDate(cursor.getDate() + 1)) {

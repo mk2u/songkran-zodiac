@@ -1609,20 +1609,293 @@
 
 
 
-    </style>
+    
+    /* Unified Horizontal Theme Selector Styles */
+    .theme-selector {
+      position: fixed !important;
+      top: 12px !important;
+      right: max(12px, calc(50% - 380px - 68px)) !important;
+      z-index: 1000 !important;
+      padding: 0 !important;
+      border: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      display: block !important;
+    }
+    @media (max-width: 760px) {
+      .theme-selector {
+        top: 10px !important;
+        right: 12px !important;
+      }
+      .theme-main-btn {
+        width: 40px !important;
+        min-width: 40px !important;
+        max-width: 40px !important;
+        height: 40px !important;
+        min-height: 40px !important;
+        max-height: 40px !important;
+        font-size: 18px !important;
+      }
+      .theme-options {
+        top: 50px !important;
+      }
+    }
+    .theme-main-btn {
+      width: 48px;
+      min-height: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      background: color-mix(in srgb, var(--surface) 82%, transparent);
+      color: var(--gold);
+      box-shadow: 0 0 18px var(--gold-glow);
+      padding: 0;
+      font-size: 22px;
+    }
+    .theme-options {
+      position: absolute !important;
+      top: 58px !important;
+      right: 0 !important;
+      display: none !important;
+      grid-template-columns: repeat(3, 38px) !important;
+      gap: 8px !important;
+      padding: 9px !important;
+      border: 1.5px solid var(--line) !important;
+      border-radius: 999px !important;
+      background: color-mix(in srgb, var(--surface) 88%, transparent) !important;
+      box-shadow: 0 12px 28px var(--shadow) !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .theme-selector.open .theme-options {
+      display: grid !important;
+    }
+    .theme-btn {
+      width: 38px !important;
+      min-width: 38px !important;
+      max-width: 38px !important;
+      height: 38px !important;
+      min-height: 38px !important;
+      max-height: 38px !important;
+      border-radius: 50% !important;
+      border: 1.5px solid var(--line) !important;
+      padding: 0 !important;
+      cursor: pointer !important;
+      box-sizing: border-box !important;
+      transition: transform 0.2s !important;
+    }
+    .theme-btn:hover {
+      transform: scale(1.15) !important;
+    }
+    .theme-btn.active {
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--line) 22%, transparent), 0 0 18px var(--gold-glow) !important;
+    }
+    .btn-royal {
+      background: linear-gradient(135deg, #061a10, #103b25 58%, #ffd700) !important;
+    }
+    .btn-sacred {
+      background: linear-gradient(135deg, #03010a, #1b1038 58%, #e8c84a) !important;
+    }
+    .btn-solar {
+      background: linear-gradient(135deg, #fffdf6, #f7ecd0 58%, #c8951a) !important;
+    }
+    .tool-nav {
+      margin-top: 68px !important;
+    }
+    @media (max-width: 760px) {
+      .tool-nav {
+        margin-top: 64px !important;
+      }
+    }
+</style>
   <script src="../offline-runner.js"></script>
 </head>
 
 <body class="theme-royal" data-age-mode="month">
   <canvas id="starCanvas" aria-hidden="true"></canvas>
-  <div class="theme-selector" id="themeSelector">
-    <button class="theme-main-btn" type="button" title="เลือกธีม">🌗</button>
-    <div class="theme-options">
+
+<!-- Shared public/teacher controls v2: logout and theme in one owner-style row -->
+<style>
+  [data-shared-page-controls] {
+    --shared-page-control-size: 48px;
+    --shared-page-inline-pad: 12px;
+    --shared-page-max: 960px;
+    width: min(calc(100% - (var(--shared-page-inline-pad) * 2)), var(--shared-page-max));
+    min-height: calc(var(--shared-page-control-size) + 12px);
+    margin: 12px auto 4px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    position: relative;
+    z-index: 120;
+    pointer-events: none;
+    box-sizing: border-box;
+  }
+  [data-shared-page-controls] *,
+  [data-shared-page-controls] *::before,
+  [data-shared-page-controls] *::after { box-sizing: border-box; }
+  [data-shared-page-controls] button,
+  [data-shared-page-controls] .theme-selector,
+  [data-shared-page-controls] .theme-options { pointer-events: auto; }
+  [data-shared-page-controls] .theme-selector {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    left: auto !important;
+    bottom: auto !important;
+    z-index: 125 !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: flex-end !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+  [data-shared-page-controls] .shared-page-logout,
+  [data-shared-page-controls] .theme-main-btn {
+    width: var(--shared-page-control-size) !important;
+    min-width: var(--shared-page-control-size) !important;
+    max-width: var(--shared-page-control-size) !important;
+    height: var(--shared-page-control-size) !important;
+    min-height: var(--shared-page-control-size) !important;
+    max-height: var(--shared-page-control-size) !important;
+    flex: 0 0 var(--shared-page-control-size) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    border: 2px solid var(--line, var(--gold, #ffd83d)) !important;
+    border-radius: 999px !important;
+    background: color-mix(in srgb, var(--surface, var(--bg, #061a10)) 88%, #000000 12%) !important;
+    color: var(--gold, #ffd83d) !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.36), 0 0 18px color-mix(in srgb, var(--gold, #ffd83d) 24%, transparent) !important;
+    outline: none !important;
+    cursor: pointer !important;
+    transform: none !important;
+    filter: none !important;
+    -webkit-text-fill-color: currentColor !important;
+    backdrop-filter: blur(8px);
+  }
+  [data-shared-page-controls] .shared-page-logout:hover,
+  [data-shared-page-controls] .theme-main-btn:hover { filter: brightness(1.08) !important; }
+  [data-shared-page-controls] .shared-page-logout:active,
+  [data-shared-page-controls] .theme-main-btn:active { transform: scale(0.96) !important; }
+  [data-shared-page-controls] .shared-page-logout-icon {
+    position: relative;
+    width: 19px;
+    height: 19px;
+    display: block;
+    border: 3px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+  }
+  [data-shared-page-controls] .shared-page-logout-icon::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -8px;
+    width: 3px;
+    height: 12px;
+    border-radius: 999px;
+    background: currentColor;
+    transform: translateX(-50%);
+  }
+  [data-shared-page-controls] .theme-main-btn {
+    font-size: 0 !important;
+    line-height: 1 !important;
+    text-shadow: none !important;
+  }
+  [data-shared-page-controls] .theme-main-btn::before {
+    content: "";
+    width: 18px;
+    height: 18px;
+    display: block;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    background: linear-gradient(90deg, currentColor 0 48%, transparent 48% 100%);
+    box-shadow: inset -4px 0 0 color-mix(in srgb, currentColor 24%, transparent);
+  }
+  [data-shared-page-controls] .theme-options {
+    position: absolute !important;
+    top: calc(var(--shared-page-control-size) + 8px) !important;
+    right: 0 !important;
+    left: auto !important;
+    bottom: auto !important;
+    display: none !important;
+    grid-template-columns: repeat(3, 38px) !important;
+    gap: 8px !important;
+    padding: 10px !important;
+    border: 1.5px solid var(--line, var(--gold, #ffd83d)) !important;
+    border-radius: 999px !important;
+    background: color-mix(in srgb, var(--surface, var(--bg, #061a10)) 92%, #000000 8%) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28) !important;
+    backdrop-filter: blur(12px);
+  }
+  [data-shared-page-controls] .theme-selector.open .theme-options { display: grid !important; }
+  [data-shared-page-controls] .theme-btn {
+    width: 38px !important;
+    min-width: 38px !important;
+    height: 38px !important;
+    min-height: 38px !important;
+    border-radius: 50% !important;
+    border: 2px solid color-mix(in srgb, var(--line, var(--gold, #ffd83d)) 72%, transparent) !important;
+    padding: 0 !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 4px 14px rgba(0, 0, 0, 0.22) !important;
+  }
+  [data-shared-page-controls] .theme-btn.active {
+    border-color: var(--line, var(--gold, #ffd83d)) !important;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--line, var(--gold, #ffd83d)) 32%, transparent), 0 0 18px color-mix(in srgb, var(--line, var(--gold, #ffd83d)) 42%, transparent) !important;
+  }
+  [data-shared-page-controls] .btn-royal { background: linear-gradient(135deg, #082818, #0f6b3e) !important; }
+  [data-shared-page-controls] .btn-sacred { background: linear-gradient(135deg, #07030f, #2c145c) !important; }
+  [data-shared-page-controls] .btn-solar { background: linear-gradient(135deg, #fffdf6, #e0b34d) !important; }
+  body.theme-solar [data-shared-page-controls] .shared-page-logout,
+  body.theme-solar [data-shared-page-controls] .theme-main-btn {
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: var(--text, #1f1f1f) !important;
+    border-color: var(--line, #2a2a2a) !important;
+  }
+  @media (max-width: 760px) {
+    [data-shared-page-controls] {
+      --shared-page-control-size: 44px;
+      width: calc(100% - 28px);
+      min-height: calc(var(--shared-page-control-size) + 10px);
+      margin-top: 10px;
+    }
+    [data-shared-page-controls] .shared-page-logout-icon {
+      width: 16px;
+      height: 16px;
+      border-width: 2px;
+    }
+    [data-shared-page-controls] .shared-page-logout-icon::before {
+      top: -7px;
+      width: 2px;
+      height: 10px;
+    }
+  }
+</style>
+<div class="shared-page-control-bar" data-shared-page-controls>
+  <button id="sharedLogoutBtn" class="shared-page-logout" type="button" title="logout" aria-label="logout"><span class="shared-page-logout-icon" aria-hidden="true"></span></button>
+  <div class="theme-selector shared-page-theme-selector" id="themeSelector">
+    <button class="theme-main-btn shared-page-theme-main" type="button" title="เลือกธีม">🌗</button>
+    <div class="theme-options shared-page-theme-options" aria-label="เลือกธีม">
+      <button class="theme-btn btn-royal" type="button" data-theme="royal" title="เขียวมรกต"></button>
       <button class="theme-btn btn-sacred" type="button" data-theme="sacred" title="มืด"></button>
       <button class="theme-btn btn-solar" type="button" data-theme="solar" title="สว่าง"></button>
-      <button class="theme-btn btn-royal active" type="button" data-theme="royal" title="มรกต"></button>
     </div>
   </div>
+</div>
+
 
   <audio id="bgMusic" preload="metadata" src="https://cdn1.suno.ai/b0aadeef-7861-4e8e-b972-f5b1bd76698d.mp3"
     data-playlist-url="https://suno.com/playlist/1473c3a5-7c1d-48e2-9840-eb0cf32d941e"
@@ -2864,6 +3137,7 @@
       }
     }
 
+    
     function setTheme(theme, persist = true) {
       document.body.classList.remove('theme-sacred', 'theme-royal');
       if (theme !== 'solar') {
@@ -2872,11 +3146,14 @@
       document.querySelectorAll('[data-theme]').forEach((button) => {
         button.classList.toggle('active', button.dataset.theme === theme);
       });
-      $('themeSelector').classList.remove('open');
+      const selector = document.getElementById('themeSelector');
+      if (selector) selector.classList.remove('open');
       if (persist) {
         localStorage.setItem(AGE_THEME_KEY, theme);
-        saveAgeSettings();
+        if (typeof saveSettings === 'function') saveSettings();
+        else if (typeof saveAgeSettings === 'function') saveAgeSettings();
       }
+      // Note: No render() call here to prevent initialization loop crash
     }
 
     function bindEvents() {
@@ -3221,6 +3498,38 @@
       });
     }
   </script>
+
+
+<script>
+  (function () {
+    if (window.__sharedPageControlsReady) return;
+    window.__sharedPageControlsReady = true;
+    var btn = document.getElementById('sharedLogoutBtn');
+    if (!btn) return;
+    btn.addEventListener('click', function (event) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      function runLocalLogoutFallback() {
+        try { localStorage.removeItem('songkranAppsScriptSession'); } catch (error) {}
+        try { localStorage.removeItem('songkranCloudflareSession'); } catch (error) {}
+        if (location.protocol !== 'file:') {
+          location.href = location.href.split('?')[0];
+        }
+      }
+
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'shared-logout' }, '*');
+          window.setTimeout(runLocalLogoutFallback, 700);
+          return;
+        }
+      } catch (error) {}
+
+      runLocalLogoutFallback();
+    });
+  })();
+</script>
 </body>
 
 </html>
