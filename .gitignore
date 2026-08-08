@@ -1,0 +1,32 @@
+# Development / Build tools
+Fix/
+AppsScriptBuild/
+ClaspCloneTemp/
+ClaspCloneTemp_backup/
+scratch/
+
+# GitHub keeps only redirect launchers for root, 1-1, 1-4, and 1-5.
+# The offline runner and page assets remain local for development/regeneration.
+/offline-runner.js
+/1-1/assets/
+/1-4/assets/
+/1-5/assets/
+
+# Other synced offline pages stay local.
+1-2/
+1-3/
+2/
+3/
+
+# Backups (all folders starting with underscore)
+_*
+
+# Documentation stays private/local. GitHub contains launchers only.
+/*.md
+*.log
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
